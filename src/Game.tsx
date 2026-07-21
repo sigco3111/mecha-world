@@ -1,64 +1,58 @@
 import { Canvas } from '@react-three/fiber'
 import { Sky, Stars } from '@react-three/drei'
-import { Suspense } from 'react'
+import { Suspense, useRef, useMemo } from 'react'
+import * as THREE from 'three'
 import { Player } from './Player'
 import { Ground, Obstacles, FloatingParticles } from './Environment'
+import { TrainingDummy } from './TrainingDummy'
+import type { TrainingDummyHandle } from './TrainingDummy'
+import { ProjectileRenderer, ImpactRenderer } from './Effects'
+import { BattleHUD } from './BattleHUD'
+
+// 导入THREE到window给HUD投影用
+import * as THREE_NS from 'three'
+;(window as any).THREE = THREE_NS
 
 export default function Game() {
+  const enemiesRef = useRef<TrainingDummyHandle[]>([])
+  const dummyPositions = useMemo(() => [
+    { pos: [8, 0, -5] as [number, number, number], color: '#ff4444' },
+    { pos: [-10, 0, -8] as [number, number, number], color: '#ff6600' },
+    { pos: [15, 0, 5] as [number, number, number], color: '#ff44aa' },
+    { pos: [-6, 0, 12] as [number, number, number], color: '#aa44ff' },
+  ], [])
+
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', background: '#0a0a1a' }}>
       {/* === HUD === */}
       <div style={{
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        zIndex: 100,
-        color: '#00ffff',
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        textShadow: '0 0 10px rgba(0,255,255,0.8)',
-        pointerEvents: 'none',
-        lineHeight: 1.8,
+        position: 'absolute', top: 20, left: 20, zIndex: 100,
+        color: '#00ffff', fontFamily: 'monospace', fontSize: '12px',
+        textShadow: '0 0 10px rgba(0,255,255,0.5)', pointerEvents: 'none', lineHeight: 1.8,
       }}>
-        <div style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: 8 }}>MECHA WORLD</div>
+        <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 8 }}>MECHA WORLD</div>
         <div style={{ color: '#88aaff' }}>WASD — 移动</div>
         <div style={{ color: '#88aaff' }}>SHIFT — 加速冲刺</div>
         <div style={{ color: '#88aaff' }}>SPACE — 喷气飞行</div>
         <div style={{ color: '#88aaff' }}>鼠标拖拽 — 转视角</div>
+        <div style={{ color: '#ff4444', marginTop: 8 }}>J / 左键 — 近战攻击</div>
+        <div style={{ color: '#ff4444' }}>K / 右键 — 远程射击</div>
+        <div style={{ color: '#88aaff' }}>TAB — 锁定目标</div>
       </div>
 
-      {/* 右上角状态 */}
+      {/* 右上角机甲状态 */}
       <div style={{
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        zIndex: 100,
-        color: '#00ffff',
-        fontFamily: 'monospace',
-        fontSize: '12px',
-        textShadow: '0 0 10px rgba(0,255,255,0.5)',
-        pointerEvents: 'none',
-        textAlign: 'right',
+        position: 'absolute', top: 20, right: 20, zIndex: 100,
+        color: '#00ffff', fontFamily: 'monospace', fontSize: '12px',
+        textShadow: '0 0 10px rgba(0,255,255,0.5)', pointerEvents: 'none', textAlign: 'right',
       }}>
-        <div style={{ marginBottom: 6 }}>机甲: RYZER-X</div>
-        <div style={{ color: '#88aaff' }}>装甲: 100%</div>
-        <div style={{ color: '#88aaff' }}>能量: 87%</div>
+        <div style={{ marginBottom: 6, fontSize: 14 }}>RYZER-X</div>
+        <div style={{ color: '#88aaff' }}>分数: {0}</div>
+        <div style={{ color: '#88aaff' }}>击杀: {0}</div>
       </div>
 
-      {/* 底部准星 */}
-      <div style={{
-        position: 'absolute',
-        bottom: 40,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 100,
-        color: 'rgba(0,255,255,0.3)',
-        fontSize: '24px',
-        fontFamily: 'monospace',
-        pointerEvents: 'none',
-      }}>
-        ◇
-      </div>
+      {/* === 战斗HUD === */}
+      <BattleHUD />
 
       {/* === 3D Canvas === */}
       <Canvas
@@ -74,36 +68,45 @@ export default function Game() {
           {/* 灯光 */}
           <ambientLight intensity={0.3} color="#334466" />
           <directionalLight
-            position={[30, 50, 20]}
-            intensity={1.5}
-            color="#ffeecc"
+            position={[30, 50, 20]} intensity={1.5} color="#ffeecc"
             castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
-            shadow-camera-left={-50}
-            shadow-camera-right={50}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
-            shadow-camera-near={0.1}
-            shadow-camera-far={150}
+            shadow-mapSize-width={2048} shadow-mapSize-height={2048}
+            shadow-camera-left={-50} shadow-camera-right={50}
+            shadow-camera-top={50} shadow-camera-bottom={-50}
+            shadow-camera-near={0.1} shadow-camera-far={150}
           />
-          {/* 辅助光 */}
           <pointLight position={[0, 20, 0]} intensity={0.5} color="#00aaff" distance={60} />
           <hemisphereLight args={['#4466aa', '#221133', 0.4]} />
 
-          {/* 天空 */}
           <Sky distance={450000} sunPosition={[30, 20, 10]} turbidity={6} rayleigh={2} />
-
-          {/* 星空 */}
           <Stars radius={200} depth={60} count={3000} factor={4} fade speed={0.5} />
 
-          {/* 场景内容 */}
+          {/* 场景 */}
           <Ground />
           <Obstacles />
           <FloatingParticles />
 
+          {/* 训练靶子 */}
+          {dummyPositions.map((d, i) => (
+            <TrainingDummy
+              key={i}
+              position={d.pos}
+              color={d.color}
+              onRef={(ref) => {
+                if (ref) {
+                  while (enemiesRef.current.length <= i) enemiesRef.current.push(ref)
+                  enemiesRef.current[i] = ref
+                }
+              }}
+            />
+          ))}
+
+          {/* 战斗特效 */}
+          <ProjectileRenderer />
+          <ImpactRenderer />
+
           {/* 玩家 */}
-          <Player />
+          <Player enemiesRef={enemiesRef} />
         </Suspense>
       </Canvas>
     </div>
