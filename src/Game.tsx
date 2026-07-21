@@ -6,6 +6,7 @@ import { Player } from './Player'
 import { Ground, Obstacles, FloatingParticles } from './Environment'
 import { ProjectileRenderer, ImpactRenderer } from './Effects'
 import { BattleHUD } from './BattleHUD'
+import { TouchControls } from './controls/TouchControls'
 import { EnemySystem } from './enemies/EnemySystem'
 import { EnemySpawner, spawnBoss } from './enemies/Spawner'
 import { useEnemyStore } from './stores/enemyStore'
@@ -58,6 +59,7 @@ export default function Game() {
       </div>
 
       <BattleHUD />
+      <TouchControls />
 
       <Canvas
         shadows

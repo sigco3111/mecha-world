@@ -7,6 +7,7 @@ import { useGameStore } from './stores/gameStore'
 import { useEnemyStore } from './stores/enemyStore'
 import { checkMeleeHit, createProjectileData } from './combat/CombatLogic'
 import { knockbackEnemy, staggerEnemy } from './enemies/EnemyAI'
+import { touchState } from './controls/TouchControls'
 
 const keys: Record<string, boolean> = {}
 let mouseLeftDown = false
@@ -60,6 +61,8 @@ export function Player({ playerPosRef }: PlayerProps) {
         cameraAngle.current.phi = Math.max(0.05, Math.min(1.2, cameraAngle.current.phi + e.movementY * 0.005))
       }
     }
+    // Touch camera drag — consume accumulated delta each frame
+    // (handled in useFrame below)
     const ctx = (e: Event) => e.preventDefault()
     window.addEventListener('mousedown', md)
     window.addEventListener('mouseup', mu)
@@ -89,12 +92,22 @@ export function Player({ playerPosRef }: PlayerProps) {
     playerPosRef.current.copy(g.position)
 
     // Movement
-    const f = (keys['KeyW'] || keys['ArrowUp']) ? 1 : 0
-    const b = (keys['KeyS'] || keys['ArrowDown']) ? 1 : 0
-    const l = (keys['KeyA'] || keys['ArrowLeft']) ? 1 : 0
-    const r = (keys['KeyD'] || keys['ArrowRight']) ? 1 : 0
-    const jump = keys['Space'] || false
-    const boost = (keys['ShiftLeft'] || keys['ShiftRight']) || false
+    // Keyboard input
+    let f = (keys['KeyW'] || keys['ArrowUp']) ? 1 : 0
+    let b = (keys['KeyS'] || keys['ArrowDown']) ? 1 : 0
+    let l = (keys['KeyA'] || keys['ArrowLeft']) ? 1 : 0
+    let r = (keys['KeyD'] || keys['ArrowRight']) ? 1 : 0
+    let jump = keys['Space'] || false
+    let boost = (keys['ShiftLeft'] || keys['ShiftRight']) || false
+    // Touch input (overrides keyboard if active)
+    if (touchState.moveX !== 0 || touchState.moveY !== 0) {
+      f = touchState.moveY > 0 ? touchState.moveY : 0
+      b = touchState.moveY < 0 ? -touchState.moveY : 0
+      r = touchState.moveX > 0 ? touchState.moveX : 0
+      l = touchState.moveX < 0 ? -touchState.moveX : 0
+    }
+    if (touchState.jump) jump = true
+    if (touchState.boost) boost = true
 
     const angle = cameraAngle.current.theta
     const forwardDir = new THREE.Vector3(-Math.sin(angle), 0, -Math.cos(angle))
@@ -136,7 +149,7 @@ export function Player({ playerPosRef }: PlayerProps) {
     }
 
     // === MELEE ===
-    const meleeInput = keys['KeyJ'] || mouseLeftDown
+    const meleeInput = keys['KeyJ'] || mouseLeftDown || touchState.attackMelee
     if (meleeInput && now - attackState.current.lastAttack > 0.4) {
       attackState.current.comboCount = (attackState.current.comboCount % 3) + 1
       attackState.current.lastAttack = now
@@ -165,13 +178,21 @@ export function Player({ playerPosRef }: PlayerProps) {
     }
 
     // === RANGED ===
-    const rangedInput = keys['KeyK'] || mouseRightDown
+    const rangedInput = keys['KeyK'] || mouseRightDown || touchState.attackRanged
     if (rangedInput && now - fireState.current.lastFire > 0.12) {
       if (store.getState().fireRanged()) {
         fireState.current.lastFire = now
         const origin = new THREE.Vector3(g.position.x, g.position.y + 2.2, g.position.z)
         store.getState().addProjectile(createProjectileData(origin, forwardDir, 35, 'player'))
       }
+    }
+
+    // === TOUCH CAMERA ===
+    if (touchState.cameraDX !== 0 || touchState.cameraDY !== 0) {
+      cameraAngle.current.theta -= touchState.cameraDX * 0.005
+      cameraAngle.current.phi = Math.max(0.05, Math.min(1.2, cameraAngle.current.phi + touchState.cameraDY * 0.005))
+      touchState.cameraDX = 0
+      touchState.cameraDY = 0
     }
 
     // === CAMERA ===
