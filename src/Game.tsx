@@ -3,7 +3,8 @@ import { Sky, Stars } from '@react-three/drei'
 import { Suspense, useRef, useMemo } from 'react'
 import * as THREE from 'three'
 import { Player } from './Player'
-import { Ground, Obstacles, FloatingParticles } from './Environment'
+import { WorldManager } from './world/WorldManager'
+import { MiniMap } from './world/MiniMap'
 import { ProjectileRenderer, ImpactRenderer } from './Effects'
 import { BattleHUD } from './BattleHUD'
 import { TouchControls } from './controls/TouchControls'
@@ -59,6 +60,7 @@ export default function Game() {
       </div>
 
       <BattleHUD />
+      <MiniMap />
       <TouchControls />
 
       <Canvas
@@ -88,9 +90,7 @@ export default function Game() {
           <Sky distance={450000} sunPosition={[30, 20, 10]} turbidity={6} rayleigh={2} />
           <Stars radius={200} depth={60} count={3000} factor={4} fade speed={0.5} />
 
-          <Ground />
-          <Obstacles />
-          <FloatingParticles />
+          <WorldManager />
 
           <EnemySystem playerPosRef={playerPosRef} />
           <EnemySpawner playerPosRef={playerPosRef} />

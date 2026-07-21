@@ -93,6 +93,11 @@ const initialWeapon: WeaponState = {
 
 export const useGameStore = create<GameStore>((set, get) => ({
   player: { ...initialStats },
+  world: {
+    timeOfDay: 8, // start at 8AM
+    weather: 'clear',
+    paused: false,
+  },
   weapon: { ...initialWeapon },
   targetId: null,
   damageNumbers: [],
@@ -186,4 +191,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
   decayHitFlash: (dt) => set((s) => ({ playerHitFlash: Math.max(0, s.playerHitFlash - dt * 2) })),
 
   resetPlayer: () => set({ player: { ...initialStats }, weapon: { ...initialWeapon } }),
+  setWeather: (w) => set((s) => ({ world: { ...s.world, weather: w } })),
+  setTimeOfDay: (t) => set((s) => ({ world: { ...s.world, timeOfDay: t } })),
 }))
