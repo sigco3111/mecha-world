@@ -10,6 +10,10 @@ import { InventoryPanel } from './rpg/InventoryPanel'
 import { QuestPanel } from './rpg/QuestPanel'
 import { MechaSelectPanel } from './rpg/MechaSelectPanel'
 import { useRPGStore, rollLoot } from './rpg/rpgStore'
+import { GachaPanel } from './gacha/GachaPanel'
+import { ShopPanel } from './gacha/ShopPanel'
+import { DailyLogin } from './gacha/DailyLogin'
+import { RewardedAdTrigger } from './gacha/RewardedAd'
 import { ProjectileRenderer, ImpactRenderer } from './Effects'
 import { BattleHUD } from './BattleHUD'
 import { TouchControls } from './controls/TouchControls'
@@ -30,6 +34,18 @@ export default function Game() {
   const [showInventory, setShowInventory] = useState(false)
   const [showQuests, setShowQuests] = useState(false)
   const [showMechas, setShowMechas] = useState(false)
+  const [showGacha, setShowGacha] = useState(false)
+  const [showShop, setShowShop] = useState(false)
+  const [showDaily, setShowDaily] = useState(false)
+
+  // Show daily login on mount
+  useEffect(() => {
+    const seen = sessionStorage.getItem('dailySeen')
+    if (!seen) {
+      setShowDaily(true)
+      sessionStorage.setItem('dailySeen', '1')
+    }
+  }, [])
 
   // Spawn boss when 10 kills reached
   useEffect(() => {
@@ -81,6 +97,11 @@ export default function Game() {
       <LevelBar />
       <TouchControls />
 
+      {/* Rewarded ad — top right corner */}
+      <div style={{ position: 'absolute', top: 70, right: 180, zIndex: 90 }}>
+        <RewardedAdTrigger label="📺 免费钻石" />
+      </div>
+
       {/* RPG Menu buttons — bottom center */}
       <div style={{
         position: 'absolute', bottom: 25, left: '50%', transform: 'translateX(-50%)',
@@ -89,12 +110,17 @@ export default function Game() {
         <MenuBtn icon="📦" label="背包" onClick={() => setShowInventory(true)} />
         <MenuBtn icon="⚡" label="任务" onClick={() => setShowQuests(true)} />
         <MenuBtn icon="🤖" label="机甲" onClick={() => setShowMechas(true)} />
+        <MenuBtn icon="🎰" label="祈愿" onClick={() => setShowGacha(true)} />
+        <MenuBtn icon="🛒" label="商店" onClick={() => setShowShop(true)} />
       </div>
 
       {/* RPG Panels */}
       {showInventory && <InventoryPanel onClose={() => setShowInventory(false)} />}
       {showQuests && <QuestPanel onClose={() => setShowQuests(false)} />}
       {showMechas && <MechaSelectPanel onClose={() => setShowMechas(false)} />}
+      {showGacha && <GachaPanel onClose={() => setShowGacha(false)} />}
+      {showShop && <ShopPanel onClose={() => setShowShop(false)} />}
+      {showDaily && <DailyLogin onClose={() => setShowDaily(false)} />}
 
       <Canvas
         shadows
