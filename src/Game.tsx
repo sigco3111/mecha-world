@@ -4,27 +4,33 @@ import { Suspense, useRef, useMemo } from 'react'
 import * as THREE from 'three'
 import { Player } from './Player'
 import { Ground, Obstacles, FloatingParticles } from './Environment'
-import { TrainingDummy } from './TrainingDummy'
-import type { TrainingDummyHandle } from './TrainingDummy'
 import { ProjectileRenderer, ImpactRenderer } from './Effects'
 import { BattleHUD } from './BattleHUD'
+import { EnemySystem } from './enemies/EnemySystem'
+import { EnemySpawner, spawnBoss } from './enemies/Spawner'
+import { useEnemyStore } from './stores/enemyStore'
+import { useGameStore } from './stores/gameStore'
+import { useEffect } from 'react'
 
-// 导入THREE到window给HUD投影用
-import * as THREE_NS from 'three'
-;(window as any).THREE = THREE_NS
+;(window as any).THREE = THREE
+;(window as any).spawnBoss = () => spawnBoss()
 
 export default function Game() {
-  const enemiesRef = useRef<TrainingDummyHandle[]>([])
-  const dummyPositions = useMemo(() => [
-    { pos: [8, 0, -5] as [number, number, number], color: '#ff4444' },
-    { pos: [-10, 0, -8] as [number, number, number], color: '#ff6600' },
-    { pos: [15, 0, 5] as [number, number, number], color: '#ff44aa' },
-    { pos: [-6, 0, 12] as [number, number, number], color: '#aa44ff' },
-  ], [])
+  const playerPosRef = useRef(new THREE.Vector3(0, 0, 0))
+  const killCount = useEnemyStore(s => s.killCount)
+  const waveNumber = useEnemyStore(s => s.waveNumber)
+  const playerScore = useGameStore(s => s.player.score)
+
+  // Spawn boss when 10 kills reached
+  useEffect(() => {
+    if (killCount === 10) {
+      spawnBoss()
+    }
+  }, [killCount])
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', background: '#0a0a1a' }}>
-      {/* === HUD === */}
+      {/* HUD: controls hint */}
       <div style={{
         position: 'absolute', top: 20, left: 20, zIndex: 100,
         color: '#00ffff', fontFamily: 'monospace', fontSize: '12px',
@@ -32,40 +38,39 @@ export default function Game() {
       }}>
         <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 8 }}>MECHA WORLD</div>
         <div style={{ color: '#88aaff' }}>WASD — 移动</div>
-        <div style={{ color: '#88aaff' }}>SHIFT — 加速冲刺</div>
-        <div style={{ color: '#88aaff' }}>SPACE — 喷气飞行</div>
-        <div style={{ color: '#88aaff' }}>鼠标拖拽 — 转视角</div>
-        <div style={{ color: '#ff4444', marginTop: 8 }}>J / 左键 — 近战攻击</div>
-        <div style={{ color: '#ff4444' }}>K / 右键 — 远程射击</div>
-        <div style={{ color: '#88aaff' }}>TAB — 锁定目标</div>
+        <div style={{ color: '#88aaff' }}>SHIFT — 冲刺 | SPACE — 喷气</div>
+        <div style={{ color: '#ff4444' }}>J / 左键 — 近战 | K / 右键 — 射击</div>
+        <div style={{ color: '#88aaff' }}>鼠标拖拽 — 视角</div>
       </div>
 
-      {/* 右上角机甲状态 */}
+      {/* Right HUD: stats */}
       <div style={{
         position: 'absolute', top: 20, right: 20, zIndex: 100,
         color: '#00ffff', fontFamily: 'monospace', fontSize: '12px',
         textShadow: '0 0 10px rgba(0,255,255,0.5)', pointerEvents: 'none', textAlign: 'right',
       }}>
-        <div style={{ marginBottom: 6, fontSize: 14 }}>RYZER-X</div>
-        <div style={{ color: '#88aaff' }}>分数: {0}</div>
-        <div style={{ color: '#88aaff' }}>击杀: {0}</div>
+        <div style={{ marginBottom: 4, fontSize: 14 }}>RYZER-X</div>
+        <div style={{ color: '#ffaa00' }}>击杀: {killCount}</div>
+        <div style={{ color: '#88aaff' }}>Wave: {waveNumber}</div>
+        <div style={{ marginTop: 8, fontSize: 10, color: '#446688' }}>
+          击杀10个敌人触发Boss
+        </div>
       </div>
 
-      {/* === 战斗HUD === */}
       <BattleHUD />
 
-      {/* === 3D Canvas === */}
       <Canvas
         shadows
+        frameloop="always"
         camera={{ fov: 60, near: 0.1, far: 500, position: [0, 10, 20] }}
         gl={{ antialias: true, alpha: false }}
         dpr={[1, 2]}
+        onCreated={(state) => { console.log("R3F READY", state.scene.children.length, "children") }}
       >
         <color attach="background" args={['#0a0a1a']} />
         <fog attach="fog" args={['#0a0a1a', 50, 150]} />
 
         <Suspense fallback={null}>
-          {/* 灯光 */}
           <ambientLight intensity={0.3} color="#334466" />
           <directionalLight
             position={[30, 50, 20]} intensity={1.5} color="#ffeecc"
@@ -81,32 +86,17 @@ export default function Game() {
           <Sky distance={450000} sunPosition={[30, 20, 10]} turbidity={6} rayleigh={2} />
           <Stars radius={200} depth={60} count={3000} factor={4} fade speed={0.5} />
 
-          {/* 场景 */}
           <Ground />
           <Obstacles />
           <FloatingParticles />
 
-          {/* 训练靶子 */}
-          {dummyPositions.map((d, i) => (
-            <TrainingDummy
-              key={i}
-              position={d.pos}
-              color={d.color}
-              onRef={(ref) => {
-                if (ref) {
-                  while (enemiesRef.current.length <= i) enemiesRef.current.push(ref)
-                  enemiesRef.current[i] = ref
-                }
-              }}
-            />
-          ))}
+          <EnemySystem playerPosRef={playerPosRef} />
+          <EnemySpawner playerPosRef={playerPosRef} />
 
-          {/* 战斗特效 */}
           <ProjectileRenderer />
           <ImpactRenderer />
 
-          {/* 玩家 */}
-          <Player enemiesRef={enemiesRef} />
+          <Player playerPosRef={playerPosRef} />
         </Suspense>
       </Canvas>
     </div>
