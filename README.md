@@ -1,123 +1,129 @@
+<div align="center">
+
+<img src="docs/screenshots/gameplay-combat.png" width="100%" alt="Mecha World Gameplay" />
+
 # 🤖 MECHA WORLD
 
-> A 3D open-world mecha action game built entirely with web technologies.
-> Fight waves of enemies, explore a procedurally generated world, collect mechas, and unleash devastating ultimate attacks — all in your browser, optimized for mobile.
+**A 3D open-world mecha action game that runs in your browser.**
 
-![TypeScript](https://img.shields.io/badge/TypeScript-~6.0-blue?logo=typescript)
-![React](https://img.shields.io/badge/React-19-black?logo=react)
-![Three.js](https://img.shields.io/badge/Three.js-R3F-black?logo=threedotjs)
-![Vite](https://img.shields.io/badge/Vite-8-purple?logo=vite)
-![License](https://img.shields.io/badge/License-MIT-green)
+Fight waves of enemies, explore a procedurally generated world, collect mechas through the gacha system, and unleash devastating ultimate attacks — all without downloading anything.
+
+[![Play Now](https://img.shields.io/badge/▶_PLAY_NOW-GitHub_Pages-22c55e?style=for-the-badge)](https://ytyangtao666.github.io/mecha-world/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+[![Three.js](https://img.shields.io/badge/Three.js-R3F-000000?style=flat-square&logo=threedotjs&logoColor=white)](https://docs.pmnd.rs/react-three-fiber)
+[![Vite](https://img.shields.io/badge/Vite-8-646cff?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
+
+</div>
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+<table>
+<tr>
+<td align="center"><b>⚔️ Open-World Combat</b></td>
+<td align="center"><b>🎰 Gacha System</b></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/gameplay-combat.png" width="400" alt="Combat" /></td>
+<td><img src="docs/screenshots/gacha-panel.png" width="400" alt="Gacha" /></td>
+</tr>
+<tr>
+<td align="center"><b>📦 Inventory & Equipment</b></td>
+<td align="center"><b>📋 Quest System</b></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/inventory-panel.png" width="400" alt="Inventory" /></td>
+<td><img src="docs/screenshots/quest-panel.png" width="400" alt="Quests" /></td>
+</tr>
+</table>
+</div>
 
 ---
 
 ## ✨ Features
 
-### Combat System
-- **Melee + Ranged combat** — switch between sword slashes and energy projectiles on the fly
-- **Combo system** — chain attacks for bonus damage with visual combo counter
-- **Ultimate (OVERDRIVE)** — charge energy and unleash screen-shaking ultimate attacks
-- **Shield + HP** — layered damage mitigation like modern action RPGs
-- **Critical hits** — random crit chance with special damage number effects
+### ⚔️ Combat System
+- **Melee + Ranged** — sword slashes and energy projectiles, switch on the fly
+- **Combo system** — chain attacks for bonus damage with visual counter
+- **OVERDRIVE Ultimate** — charge energy, unleash screen-shaking attacks
+- **Shield + HP** — layered damage mitigation
+- **Critical hits** — random crits with special effects
 - **Lock-on targeting** — auto-target nearest enemy
 
-### Open World
-- **Procedural terrain** — multi-biome landscape (plains, crystal fields, volcanic zones)
-- **Dynamic day/night cycle** — sun position and lighting change in real-time
-- **Weather system** — rain, storms, snow, and sandstorms with particle effects
-- **Environment props** — trees, crystals, rocks, volcanic vents, ancient ruins (instanced rendering for performance)
-- **Mini-map** — real-time radar showing enemies and points of interest
-- **NPCs** — interactable characters in the world
+### 🌍 Open World
+- **Procedural terrain** — multi-biome (plains, crystal fields, volcanic zones)
+- **Dynamic day/night** — sun position and lighting shift in real-time
+- **Weather system** — rain, storms, snow, sandstorms
+- **Instanced props** — trees, crystals, rocks, ruins (optimized rendering)
+- **Mini-map** — real-time radar
+- **NPCs** — interactable characters
 
-### RPG Systems
-- **Gacha system** — pull for mechas and equipment with rarity tiers (SSR/SR/R/N)
-- **Mecha collection** — unlock and switch between multiple playable mechas
-- **Inventory & equipment** — weapons, armor, cores with stats
-- **Quest system** — objectives with rewards
-- **Level progression** — XP, leveling, and stat growth
-- **Daily login rewards** — streak-based reward system
-- **Shop** — spend earned currency on items and pulls
+### 🎰 RPG Systems
+- **Gacha** — pull mechas/equipment with SSR/SR/R/N rarity tiers
+- **Mecha collection** — unlock and switch between multiple mechas
+- **Inventory** — weapons, armor, cores with stats
+- **Quests** — objectives with rewards
+- **Daily login** — 7-day streak rewards
+- **Shop** — spend currency on items and pulls
 
-### Mobile-First Design
-- **Touch controls** — dual virtual joysticks (movement + camera), action buttons
-- **Responsive UI** — HUD adapts to screen size, supports portrait and landscape
-- **PWA support** — installable on mobile devices via manifest
-- **Performance optimized** — instanced rendering, LOD system, object pooling
-
-### Visual Effects
-- **Particle system** — muzzle flashes, hit impacts, explosions, dust trails
-- **Post-processing** — bloom, screen flashes, hit reactions
-- **Damage numbers** — floating 3D-projected damage text with crit differentiation
-- **Camera modes** — toggle between third-person (TPS) and first-person (FPS) views
+### 📱 Mobile-First
+- **Touch controls** — dual virtual joysticks + action buttons
+- **Responsive** — works portrait and landscape
+- **PWA** — installable on mobile devices
+- **Optimized** — instanced rendering, LOD, object pooling
 
 ---
 
 ## 🎮 Controls
 
-### Desktop
-| Action | Key |
-|---|---|
-| Move | WASD |
-| Camera | Mouse |
-| Melee Attack | J / Left Click |
-| Ranged Attack | K / Right Click |
-| Dash/Dodge | Space |
-| Ultimate | R |
-| Switch View (FPS/TPS) | V |
-| Inventory | I |
-| Quests | Q |
-| Mecha Select | M |
-
-### Mobile
-- Left joystick: movement
-- Right joystick: camera look
-- Action buttons appear on right side (attack, shoot, dash, ult)
+| Action | Desktop | Mobile |
+|--------|---------|--------|
+| Move | `WASD` | Left joystick |
+| Camera | Mouse drag | Right joystick |
+| Melee | `J` / Left Click | Attack button |
+| Shoot | `K` / Right Click | Shoot button |
+| Dash | `Space` | Dash button |
+| Ultimate | `R` | Ult button |
+| View Toggle | `V` (FPS/TPS) | — |
+| Inventory | `I` | 📦 button |
+| Quests | `Q` | ⚡ button |
+| Mecha Select | `M` | 🤖 button |
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 18+ (recommend 20+)
-- npm or pnpm
-
-### Install & Run
-
 ```bash
-# Clone the repo
 git clone https://github.com/YTyangtao666/mecha-world.git
 cd mecha-world
-
-# Install dependencies
 npm install
-
-# Start dev server
 npm run dev
-
-# Open in browser
-# → http://localhost:5173
 ```
 
-### Production Build
+Open http://localhost:5173
 
+### Production Build
 ```bash
 npm run build
-npm run preview   # Preview production build locally
+npm run preview
 ```
 
 ---
 
 ## 🏗️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Rendering | **Three.js** via **React Three Fiber** (R3F) |
-| Physics | **@react-three/rapier** (Rapier physics engine) |
-| Framework | **React 19** + **TypeScript 6** |
-| Build Tool | **Vite 8** (Oxc compiler) |
-| State Management | **Zustand** |
-| Linting | **Oxlint** |
-| Helpers | **@react-three/drei** (Sky, useGLTF, etc.) |
+| Layer | Technology | Why |
+|-------|-----------|-----|
+| Rendering | **Three.js** via **React Three Fiber** | Declarative 3D in React |
+| Physics | **@react-three/rapier** | WASM physics, fast |
+| Framework | **React 19** + **TypeScript 6** | Type-safe, modern |
+| Build | **Vite 8** (Oxc) | Instant HMR |
+| State | **Zustand** | Lightweight, no boilerplate |
+| Lint | **Oxlint** | 50-100x faster than ESLint |
 
 ---
 
@@ -126,86 +132,78 @@ npm run preview   # Preview production build locally
 ```
 mecha-world/
 ├── src/
-│   ├── combat/           # Combat logic (damage, projectiles, hit detection)
-│   ├── controls/         # Touch input (virtual joysticks, action buttons)
-│   ├── enemies/          # Enemy AI, models, spawning, rendering
-│   ├── gacha/            # Gacha pulls, daily login, shop
-│   ├── performance/      # LOD system, culling helpers
-│   ├── rpg/              # Inventory, quests, level, mecha select
-│   ├── stores/           # Zustand global state (gameStore, enemyStore)
-│   ├── ui/               # Loading screen, settings panel
-│   ├── world/            # Terrain, weather, day/night, props, minimap, NPCs
-│   ├── App.tsx           # Root app component
-│   ├── Game.tsx          # Main game canvas + scene composition
-│   ├── Player.tsx        # Player controller (movement, camera, combat)
-│   ├── MechaModel.tsx    # Player mecha 3D model
-│   ├── BattleHUD.tsx     # In-game HUD overlay
-│   ├── Effects.tsx       # Visual effects (particles, impacts)
-│   └── main.tsx          # Entry point
-├── public/               # Static assets (icons, manifest)
-├── docs/                 # Design docs and roadmap
-├── index.html            # HTML entry
-└── package.json
+│   ├── combat/          # Damage, projectiles, hit detection
+│   ├── controls/        # Touch input (joysticks, buttons)
+│   ├── enemies/         # AI, models, spawning, rendering
+│   ├── gacha/           # Gacha pulls, daily login, shop
+│   ├── performance/     # LOD, culling
+│   ├── rpg/             # Inventory, quests, level, mecha select
+│   ├── stores/          # Zustand global state
+│   ├── ui/              # Loading screen, settings
+│   ├── world/           # Terrain, weather, day/night, minimap
+│   ├── Game.tsx         # Main scene composition
+│   ├── Player.tsx       # Player controller
+│   └── MechaModel.tsx   # Player mecha 3D model
+├── docs/screenshots/    # Game screenshots
+└── .github/workflows/   # CI/CD (GitHub Pages deploy)
 ```
 
 ---
 
 ## 🎯 Design Philosophy
 
-1. **Web-first** — The entire game runs in the browser. No downloads, no engine install, no app store. Just open a URL and play.
-2. **Mobile-first** — Every feature is designed to work on touch screens first, then enhanced for desktop.
-3. **Performance-conscious** — Instanced rendering, object pooling, LOD culling. Target 60fps on mid-range phones.
-4. **Modular architecture** — Each system (combat, world, RPG, gacha) is self-contained with clear interfaces.
+1. **Web-first** — No downloads. Open a URL, play immediately.
+2. **Mobile-first** — Touch controls designed first, desktop enhanced.
+3. **Performance** — Instanced rendering, object pooling, LOD. Target 60fps on phones.
+4. **Modular** — Each system (combat, world, RPG, gacha) is self-contained.
 
 ---
 
 ## 📋 Roadmap
 
-- [x] Core player controller (move, jump, dash, fly)
-- [x] Melee + ranged combat
-- [x] Enemy AI (patrol, chase, attack, stagger)
+- [x] Player controller (move, jump, dash, fly)
+- [x] Melee + ranged combat with combos
+- [x] Enemy AI (patrol → chase → attack → stagger)
 - [x] Boss enemies
 - [x] Procedural terrain with biomes
-- [x] Day/night cycle + weather
-- [x] Gacha system
-- [x] Inventory + equipment
-- [x] Quest system
+- [x] Day/night + weather system
+- [x] Gacha + inventory + quests
 - [x] Touch controls
-- [ ] Save/load system (localStorage → IndexedDB)
+- [x] GitHub Pages deployment
+- [ ] Save/load (localStorage → IndexedDB)
 - [ ] Sound effects + music
-- [ ] More mecha variants (unique models + abilities)
+- [ ] Unique mecha models per type
 - [ ] Story mode with dungeons
 - [ ] Co-op multiplayer
-- [ ] Custom map editor
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Areas needing help:
 
-Areas where help is especially appreciated:
-- 3D modeling (Blender → glTF assets)
-- Sound design (SFX + BGM)
-- Level design
-- Performance optimization
-- Bug reports and feature requests
+| Area | Details |
+|------|---------|
+| 🎨 3D Models | Blender → glTF mechas, enemies, environment |
+| 🔊 Sound | SFX, BGM tracks |
+| 🗺️ Level Design | Dungeons, boss arenas |
+| ⚡ Optimization | Draw call reduction, mobile perf |
+| 🧪 Testing | E2E browser testing, benchmarks |
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
-
-You are free to use, modify, and distribute this code, including for commercial purposes.
+**MIT** — see [LICENSE](LICENSE). Free for commercial use.
 
 ---
 
-## 👤 Author
+<div align="center">
 
-**YTyangtao666**
-- GitHub: [@YTyangtao666](https://github.com/YTyangtao666)
+**⭐ Star this repo if you like it!**
 
----
+Made with 💜 by [YTyangtao666](https://github.com/YTyangtao666)
 
-⭐ If you like this project, give it a star!
+[▶ Play Now](https://ytyangtao666.github.io/mecha-world/) · [📊 Report Bug](https://github.com/YTyangtao666/mecha-world/issues) · [💡 Request Feature](https://github.com/YTyangtao666/mecha-world/issues)
+
+</div>
