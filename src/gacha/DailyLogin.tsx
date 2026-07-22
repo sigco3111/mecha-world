@@ -13,15 +13,32 @@ const dailyRewards = [
 
 export function DailyLogin({ onClose }: { onClose: () => void }) {
   const { addGold, addGems } = useRPGStore()
-  const [claimed, setClaimed] = useState<number[]>([])
-  const today = ((new Date().getDate() - 1) % 7) + 1
+  // 用日期字符串(YYYY-MM-DD)作为key，localStorage记录已领日期
+  const todayKey = new Date().toISOString().slice(0, 10)
+  const [claimed, setClaimed] = useState<number[]>(() => {
+    const saved = localStorage.getItem('claimedDays')
+    return saved ? JSON.parse(saved) : []
+  })
+  // 连续签到天数：已领天数%7+1，或从存储读取
+  const [streak, _setStreak] = useState<number>(() => {
+    return Math.min(7, parseInt(localStorage.getItem('loginStreak') || '0') + 1)
+  })
+  const today = streak
+  // 今天是否已领
+  const claimedToday = localStorage.getItem(`claimed_${todayKey}`) === '1'
 
   const claim = (day: number) => {
     if (claimed.includes(day)) return
+    if (day !== today) return
+    if (claimedToday) return
     const reward = dailyRewards[day - 1]
     if (reward.type === 'gold') addGold(reward.amount)
     else if (reward.type === 'gems') addGems(reward.amount)
-    setClaimed([...claimed, day])
+    const newClaimed = [...claimed, day]
+    setClaimed(newClaimed)
+    localStorage.setItem('claimedDays', JSON.stringify(newClaimed))
+    localStorage.setItem('loginStreak', String(streak))
+    localStorage.setItem(`claimed_${todayKey}`, '1')
   }
 
   return (

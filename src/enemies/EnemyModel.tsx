@@ -63,7 +63,7 @@ export const EnemyModel = forwardRef<EnemyModelHandle, Props>(
       <group ref={groupRef} scale={scale}>
         {/* Head */}
         <group position={[0, 2.8, 0]}>
-          <mesh castShadow>
+          <mesh>
             <boxGeometry args={[0.7, 0.6, 0.7]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
@@ -72,18 +72,18 @@ export const EnemyModel = forwardRef<EnemyModelHandle, Props>(
             <meshStandardMaterial color={'#110000'} emissive={glowColor} emissiveIntensity={0.8} />
           </mesh>
           {/* Horns for elite/boss look */}
-          <mesh position={[-0.25, 0.45, 0]} rotation={[0, 0, -0.4]} castShadow>
+          <mesh position={[-0.25, 0.45, 0]} rotation={[0, 0, -0.4]}>
             <coneGeometry args={[0.08, 0.4, 6]} />
             <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.2} />
           </mesh>
-          <mesh position={[0.25, 0.45, 0]} rotation={[0, 0, 0.4]} castShadow>
+          <mesh position={[0.25, 0.45, 0]} rotation={[0, 0, 0.4]}>
             <coneGeometry args={[0.08, 0.4, 6]} />
             <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.2} />
           </mesh>
         </group>
         {/* Torso */}
         <group position={[0, 1.8, 0]}>
-          <mesh castShadow>
+          <mesh>
             <boxGeometry args={[1.4, 1.2, 0.8]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
@@ -91,76 +91,76 @@ export const EnemyModel = forwardRef<EnemyModelHandle, Props>(
             <sphereGeometry args={[0.25, 16, 16]} />
             <meshStandardMaterial color={glowColor} emissive={glowColor} emissiveIntensity={3} />
           </mesh>
-          <mesh position={[-0.95, 0.4, 0]} castShadow>
+          <mesh position={[-0.95, 0.4, 0]}>
             <boxGeometry args={[0.6, 0.5, 0.7]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
-          <mesh position={[0.95, 0.4, 0]} castShadow>
+          <mesh position={[0.95, 0.4, 0]}>
             <boxGeometry args={[0.6, 0.5, 0.7]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
         </group>
         {/* Left arm */}
         <group ref={leftArmRef} position={[-1.05, 2.2, 0]}>
-          <mesh position={[0, -0.55, 0]} castShadow>
+          <mesh position={[0, -0.55, 0]}>
             <cylinderGeometry args={[0.22, 0.2, 0.7, 8]} />
             <meshStandardMaterial color={darkColor} metalness={0.7} roughness={0.4} />
           </mesh>
-          <mesh position={[0, -1.25, 0]} castShadow>
+          <mesh position={[0, -1.25, 0]}>
             <boxGeometry args={[0.42, 0.7, 0.42]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
-          <mesh position={[0, -1.7, 0]} castShadow>
+          <mesh position={[0, -1.7, 0]}>
             <boxGeometry args={[0.38, 0.3, 0.38]} />
             <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.2} />
           </mesh>
         </group>
         {/* Right arm */}
         <group ref={rightArmRef} position={[1.05, 2.2, 0]}>
-          <mesh position={[0, -0.55, 0]} castShadow>
+          <mesh position={[0, -0.55, 0]}>
             <cylinderGeometry args={[0.22, 0.2, 0.7, 8]} />
             <meshStandardMaterial color={darkColor} metalness={0.7} roughness={0.4} />
           </mesh>
-          <mesh position={[0, -1.25, 0]} castShadow>
+          <mesh position={[0, -1.25, 0]}>
             <boxGeometry args={[0.42, 0.7, 0.42]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
-          <mesh position={[0, -1.7, 0]} castShadow>
+          <mesh position={[0, -1.7, 0]}>
             <boxGeometry args={[0.38, 0.3, 0.38]} />
             <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.2} />
           </mesh>
         </group>
         {/* Waist */}
-        <mesh position={[0, 1.0, 0]} castShadow>
+        <mesh position={[0, 1.0, 0]}>
           <boxGeometry args={[1.0, 0.5, 0.6]} />
           <meshStandardMaterial color={darkColor} metalness={0.8} roughness={0.3} />
         </mesh>
         {/* Left leg */}
         <group ref={leftLegRef} position={[-0.4, 0.75, 0]}>
-          <mesh position={[0, 0, 0]} castShadow>
+          <mesh position={[0, 0, 0]}>
             <boxGeometry args={[0.5, 0.8, 0.5]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
-          <mesh position={[0, -0.7, 0]} castShadow>
+          <mesh position={[0, -0.7, 0]}>
             <boxGeometry args={[0.45, 0.8, 0.55]} />
             <meshStandardMaterial color={darkColor} metalness={0.7} roughness={0.4} />
           </mesh>
-          <mesh position={[0, -1.2, 0.1]} castShadow>
+          <mesh position={[0, -1.2, 0.1]}>
             <boxGeometry args={[0.5, 0.25, 0.8]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
         </group>
         {/* Right leg */}
         <group ref={rightLegRef} position={[0.4, 0.75, 0]}>
-          <mesh position={[0, 0, 0]} castShadow>
+          <mesh position={[0, 0, 0]}>
             <boxGeometry args={[0.5, 0.8, 0.5]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>
-          <mesh position={[0, -0.7, 0]} castShadow>
+          <mesh position={[0, -0.7, 0]}>
             <boxGeometry args={[0.45, 0.8, 0.55]} />
             <meshStandardMaterial color={darkColor} metalness={0.7} roughness={0.4} />
           </mesh>
-          <mesh position={[0, -1.2, 0.1]} castShadow>
+          <mesh position={[0, -1.2, 0.1]}>
             <boxGeometry args={[0.5, 0.25, 0.8]} />
             <meshStandardMaterial color={armorColor} metalness={0.8} roughness={0.3} />
           </mesh>

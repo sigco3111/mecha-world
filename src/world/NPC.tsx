@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Html } from '@react-three/drei'
-import { useGameStore } from '../stores/gameStore'
+import { getTerrainHeight } from './Terrain'
 
 export interface NPCData {
   id: string
@@ -17,7 +17,7 @@ export const NPCS: NPCData[] = [
   {
     id: 'mechanic',
     name: '老技师 REX',
-    position: [12, 0, 8],
+    position: [12, 0, 8], // Y will be set by getTerrainHeight at runtime
     color: '#ffaa00',
     dialog: [
       '欢迎来到废铁镇，年轻的驾驶员。',
@@ -66,7 +66,7 @@ function NPCModel({ data, onClick }: { data: NPCData; onClick: () => void }) {
   return (
     <group
       ref={groupRef}
-      position={data.position}
+      position={[data.position[0], getTerrainHeight(data.position[0], data.position[2]), data.position[2]]}
       onClick={(e) => { e.stopPropagation(); onClick() }}
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}
@@ -84,12 +84,12 @@ function NPCModel({ data, onClick }: { data: NPCData; onClick: () => void }) {
       {/* NPC body (humanoid silhouette) */}
       <group position={[0, 1.5, 0]}>
         {/* Head */}
-        <mesh castShadow position={[0, 1.5, 0]}>
+        <mesh position={[0, 1.5, 0]}>
           <sphereGeometry args={[0.5, 16, 16]} />
           <meshStandardMaterial color={data.color} roughness={0.6} />
         </mesh>
         {/* Body */}
-        <mesh castShadow position={[0, 0, 0]}>
+        <mesh position={[0, 0, 0]}>
           <capsuleGeometry args={[0.5, 1.5, 8, 16]} />
           <meshStandardMaterial color={data.color} roughness={0.6} />
         </mesh>
@@ -114,7 +114,6 @@ function NPCModel({ data, onClick }: { data: NPCData; onClick: () => void }) {
 export function NPCSystem() {
   const [activeNPC, setActiveNPC] = useState<string | null>(null)
   const [dialogIndex, setDialogIndex] = useState(0)
-  const setUIState = useGameStore(s => s.setUIState)
 
   const handleNPCClick = (npcId: string) => {
     setActiveNPC(npcId)

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import type { EnemyEntity } from '../stores/enemyStore'
 import { createProjectileData } from '../combat/CombatLogic'
+import { getTerrainHeight } from '../world/Terrain'
 
 // AI state machine update
 export function updateEnemyAI(
@@ -24,7 +25,6 @@ export function updateEnemyAI(
   e.attackCooldown = Math.max(0, e.attackCooldown - dt)
 
   const ePos = new THREE.Vector3(e.position[0], e.position[1], e.position[2])
-  const distToPlayer = ePos.distanceTo(playerPos)
   const toPlayer = new THREE.Vector3().subVectors(playerPos, ePos)
   toPlayer.y = 0
   const distFlat = toPlayer.length()
@@ -103,6 +103,11 @@ export function updateEnemyAI(
 
   e.velocity[0] *= 0.88; e.velocity[2] *= 0.88
   e.position[0] += e.velocity[0] * dt; e.position[2] += e.velocity[2] * dt
+
+  // Stick to terrain (except dead falling)
+  if (e.state !== 'dead') {
+    e.position[1] = getTerrainHeight(e.position[0], e.position[2])
+  }
 
   return result
 }

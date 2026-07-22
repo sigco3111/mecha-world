@@ -1,10 +1,9 @@
-import { useRef } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useEnemyStore } from '../stores/enemyStore'
 import { useGameStore } from '../stores/gameStore'
 import { updateEnemyAI, knockbackEnemy, staggerEnemy } from './EnemyAI'
-import { checkMeleeHit, checkProjectileHit } from '../combat/CombatLogic'
+import { checkProjectileHit } from '../combat/CombatLogic'
 import { EnemyRenderer } from './EnemyRenderer'
 
 // Central system that updates all enemies
@@ -14,7 +13,7 @@ export function EnemySystem({ playerPosRef }: { playerPosRef: React.MutableRefOb
   const removeEnemy = useEnemyStore(s => s.removeEnemy)
   const addKill = useEnemyStore(s => s.addKill)
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05)
     const playerPos = playerPosRef.current
     const gs = useGameStore.getState()

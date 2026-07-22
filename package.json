@@ -1,8 +1,20 @@
 {
   "name": "mecha-world",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "3D Mecha open-world action game built with React Three Fiber + TypeScript. Open source.",
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "mech",
+    "mecha",
+    "3d-game",
+    "web-game",
+    "react-three-fiber",
+    "threejs",
+    "typescript",
+    "open-source"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

@@ -1,7 +1,4 @@
 import { useRef, useEffect } from 'react'
-import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
-import { useGameStore } from '../stores/gameStore'
 import { useEnemyStore } from '../stores/enemyStore'
 import { getBiomeAt, type BiomeType } from './Terrain'
 import { NPCS } from './NPC'
@@ -26,7 +23,8 @@ export function MiniMap() {
       const W = canvas.width
       const H = canvas.height
       const scale = W / 300 // world units mapped to minimap
-      const playerPos = useGameStore.getState().player.position
+      // Read player position from the shared ref (set by Player component)
+      const playerPos = (window as any).__playerPos || [0, 0, 0]
 
       ctx.clearRect(0, 0, W, H)
 

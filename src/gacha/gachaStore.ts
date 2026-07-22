@@ -84,9 +84,9 @@ const pools: GachaPool[] = [
 ]
 
 const mechaDB: Record<string, MechaConfig> = {
-  crusher: { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', skill: '地裂冲击', owned: false, equipped: false },
-  phantom: { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', skill: '分身突袭', owned: false, equipped: false },
-  titan: { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', skill: '天罚', owned: false, equipped: false },
+  crusher: { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '地裂冲击', owned: false, equipped: false },
+  phantom: { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '分身突袭', owned: false, equipped: false },
+  titan: { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '天罚', owned: false, equipped: false },
 }
 
 function rollRarity(rates: GachaPool['rates']): string {
@@ -135,7 +135,6 @@ export const useGachaStore = create<GachaState>((set, get) => ({
         const mecha = mechaDB[mechaId]
         if (!mecha) continue
         const alreadyOwned = rpg.mechas.find(m => m.id === mechaId)?.owned
-        const finalRarity = alreadyOwned ? rarity : mecha.rarity
         if (!alreadyOwned) rpg.unlockMecha(mechaId)
         result = {
           type: 'mecha', name: mecha.name, rarity: mecha.rarity, icon: '🤖',

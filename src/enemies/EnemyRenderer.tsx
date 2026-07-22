@@ -19,12 +19,12 @@ export function EnemyRenderer({ enemy }: { enemy: EnemyEntity; playerPosRef: any
   const hitFlashRef = useRef(0)
   const deadFadeRef = useRef(1)
 
-  useFrame((state, dt) => {
+  useFrame((_, dt) => {
     const g = groupRef.current
     if (!g) return
 
-    // Sync position + rotation from data
-    g.position.set(enemy.position[0], Math.max(0, enemy.position[1]), enemy.position[2])
+    // Sync position + rotation from data (follow terrain exactly, including valleys)
+    g.position.set(enemy.position[0], enemy.position[1], enemy.position[2])
     g.rotation.y = enemy.rotation
 
     // Moving state for animation
@@ -96,9 +96,10 @@ export function EnemyRenderer({ enemy }: { enemy: EnemyEntity; playerPosRef: any
       {!isDead && enemy.state === 'alert' && (
         <mesh position={[0, 5.5 * enemy.scale, 0]}>
           <sphereGeometry args={[0.2, 8, 8]} />
-          <meshBasicMaterial color="#ffff00" emissive="#ffff00" emissiveIntensity={2} />
+          <meshStandardMaterial color="#ffff00" emissive="#ffff00" emissiveIntensity={2} />
         </mesh>
       )}
     </group>
   )
 }
+

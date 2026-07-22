@@ -45,7 +45,7 @@ export function createProjectileData(
   return {
     id: `${ownerId}-${Date.now()}-${Math.random().toFixed(4)}`,
     position: [origin.x, origin.y, origin.z],
-    velocity: [dir.x * 70, dir.y * 70, dir.z * 70],
+    velocity: [dir.x * 80, dir.y * 80, dir.z * 80],
     damage,
     ownerId,
     lifetime: 2.0,

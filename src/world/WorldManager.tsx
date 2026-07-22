@@ -3,7 +3,6 @@ import { EnvironmentProps } from './EnvironmentProps'
 import { DayNightCycle, useTimeAdvancement } from './DayNightCycle'
 import { WeatherSystem, WeatherFog } from './WeatherSystem'
 import { NPCSystem } from './NPC'
-import { useFrame } from '@react-three/fiber'
 
 export function WorldManager() {
   // Advance time of day

@@ -3,13 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useGameStore } from '../stores/gameStore'
 
-type WeatherType = 'clear' | 'rain' | 'storm' | 'snow' | 'sandstorm'
-
 export function WeatherSystem() {
   const weather = useGameStore(s => s.world.weather)
   const particleRef = useRef<THREE.Points>(null)
 
-  const { positions, velocities } = useMemo(() => {
+  const { positions } = useMemo(() => {
     const count = 800
     const pos = new Float32Array(count * 3)
     const vel = new Float32Array(count * 3)
@@ -21,7 +19,7 @@ export function WeatherSystem() {
       vel[i * 3 + 1] = -Math.random() * 20 - 5
       vel[i * 3 + 2] = (Math.random() - 0.5) * 2
     }
-    return { positions: pos, velocities: vel }
+    return { positions: pos }
   }, [])
 
   // Determine particle visual based on weather
@@ -73,7 +71,7 @@ export function WeatherSystem() {
   return (
     <points ref={particleRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={config.count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} count={config.count} array={positions} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
         color={config.color}

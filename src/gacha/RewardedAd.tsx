@@ -5,7 +5,7 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: { 
   const [showAd, setShowAd] = useState(false)
   const [adProgress, setAdProgress] = useState(0)
   const [rewarded, setRewarded] = useState(false)
-  const { addGems, addGold } = useRPGStore()
+  const { addGems } = useRPGStore()
 
   const startAd = () => {
     setShowAd(true)

@@ -54,6 +54,7 @@ interface GameStore {
   projectiles: ProjectileData[]
   impacts: ImpactData[]
   playerHitFlash: number
+  ultCastTime: number
 
   takeDamage: (amount: number) => void
   dealDamage: (targetId: string, amount: number, position: [number, number, number], crit?: boolean) => void
@@ -63,6 +64,8 @@ interface GameStore {
   resetCombo: () => void
   tickCombo: (dt: number) => void
   fireRanged: () => boolean
+  reloadAmmo: () => void
+  regenAmmo: (dt: number) => void
   setTarget: (id: string | null) => void
   clearDamageNumber: (id: string) => void
   addProjectile: (p: ProjectileData) => void
@@ -71,8 +74,15 @@ interface GameStore {
   addImpact: (position: [number, number, number], type: 'melee' | 'energy' | 'explosion') => void
   clearImpact: (id: string) => void
   triggerHitFlash: () => void
+  castUlt: () => void
   decayHitFlash: (dt: number) => void
+  healPlayer: (amount: number) => void
+  addEnergy: (amount: number) => void
+  addShield: (amount: number) => void
   resetPlayer: () => void
+  world: { timeOfDay: number; weather: string; paused: boolean }
+  setWeather: (w: string) => void
+  setTimeOfDay: (t: number) => void
 }
 
 const initialStats: PlayerStats = {
@@ -104,6 +114,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   projectiles: [],
   impacts: [],
   playerHitFlash: 0,
+  ultCastTime: 0,
 
   takeDamage: (amount) => set((s) => {
     const dmg = Math.max(1, amount - s.player.defense)
@@ -120,7 +131,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
   }),
 
-  dealDamage: (targetId, amount, position, crit = false) => set((s) => ({
+  dealDamage: (_targetId, amount, position, crit = false) => set((s) => ({
     damageNumbers: [
       ...s.damageNumbers,
       { id: `${Date.now()}-${Math.random()}`, value: amount, position, born: Date.now(), crit }
@@ -156,6 +167,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     return true
   },
 
+  reloadAmmo: () => set((s) => ({ weapon: { ...s.weapon, rangedAmmo: s.weapon.maxAmmo } })),
+
+  regenAmmo: (dt) => set((s) => {
+    if (s.weapon.rangedAmmo >= s.weapon.maxAmmo) return {}
+    return { weapon: { ...s.weapon, rangedAmmo: Math.min(s.weapon.maxAmmo, s.weapon.rangedAmmo + 5 * dt) } }
+  }),
+
   setTarget: (id) => set({ targetId: id }),
 
   clearDamageNumber: (id) => set((s) => ({
@@ -169,7 +187,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   updateProjectiles: (dt) => set((s) => ({
     projectiles: s.projectiles.map(p => ({
       ...p,
-      position: [p.position[0] + p.velocity[0] * dt, p.position[1] + p.velocity[1] * dt, p.position[2] + p.velocity[2] * dt],
+      position: [p.position[0] + p.velocity[0] * dt, p.position[1] + p.velocity[1] * dt, p.position[2] + p.velocity[2] * dt] as [number, number, number],
       lifetime: p.lifetime - dt,
     })).filter(p => p.lifetime > 0)
   })),
@@ -187,10 +205,28 @@ export const useGameStore = create<GameStore>((set, get) => ({
   })),
 
   triggerHitFlash: () => set({ playerHitFlash: 1 }),
+  castUlt: () => set({ ultCastTime: Date.now() }),
 
   decayHitFlash: (dt) => set((s) => ({ playerHitFlash: Math.max(0, s.playerHitFlash - dt * 2) })),
+
+  healPlayer: (amount) => set((s) => ({
+    player: { ...s.player, hp: Math.min(s.player.maxHp, s.player.hp + amount) },
+  })),
+
+  addEnergy: (amount) => set((s) => ({
+    player: { ...s.player, energy: Math.min(s.player.maxEnergy, s.player.energy + amount) },
+  })),
+
+  addShield: (amount) => set((s) => ({
+    player: { ...s.player, shield: Math.min(s.player.maxShield, s.player.shield + amount >= s.player.maxShield ? s.player.maxShield : s.player.shield + amount) },
+  })),
 
   resetPlayer: () => set({ player: { ...initialStats }, weapon: { ...initialWeapon } }),
   setWeather: (w) => set((s) => ({ world: { ...s.world, weather: w } })),
   setTimeOfDay: (t) => set((s) => ({ world: { ...s.world, timeOfDay: t } })),
 }))
+
+// Export to window for cross-store access (rpgStore useConsumable)
+if (typeof window !== 'undefined') {
+  (window as any).__gameStore = useGameStore
+}

@@ -1,24 +1,11 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useGameStore } from './stores/gameStore'
-
-// 屏幕坐标投影
-function useScreenProject() {
-  const camera = useRef<any>(null)
-  const [, forceUpdate] = useState(0)
-
-  useEffect(() => {
-    let raf: number
-    const tick = () => { forceUpdate(n => n + 1); raf = requestAnimationFrame(tick) }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [])
-
-  return null
-}
+import { isTouchDevice } from './controls/TouchControls'
+import { cameraMode } from './Player'
 
 // === 血条/护盾/能量 ===
-function StatusBar({ label, value, max, color, bgColor, icon }: {
-  label: string; value: number; max: number; color: string; bgColor: string; icon: string
+function StatusBar({ value, max, color, bgColor, icon }: {
+  value: number; max: number; color: string; bgColor: string; icon: string
 }) {
   const pct = Math.max(0, Math.min(100, (value / max) * 100))
   return (
@@ -71,8 +58,8 @@ function ComboCounter({ combo, timer }: { combo: number; timer: number }) {
 }
 
 // === 技能图标 ===
-function SkillIcon({ name, hotkey, ready, cd }: {
-  name: string; hotkey: string; ready: boolean; cd?: number
+function SkillIcon({ name, hotkey, ready }: {
+  name: string; hotkey: string; ready: boolean
 }) {
   return (
     <div style={{
@@ -90,7 +77,6 @@ function SkillIcon({ name, hotkey, ready, cd }: {
 
 // === 弹药计数 ===
 function AmmoCounter({ ammo, max }: { ammo: number; max: number }) {
-  const pct = ammo / max
   return (
     <div style={{
       position: 'absolute', bottom: 75, right: 20,
@@ -115,16 +101,81 @@ function HitFlash({ intensity }: { intensity: number }) {
   )
 }
 
+// === 大招屏幕特效 ===
+function UltFlash({ ultCastTime }: { ultCastTime: number }) {
+  const [show, setShow] = useState(false)
+  
+  useEffect(() => {
+    if (ultCastTime > 0) {
+      setShow(true)
+      const t = setTimeout(() => setShow(false), 1500)
+      return () => clearTimeout(t)
+    }
+  }, [ultCastTime])
+  
+  if (!show) return null
+  
+  return (
+    <>
+      {/* 初始爆发 — 白色闪光 */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 400,
+        background: 'radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,200,0,0.4) 30%, transparent 70%)',
+        animation: 'ultFade 0.3s ease-out forwards',
+      }} />
+      {/* 金色光环扩散 */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 399,
+        background: 'radial-gradient(circle at center, transparent 20%, rgba(255,180,0,0.3) 40%, transparent 60%)',
+        animation: 'ultRing 1s ease-out forwards',
+      }} />
+      {/* 大招文字 */}
+      <div style={{
+        position: 'absolute', top: '30%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none', zIndex: 401,
+        animation: 'ultText 1.5s ease-out forwards',
+      }}>
+        <div style={{
+          fontSize: 64, fontWeight: 900, color: '#ffdd00',
+          textShadow: '0 0 30px rgba(255,200,0,1), 4px 4px 0 #000',
+          fontFamily: 'Impact, sans-serif', textAlign: 'center',
+        }}>
+          OVERDRIVE
+        </div>
+      </div>
+      <style>{`
+        @keyframes ultFade {
+          0% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        @keyframes ultRing {
+          0% { transform: scale(0.3); opacity: 1; }
+          100% { transform: scale(3); opacity: 0; }
+        }
+        @keyframes ultText {
+          0% { opacity: 0; transform: translate(-50%, -50%) scale(2) rotate(-5deg); }
+          15% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+          80% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+      `}</style>
+      <Crosshair />
+      <ViewModeIndicator />
+    </>
+  )
+}
+
+
+
 // === 伤害数字飘字 ===
 function DamageNumberLayer() {
   const damageNumbers = useGameStore(s => s.damageNumbers)
-  const [tick, setTick] = useState(0)
+  const [, setTick] = useState(0)
 
   useEffect(() => {
-    let raf: number
-    const loop = () => { setTick(t => t + 1); raf = requestAnimationFrame(loop) }
-    raf = requestAnimationFrame(loop)
-    return () => cancelAnimationFrame(raf)
+    const interval = setInterval(() => setTick(t => t + 1), 33)
+    return () => clearInterval(interval)
   }, [])
 
   // 获取相机 — 通过canvas元素
@@ -182,36 +233,116 @@ function project3D(pos: { x: number; y: number; z: number }, camera: any): { x: 
   }
 }
 
+// === 准星 (FPS模式时显示) ===
+function Crosshair() {
+  const [, forceUpdate] = useState(0)
+  useEffect(() => {
+    let raf: number
+    const tick = () => { forceUpdate(n => n + 1); raf = requestAnimationFrame(tick) }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  if (!cameraMode.firstPerson) return null
+
+  const size = 28
+  const center = size / 2
+  const gap = 5
+  const len = 8
+  const color = '#00ffff'
+
+  return (
+    <div style={{
+      position: 'absolute', top: '50%', left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: size, height: size, zIndex: 110, pointerEvents: 'none',
+    }}>
+      {/* Center dot */}
+      <div style={{
+        position: 'absolute', left: center - 1, top: center - 1,
+        width: 2, height: 2, borderRadius: '50%',
+        background: color, boxShadow: `0 0 4px ${color}`,
+      }} />
+      {/* Top line */}
+      <div style={{ position: 'absolute', left: center, top: center - gap - len, width: 2, height: len, background: color, boxShadow: `0 0 3px ${color}` }} />
+      {/* Bottom line */}
+      <div style={{ position: 'absolute', left: center, top: center + gap, width: 2, height: len, background: color, boxShadow: `0 0 3px ${color}` }} />
+      {/* Left line */}
+      <div style={{ position: 'absolute', left: center - gap - len, top: center, width: len, height: 2, background: color, boxShadow: `0 0 3px ${color}` }} />
+      {/* Right line */}
+      <div style={{ position: 'absolute', left: center + gap, top: center, width: len, height: 2, background: color, boxShadow: `0 0 3px ${color}` }} />
+      {/* Outer ring */}
+      <div style={{
+        position: 'absolute', inset: -8,
+        border: `1px solid ${color}33`, borderRadius: '50%',
+      }} />
+    </div>
+  )
+}
+
+// === 视角模式指示器 ===
+function ViewModeIndicator() {
+  const [, forceUpdate] = useState(0)
+  useEffect(() => {
+    let raf: number
+    const tick = () => { forceUpdate(n => n + 1); raf = requestAnimationFrame(tick) }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  return (
+    <div style={{
+      position: 'absolute', top: 60, right: 20, zIndex: 110,
+      background: 'rgba(0,0,0,0.5)', borderRadius: 6,
+      padding: '4px 10px', pointerEvents: 'none',
+      border: `1px solid ${cameraMode.firstPerson ? '#ff44ff44' : '#44ff8844'}`,
+    }}>
+      <span style={{
+        fontSize: 11, fontFamily: 'monospace', fontWeight: 'bold',
+        color: cameraMode.firstPerson ? '#ff44ff' : '#44ff88',
+      }}>
+        {cameraMode.firstPerson ? '🎯 FPS' : '👁️ TPS'}  [V切换]
+      </span>
+    </div>
+  )
+}
+
 // === 主HUD ===
 export function BattleHUD() {
   const player = useGameStore(s => s.player)
   const weapon = useGameStore(s => s.weapon)
   const hitFlash = useGameStore(s => s.playerHitFlash)
+  const ultCastTime = useGameStore(s => s.ultCastTime)
+  const [touch, setTouch] = useState(false)
+  useEffect(() => { setTouch(isTouchDevice()) }, [])
 
   return (
     <>
       <HitFlash intensity={hitFlash} />
+      <UltFlash ultCastTime={ultCastTime} />
 
       {/* 左下角 — 状态条 */}
       <div style={{
         position: 'absolute', bottom: 20, left: 20, zIndex: 100,
         pointerEvents: 'none',
       }}>
-        <StatusBar label="HP" value={player.hp} max={player.maxHp} color="#ff4444" bgColor="#330011" icon="♥" />
-        <StatusBar label="SHIELD" value={player.shield} max={player.maxShield} color="#44aaff" bgColor="#001133" icon="🛡" />
-        <StatusBar label="ENERGY" value={player.energy} max={player.maxEnergy} color="#ffdd00" bgColor="#332200" icon="⚡" />
+        <StatusBar value={player.hp} max={player.maxHp} color="#ff4444" bgColor="#330011" icon="♥" />
+        <StatusBar value={player.shield} max={player.maxShield} color="#44aaff" bgColor="#001133" icon="🛡" />
+        <StatusBar value={player.energy} max={player.maxEnergy} color="#ffdd00" bgColor="#332200" icon="⚡" />
       </div>
 
-      {/* 右下角 — 技能按钮 */}
-      <div style={{
-        position: 'absolute', bottom: 20, right: 20, zIndex: 100,
-        display: 'flex', gap: 12, alignItems: 'flex-end',
-      }}>
-        <SkillIcon name="👊" hotkey="J / 左键" ready={true} />
-        <SkillIcon name="🔫" hotkey="K / 右键" ready={weapon.rangedAmmo > 0} cd={0.12} />
-        <SkillIcon name="💨" hotkey="SPACE" ready={player.energy > 10} />
-        <SkillIcon name="🌟" hotkey="R" ready={player.energy >= 100} />
-      </div>
+      {/* 右下角 — 桌面技能图标（触摸设备不显示，用TouchControls替代） */}
+      {!touch && (
+        <div style={{
+          position: 'absolute', bottom: 20, right: 20, zIndex: 100,
+          display: 'flex', gap: 12, alignItems: 'flex-end',
+        }}>
+          <SkillIcon name="👊" hotkey="J / 左键" ready={true} />
+          <SkillIcon name="🔫" hotkey="K / 右键" ready={weapon.rangedAmmo > 0} />
+          <SkillIcon name="💨" hotkey="SPACE" ready={player.energy > 10} />
+          <SkillIcon name="🌟" hotkey="R" ready={player.energy >= 100} />
+        </div>
+      )}
 
       <AmmoCounter ammo={weapon.rangedAmmo} max={weapon.maxAmmo} />
       <ComboCounter combo={player.combo} timer={player.comboTimer} />
@@ -219,3 +350,4 @@ export function BattleHUD() {
     </>
   )
 }
+

@@ -1,13 +1,22 @@
 import { useRef, useMemo } from 'react'
-import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// Simple Perlin-like noise for terrain height
+// Multi-octave Perlin-like noise for natural terrain
 function noise2D(x: number, z: number): number {
-  const s1 = Math.sin(x * 0.05 + z * 0.03) * 0.5
-  const s2 = Math.sin(x * 0.12 - z * 0.08) * 0.3
-  const s3 = Math.sin(x * 0.25 + z * 0.15) * 0.1
-  return (s1 + s2 + s3) * 4 // amplitude 4 units
+  // Base rolling hills (large)
+  const s1 = Math.sin(x * 0.02 + z * 0.015) * Math.cos(x * 0.018 - z * 0.025) * 8
+  // Medium features (hills and valleys)
+  const s2 = Math.sin(x * 0.06 - z * 0.04) * Math.cos(z * 0.05 + x * 0.03) * 3
+  // Small detail (bumps, rough ground)
+  const s3 = Math.sin(x * 0.15 + z * 0.12) * 0.8
+  // Tiny ridges
+  const s4 = Math.sin(x * 0.4 - z * 0.35) * 0.3
+  
+  // Carve a flat-ish spawn area near center (radius ~20)
+  const dist = Math.sqrt(x * x + z * z)
+  const flatness = Math.max(0, 1 - dist / 25)
+  const rawHeight = s1 + s2 + s3 + s4
+  return rawHeight * (1 - flatness * 0.85)
 }
 
 // Biome types based on position
@@ -35,8 +44,8 @@ export function Terrain() {
   const meshRef = useRef<THREE.Mesh>(null)
 
   const { geometry, vertexColors } = useMemo(() => {
-    const size = 500
-    const segments = 128
+    const size = 600
+    const segments = 200
     const geo = new THREE.PlaneGeometry(size, size, segments, segments)
     geo.rotateX(-Math.PI / 2)
 
@@ -70,7 +79,7 @@ export function Terrain() {
   }, [])
 
   return (
-    <mesh ref={meshRef} geometry={geometry} receiveShadow>
+    <mesh ref={meshRef} geometry={geometry}>
       <meshStandardMaterial vertexColors={vertexColors} roughness={0.9} metalness={0.1} />
     </mesh>
   )

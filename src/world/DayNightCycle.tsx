@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react'
+import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useGameStore } from '../stores/gameStore'
@@ -7,10 +7,6 @@ export function DayNightCycle() {
   const sunRef = useRef<THREE.DirectionalLight>(null)
   const ambientRef = useRef<THREE.AmbientLight>(null)
   const hemiRef = useRef<THREE.HemisphereLight>(null)
-  const skyColor = useRef(new THREE.Color('#87CEEB'))
-  const timeOfDay = useGameStore(s => s.world.timeOfDay)
-
-  const sunTarget = useRef(new THREE.Object3D())
 
   useFrame(() => {
     const t = useGameStore.getState().world.timeOfDay // 0..24
@@ -42,15 +38,7 @@ export function DayNightCycle() {
     <>
       <directionalLight
         ref={sunRef}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-100}
-        shadow-camera-right={100}
-        shadow-camera-top={100}
-        shadow-camera-bottom={-100}
-        shadow-camera-near={1}
-        shadow-camera-far={300}
-        shadow-bias={-0.0005}
+        
       />
       <ambientLight ref={ambientRef} intensity={0.3} />
       <hemisphereLight ref={hemiRef} color="#87CEEB" groundColor="#3a3a3a" intensity={0.4} />

@@ -11,6 +11,7 @@ export const touchState = {
   boost: false,
   jump: false,
   ult: false,
+  toggleView: false,  // FPS/TPS toggle
 }
 
 // ============================================================
@@ -165,6 +166,29 @@ export function TouchSkillButtons() {
     )
   }
 
+  // FPS/TPS View Toggle Button
+  const ViewToggleBtn = () => {
+    const [fps, setFps] = useState(false)
+    return (
+      <div
+        onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); setFps(!fps); touchState.toggleView = true }}
+        style={{
+          width: 64, height: 64, borderRadius: '50%',
+          background: fps
+            ? 'radial-gradient(circle, rgba(255,68,255,0.6), rgba(150,0,150,0.3))'
+            : 'radial-gradient(circle, rgba(40,50,80,0.7), rgba(20,25,45,0.5))',
+          border: `2px solid ${fps ? '#ff44ff' : '#6688aa'}`,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          boxShadow: fps ? '0 0 20px rgba(255,68,255,0.4)' : '0 0 8px rgba(0,0,0,0.5)',
+          pointerEvents: 'auto', userSelect: 'none', WebkitUserSelect: 'none',
+        }}
+      >
+        <span style={{ fontSize: 24 }}>{fps ? '🎯' : '👁️'}</span>
+        <span style={{ fontSize: 8, color: '#88aaff', marginTop: 1 }}>{fps ? 'FPS' : 'TPS'}</span>
+      </div>
+    )
+  }
+
   return (
     <div style={{
       position: 'absolute', bottom: 25, right: 25,
@@ -176,11 +200,11 @@ export function TouchSkillButtons() {
         <SkillBtn icon="💨" label="冲刺" k="boost" color="#44aaff" />
         <SkillBtn icon="🌟" label="大招" k="ult" color="#ff44ff" />
       </div>
-      {/* Bottom row: melee + ranged + jump */}
+      {/* Bottom row: melee + ranged + view toggle */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <SkillBtn icon="👊" label="近战" k="melee" color="#ff8800" />
         <SkillBtn icon="🔫" label="射击" k="ranged" color="#00ffff" />
-        <div style={{ width: 64, height: 64 }} /> {/* spacer for jump */}
+        <ViewToggleBtn />
       </div>
       {/* Jump button below */}
       <div style={{ position: 'absolute', bottom: 0, right: 74 }}>

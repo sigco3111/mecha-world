@@ -7,7 +7,7 @@ export function Ground() {
   return (
     <>
       {/* 实体地面 */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <planeGeometry args={[200, 200]} />
         <meshStandardMaterial color={'#1a1a2e'} roughness={0.9} metalness={0.1} />
       </mesh>
@@ -35,7 +35,7 @@ export function Obstacles() {
   return (
     <group>
       {buildings.map((b, i) => (
-        <mesh key={i} position={b.pos} castShadow receiveShadow>
+        <mesh key={i} position={b.pos}>
           <boxGeometry args={b.size} />
           <meshStandardMaterial color={b.color} metalness={0.6} roughness={0.4} />
         </mesh>
@@ -46,7 +46,7 @@ export function Obstacles() {
         const radius = 20 + (i % 3) * 5
         return (
           <group key={`pillar-${i}`} position={[Math.cos(angle) * radius, 0, Math.sin(angle) * radius]}>
-            <mesh position={[0, 2.5, 0]} castShadow>
+            <mesh position={[0, 2.5, 0]}>
               <cylinderGeometry args={[0.3, 0.4, 5, 8]} />
               <meshStandardMaterial color={'#2a2a4a'} metalness={0.8} roughness={0.3} />
             </mesh>
@@ -81,7 +81,7 @@ export function FloatingParticles() {
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} count={count} array={positions} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial color={'#4488ff'} size={0.15} transparent opacity={0.6} />
     </points>

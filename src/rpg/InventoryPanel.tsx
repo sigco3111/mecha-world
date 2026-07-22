@@ -16,7 +16,7 @@ const rarityLabels: Record<string, string> = {
 }
 
 export function InventoryPanel({ onClose }: { onClose: () => void }) {
-  const { inventory, equipItem, unequipItem, equippedWeapon, equippedArmor, equippedCore } = useRPGStore()
+  const { inventory, equipItem, unequipItem, useConsumable } = useRPGStore()
   const [selected, setSelected] = useState<ItemData | null>(null)
 
   const sorted = [...inventory].sort((a, b) => {
@@ -136,6 +136,26 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
                       style={btnStyle('#44ff88')}
                     >装备</button>
                   )
+                )}
+                {selected.type === 'consumable' && (
+                  <button
+                    onClick={() => {
+                      useConsumable(selected.id)
+                      const updated = useRPGStore.getState().inventory.find(i => i.id === selected.id)
+                      if (updated) {
+                        setSelected({ ...updated })
+                      } else {
+                        setSelected(null)
+                      }
+                    }}
+                    disabled={selected.count <= 0}
+                    style={btnStyle('#44ddff')}
+                  >使用 ({selected.count})</button>
+                )}
+                {selected.type === 'material' && (
+                  <div style={{ textAlign: 'center', color: '#888', padding: 12, fontSize: 12 }}>
+                    💧 材料物品，用于装备升级
+                  </div>
                 )}
               </div>
             ) : (

@@ -40,6 +40,7 @@ export interface MechaConfig {
   baseDefense: number
   baseSpeed: number
   color: string
+  accentColor: string
   skill: string
   owned: boolean
   equipped: boolean
@@ -70,21 +71,30 @@ interface RPGState {
   getStats: () => { attack: number; defense: number; maxHp: number; maxEnergy: number }
   unlockMecha: (id: string) => void
   equipMecha: (id: string) => void
+  useConsumable: (id: string) => void
 }
 
 const expForLevel = (lv: number) => Math.floor(100 * Math.pow(1.15, lv - 1))
 
 const initialMechas: MechaConfig[] = [
-  { id: 'starter', name: '游骑兵 MK-I', rarity: 'common', baseHp: 1000, baseAttack: 50, baseDefense: 20, baseSpeed: 8, color: '#4488ff', skill: '冲锋斩', owned: true, equipped: true },
-  { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', skill: '地裂冲击', owned: false, equipped: false },
-  { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', skill: '分身突袭', owned: false, equipped: false },
-  { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', skill: '天罚', owned: false, equipped: false },
+  { id: 'starter', name: '游骑兵 MK-I', rarity: 'common', baseHp: 1000, baseAttack: 50, baseDefense: 20, baseSpeed: 8, color: '#4488ff', accentColor: '#00ffff', skill: '冲锋斩', owned: true, equipped: true },
+  { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '地裂冲击', owned: false, equipped: false },
+  { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '分身突袭', owned: false, equipped: false },
+  { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '天罚', owned: false, equipped: false },
 ]
 
 const initialItems: ItemData[] = [
   { id: 'w_sword1', name: '合金斩剑', type: 'weapon', rarity: 'common', icon: '⚔️', stats: { attack: 15 }, count: 1, equipped: true, description: '基础合金武器，坚固可靠。' },
+  { id: 'w_gun1', name: '光束步枪', type: 'weapon', rarity: 'common', icon: '🔫', stats: { attack: 12, critRate: 0.1 }, count: 1, equipped: false, description: '远程光束武器，射速快但伤害较低。' },
+  { id: 'w_blade2', name: '等离子巨刃', type: 'weapon', rarity: 'rare', icon: '🗡️', stats: { attack: 35, critDmg: 0.5 }, count: 1, equipped: false, description: '等离子切割刃，暴击伤害极高。' },
   { id: 'a_plate1', name: '复合装甲', type: 'armor', rarity: 'common', icon: '🛡️', stats: { defense: 10, maxHp: 100 }, count: 1, equipped: true, description: '标准防御装甲。' },
+  { id: 'a_shield2', name: '力场护盾', type: 'armor', rarity: 'rare', icon: '🛡️', stats: { defense: 25, maxHp: 250 }, count: 1, equipped: false, description: '能量力场护盾，大幅提升生存能力。' },
   { id: 'c_core1', name: '能量核心 I', type: 'core', rarity: 'common', icon: '🔋', stats: { maxEnergy: 50 }, count: 1, equipped: true, description: '基础能量核心。' },
+  { id: 'c_core2', name: '聚变核心 II', type: 'core', rarity: 'rare', icon: '🔋', stats: { maxEnergy: 100, attack: 10 }, count: 1, equipped: false, description: '高能聚变核心，提升能量和攻击。' },
+  // Consumables
+  { id: 'potion_hp', name: '生命药剂', type: 'consumable', rarity: 'common', icon: '🧪', stats: { maxHp: 0 }, count: 5, description: '恢复300点生命值。', effect: { type: 'heal', value: 300 } } as any,
+  { id: 'potion_energy', name: '能量药剂', type: 'consumable', rarity: 'common', icon: '⚡', stats: { maxHp: 0 }, count: 5, description: '恢复50点能量值。', effect: { type: 'energy', value: 50 } } as any,
+  { id: 'potion_shield', name: '护盾药剂', type: 'consumable', rarity: 'rare', icon: '💊', stats: { maxHp: 0 }, count: 3, description: '恢复全部护盾值。', effect: { type: 'shield', value: 999 } } as any,
 ]
 
 const initialQuests: QuestData[] = [
@@ -233,6 +243,33 @@ export const useRPGStore = create<RPGState>((set, get) => ({
   equipMecha: (id) => set((s) => ({
     mechas: s.mechas.map(m => ({ ...m, equipped: m.id === id })),
   })),
+
+  useConsumable: (id) => {
+    const s = get()
+    const item = s.inventory.find(i => i.id === id)
+    if (!item || item.type !== 'consumable' || item.count <= 0) return
+    const effect = (item as any).effect
+    if (!effect) return
+
+    // Apply effect to gameStore
+    const gameStore = (window as any).__gameStore
+    if (gameStore) {
+      if (effect.type === 'heal') {
+        gameStore.getState().healPlayer(effect.value)
+      } else if (effect.type === 'energy') {
+        gameStore.getState().addEnergy(effect.value)
+      } else if (effect.type === 'shield') {
+        gameStore.getState().addShield(effect.value)
+      }
+    }
+
+    // Consume the item
+    if (item.count <= 1) {
+      set({ inventory: s.inventory.filter(i => i.id !== id) })
+    } else {
+      set({ inventory: s.inventory.map(i => i.id === id ? { ...i, count: i.count - 1 } : i) })
+    }
+  },
 }))
 
 // Loot table for enemy drops

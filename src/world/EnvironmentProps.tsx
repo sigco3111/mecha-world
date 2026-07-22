@@ -1,5 +1,4 @@
 import { useRef, useMemo } from 'react'
-import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { getTerrainHeight, getBiomeAt } from './Terrain'
 
@@ -10,119 +9,19 @@ function hash(x: number, z: number): number {
 }
 
 // ============================================================
-// Low-poly tree
-// ============================================================
-function Tree({ position }: { position: [number, number, number] }) {
-  return (
-    <group position={position}>
-      {/* Trunk */}
-      <mesh castShadow position={[0, 2, 0]}>
-        <cylinderGeometry args={[0.4, 0.6, 4]} />
-        <meshStandardMaterial color="#5a3a2a" roughness={0.9} />
-      </mesh>
-      {/* Foliage */}
-      <mesh castShadow position={[0, 5, 0]}>
-        <coneGeometry args={[2.5, 4, 6]} />
-        <meshStandardMaterial color="#2a5a2a" roughness={0.8} />
-      </mesh>
-      <mesh castShadow position={[0, 7, 0]}>
-        <coneGeometry args={[2, 3, 6]} />
-        <meshStandardMaterial color="#2a6a2a" roughness={0.8} />
-      </mesh>
-    </group>
-  )
-}
-
-// ============================================================
-// Crystal formation (crystal biome)
-// ============================================================
-function Crystal({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
-  return (
-    <group position={position} scale={scale}>
-      <mesh castShadow>
-        <octahedronGeometry args={[1.5, 0]} />
-        <meshStandardMaterial color="#8a5aff" emissive="#5a3aaa" emissiveIntensity={0.5} metalness={0.5} roughness={0.2} transparent opacity={0.85} />
-      </mesh>
-      <mesh castShadow position={[1, -0.5, 0.5]} rotation={[0, 1, 0.3]}>
-        <octahedronGeometry args={[1, 0]} />
-        <meshStandardMaterial color="#aa7aff" emissive="#6a4aba" emissiveIntensity={0.4} metalness={0.5} roughness={0.2} transparent opacity={0.8} />
-      </mesh>
-    </group>
-  )
-}
-
-// ============================================================
-// Rock formation
-// ============================================================
-function Rock({ position, scale = 1 }: { position: [number, number, number]; scale?: number }) {
-  return (
-    <mesh castShadow position={position} scale={scale}>
-      <dodecahedronGeometry args={[1.5, 0]} />
-      <meshStandardMaterial color="#6a6a6a" roughness={0.95} flatShading />
-    </mesh>
-  )
-}
-
-// ============================================================
-// Volcanic vent — glowing lava rocks
-// ============================================================
-function VolcanicVent({ position }: { position: [number, number, number] }) {
-  const ref = useRef<THREE.PointLight>(null)
-  useFrameTick(ref)
-  return (
-    <group position={position}>
-      <mesh castShadow>
-        <coneGeometry args={[2, 1, 6]} />
-        <meshStandardMaterial color="#3a1a0a" roughness={1} />
-      </mesh>
-      <mesh position={[0, 0.3, 0]}>
-        <sphereGeometry args={[0.8, 8, 8]} />
-        <meshStandardMaterial color="#ff4400" emissive="#ff6600" emissiveIntensity={2} />
-      </mesh>
-      <pointLight ref={ref} color="#ff6600" intensity={5} distance={15} />
-    </group>
-  )
-}
-
-// Tiny helper to flicker lights
-function useFrameTick(ref: React.RefObject<THREE.PointLight | null>) {
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.intensity = 3 + Math.sin(state.clock.elapsedTime * 5) * 2
-    }
-  })
-}
-
-// ============================================================
-// Ancient ruin pillar
-// ============================================================
-function RuinPillar({ position, rotation = 0 }: { position: [number, number, number]; rotation?: number }) {
-  return (
-    <group position={position} rotation={[0, rotation, 0]}>
-      <mesh castShadow position={[0, 4, 0]}>
-        <boxGeometry args={[1.5, 8, 1.5]} />
-        <meshStandardMaterial color="#8a8a7a" roughness={0.9} />
-      </mesh>
-      <mesh castShadow position={[0, 8.5, 0]}>
-        <boxGeometry args={[2.2, 1, 2.2]} />
-        <meshStandardMaterial color="#7a7a6a" roughness={0.9} />
-      </mesh>
-      <mesh castShadow position={[0, 0.5, 0]}>
-        <boxGeometry args={[2.2, 1, 2.2]} />
-        <meshStandardMaterial color="#7a7a6a" roughness={0.9} />
-      </mesh>
-    </group>
-  )
-}
-
-// ============================================================
-// Scatter system — places props across terrain based on biome
+// Instanced environment props — ONE drawcall per type
 // ============================================================
 export function EnvironmentProps() {
-  const props = useMemo(() => {
-    const items: React.ReactElement[] = []
-    const range = 200
-    const step = 8
+  // Collect all prop positions in useMemo
+  const { treeData, crystalData, rockData, ventData, ruinData } = useMemo(() => {
+    const trees: [number, number, number, number][] = [] // x, y, z, scale
+    const crystals: [number, number, number, number][] = []
+    const rocks: [number, number, number, number][] = []
+    const vents: [number, number, number, number][] = []
+    const ruins: [number, number, number, number][] = []
+
+    const range = 80
+    const step = 10
 
     for (let x = -range; x <= range; x += step) {
       for (let z = -range; z <= range; z += step) {
@@ -131,36 +30,227 @@ export function EnvironmentProps() {
         const h = getTerrainHeight(wx, wz)
         const biome = getBiomeAt(wx, wz)
         const rand = hash(wx, wz)
-        const pos: [number, number, number] = [wx, h, wz]
+        const scale = 0.7 + rand * 1.5
 
-        // Trees in plains
-        if (biome === 'plains' && rand < 0.08) {
-          items.push(<Tree key={`t${wx}-${wz}`} position={pos} />)
-        }
-        // Crystals in crystal biome
-        else if (biome === 'crystal' && rand < 0.12) {
-          items.push(<Crystal key={`c${wx}-${wz}`} position={pos} scale={0.8 + rand * 2} />)
-        }
-        // Rocks everywhere (sparse)
-        else if (rand < 0.03) {
-          items.push(<Rock key={`r${wx}-${wz}`} position={pos} scale={0.5 + rand * 2} />)
-        }
-        // Volcanic vents
-        else if (biome === 'volcanic' && rand < 0.06) {
-          items.push(<VolcanicVent key={`v${wx}-${wz}`} position={pos} />)
-        }
-        // Snow patches in snow biome
-        else if (biome === 'snow' && rand < 0.05) {
-          items.push(<Rock key={`s${wx}-${wz}`} position={pos} scale={0.3 + rand} />)
-        }
-        // Rare ruins
-        else if (rand > 0.995) {
-          items.push(<RuinPillar key={`u${wx}-${wz}`} position={pos} rotation={rand * 6} />)
+        if (biome === 'plains' && rand < 0.12) {
+          trees.push([wx, h, wz, scale])
+        } else if (biome === 'crystal' && rand < 0.15) {
+          crystals.push([wx, h, wz, 0.8 + rand * 2])
+        } else if (biome === 'volcanic' && rand < 0.08) {
+          vents.push([wx, h, wz, scale])
+        } else if (rand < 0.04) {
+          rocks.push([wx, h, wz, scale])
+        } else if (rand > 0.992) {
+          ruins.push([wx, h, wz, scale])
         }
       }
     }
-    return items
+    return { treeData: trees, crystalData: crystals, rockData: rocks, ventData: vents, ruinData: ruins }
   }, [])
 
-  return <>{props}</>
+  return (
+    <>
+      <InstancedTrees data={treeData} />
+      <InstancedCrystals data={crystalData} />
+      <InstancedRocks data={rockData} />
+      <InstancedVents data={ventData} />
+      <InstancedRuins data={ruinData} />
+    </>
+  )
+}
+
+// ============================================================
+// Instanced Trees — trunk + foliage, 2 drawcalls total
+// ============================================================
+function InstancedTrees({ data }: { data: [number, number, number, number][] }) {
+  const trunkRef = useRef<THREE.InstancedMesh>(null)
+  const foliageRef = useRef<THREE.InstancedMesh>(null)
+  const topFoliageRef = useRef<THREE.InstancedMesh>(null)
+
+  useMemo(() => {
+    const m = new THREE.Matrix4()
+    const pos = new THREE.Vector3()
+    const quat = new THREE.Quaternion()
+    const scl = new THREE.Vector3()
+
+    // Defer to next tick so refs are set
+    setTimeout(() => {
+      data.forEach(([x, y, z, s], i) => {
+        // Trunk
+        if (trunkRef.current) {
+          pos.set(x, y + 2 * s, z)
+          scl.set(s, s, s)
+          m.compose(pos, quat, scl)
+          trunkRef.current.setMatrixAt(i, m)
+        }
+        // Foliage bottom cone
+        if (foliageRef.current) {
+          pos.set(x, y + 5 * s, z)
+          m.compose(pos, quat, scl)
+          foliageRef.current.setMatrixAt(i, m)
+        }
+        // Foliage top cone
+        if (topFoliageRef.current) {
+          pos.set(x, y + 7 * s, z)
+          m.compose(pos, quat, scl)
+          topFoliageRef.current.setMatrixAt(i, m)
+        }
+      })
+      if (trunkRef.current) trunkRef.current.instanceMatrix.needsUpdate = true
+      if (foliageRef.current) foliageRef.current.instanceMatrix.needsUpdate = true
+      if (topFoliageRef.current) topFoliageRef.current.instanceMatrix.needsUpdate = true
+    }, 0)
+  }, [data])
+
+  return (
+    <>
+      <instancedMesh ref={trunkRef} args={[undefined, undefined, data.length]}>
+        <cylinderGeometry args={[0.4, 0.6, 4]} />
+        <meshStandardMaterial color="#5a3a2a" roughness={0.9} />
+      </instancedMesh>
+      <instancedMesh ref={foliageRef} args={[undefined, undefined, data.length]}>
+        <coneGeometry args={[2.5, 4, 6]} />
+        <meshStandardMaterial color="#2a5a2a" roughness={0.8} />
+      </instancedMesh>
+      <instancedMesh ref={topFoliageRef} args={[undefined, undefined, data.length]}>
+        <coneGeometry args={[2, 3, 6]} />
+        <meshStandardMaterial color="#2a6a2a" roughness={0.8} />
+      </instancedMesh>
+    </>
+  )
+}
+
+// ============================================================
+// Instanced Crystals — 1 drawcall
+// ============================================================
+function InstancedCrystals({ data }: { data: [number, number, number, number][] }) {
+  const ref = useRef<THREE.InstancedMesh>(null)
+
+  useMemo(() => {
+    const m = new THREE.Matrix4()
+    const pos = new THREE.Vector3()
+    const quat = new THREE.Quaternion()
+    const scl = new THREE.Vector3()
+    setTimeout(() => {
+      data.forEach(([x, y, z, s], i) => {
+        pos.set(x, y + s, z)
+        scl.set(s, s, s)
+        m.compose(pos, quat, scl)
+        if (ref.current) ref.current.setMatrixAt(i, m)
+      })
+      if (ref.current) ref.current.instanceMatrix.needsUpdate = true
+    }, 0)
+  }, [data])
+
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, data.length]}>
+      <octahedronGeometry args={[1.5, 0]} />
+      <meshStandardMaterial color="#8a5aff" emissive="#5a3aaa" emissiveIntensity={0.4} metalness={0.5} roughness={0.2} transparent opacity={0.85} />
+    </instancedMesh>
+  )
+}
+
+// ============================================================
+// Instanced Rocks — 1 drawcall
+// ============================================================
+function InstancedRocks({ data }: { data: [number, number, number, number][] }) {
+  const ref = useRef<THREE.InstancedMesh>(null)
+
+  useMemo(() => {
+    const m = new THREE.Matrix4()
+    const pos = new THREE.Vector3()
+    const quat = new THREE.Quaternion()
+    const scl = new THREE.Vector3()
+    setTimeout(() => {
+      data.forEach(([x, y, z, s], i) => {
+        pos.set(x, y + s * 0.5, z)
+        scl.set(s, s, s)
+        m.compose(pos, quat, scl)
+        if (ref.current) ref.current.setMatrixAt(i, m)
+      })
+      if (ref.current) ref.current.instanceMatrix.needsUpdate = true
+    }, 0)
+  }, [data])
+
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, data.length]}>
+      <dodecahedronGeometry args={[1.5, 0]} />
+      <meshStandardMaterial color="#6a6a6a" roughness={0.95} flatShading />
+    </instancedMesh>
+  )
+}
+
+// ============================================================
+// Instanced Volcanic Vents — emissive only, NO point lights
+// ============================================================
+function InstancedVents({ data }: { data: [number, number, number, number][] }) {
+  const baseRef = useRef<THREE.InstancedMesh>(null)
+  const lavaRef = useRef<THREE.InstancedMesh>(null)
+
+  useMemo(() => {
+    const m = new THREE.Matrix4()
+    const pos = new THREE.Vector3()
+    const quat = new THREE.Quaternion()
+    const scl = new THREE.Vector3()
+    setTimeout(() => {
+      data.forEach(([x, y, z, s], i) => {
+        if (baseRef.current) {
+          pos.set(x, y, z)
+          scl.set(s, s, s)
+          m.compose(pos, quat, scl)
+          baseRef.current.setMatrixAt(i, m)
+        }
+        if (lavaRef.current) {
+          pos.set(x, y + 0.3 * s, z)
+          m.compose(pos, quat, scl)
+          lavaRef.current.setMatrixAt(i, m)
+        }
+      })
+      if (baseRef.current) baseRef.current.instanceMatrix.needsUpdate = true
+      if (lavaRef.current) lavaRef.current.instanceMatrix.needsUpdate = true
+    }, 0)
+  }, [data])
+
+  return (
+    <>
+      <instancedMesh ref={baseRef} args={[undefined, undefined, data.length]}>
+        <coneGeometry args={[2, 1, 6]} />
+        <meshStandardMaterial color="#3a1a0a" roughness={1} />
+      </instancedMesh>
+      <instancedMesh ref={lavaRef} args={[undefined, undefined, data.length]}>
+        <sphereGeometry args={[0.8, 8, 8]} />
+        <meshStandardMaterial color="#ff4400" emissive="#ff6600" emissiveIntensity={3} />
+      </instancedMesh>
+    </>
+  )
+}
+
+// ============================================================
+// Instanced Ruins — 1 drawcall
+// ============================================================
+function InstancedRuins({ data }: { data: [number, number, number, number][] }) {
+  const ref = useRef<THREE.InstancedMesh>(null)
+
+  useMemo(() => {
+    const m = new THREE.Matrix4()
+    const pos = new THREE.Vector3()
+    const quat = new THREE.Quaternion()
+    const scl = new THREE.Vector3()
+    setTimeout(() => {
+      data.forEach(([x, y, z, s], i) => {
+        pos.set(x, y + 4 * s, z)
+        scl.set(s, s, s)
+        m.compose(pos, quat, scl)
+        if (ref.current) ref.current.setMatrixAt(i, m)
+      })
+      if (ref.current) ref.current.instanceMatrix.needsUpdate = true
+    }, 0)
+  }, [data])
+
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, data.length]}>
+      <boxGeometry args={[1.5, 8, 1.5]} />
+      <meshStandardMaterial color="#8a8a7a" roughness={0.9} />
+    </instancedMesh>
+  )
 }

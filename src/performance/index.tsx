@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import * as THREE from 'three'
 
 // LOD hook: reduce geometry detail based on distance
-export function useLOD(ref: React.RefObject<THREE.Object3D>, distances: [number, number]) {
+export function useLOD(_ref: React.RefObject<THREE.Object3D>, _distances: [number, number]) {
   // Will be used by individual meshes for distance-based culling
   // For now, R3F handles basic frustum culling automatically
 }
