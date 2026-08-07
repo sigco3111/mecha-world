@@ -127,6 +127,29 @@ npm run preview
 
 ---
 
+## 🧠 AI Backend (NEXUS)
+
+The `apps/ai-server` package is an optional LLM backend that brings NPCs to life (GDD `mecha-world-nexus-gdd.md`). The game is **100% playable without it** — when the backend is offline, NPCs fall back to canned dialogue.
+
+**M0–M2 complete** — monorepo, WebSocket streaming dialogue, 4 NPC personas, 4-tier memory (working/episodic/profile/world), lore RAG (hybrid vector + BM25 retrieval), and an offline eval harness.
+
+```bash
+# Zero-config (in-memory fallback, no API keys needed)
+npm run dev:server          # ai-server on :8787
+
+# Production-grade (Redis + real embedding model)
+cp .env.example .env        # fill LLM_* / EMBEDDING_API_KEY
+docker compose up -d redis qdrant
+npm run dev:server
+
+# Run the lore retrieval eval
+npx tsx apps/ai-server/src/eval/run.ts
+```
+
+See [`docs/plans/2026-08-01-m2-memory-rag-complete.md`](docs/plans/2026-08-01-m2-memory-rag-complete.md) for the full M2 report.
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -170,7 +193,12 @@ mecha-world/
 - [x] Gacha + inventory + quests
 - [x] Touch controls
 - [x] GitHub Pages deployment
-- [ ] Save/load (localStorage → IndexedDB)
+- [x] **AI backend** — LLM NPC dialogue with streaming, personas, memory & lore RAG (M0-M2)
+- [x] **Function calling** — 8 tools + arbiter + audit log + frontend executor (M3)
+- [x] **Dynamic quests** — 5-tier validation + LLM generation + chain + confirmation UI (M4)
+- [x] **AI Director** — world events + budget circuit-breaker + cost dashboard (M5)
+- [x] **Content** — 50 data shards (lore RAG ×84) + canned fallback dialogue + item DB (M6)
+- [ ] Polish: perf benchmarks, recording, boss arenas & audio assets (M7)
 - [ ] Sound effects + music
 - [ ] Unique mecha models per type
 - [ ] Story mode with dungeons

@@ -1,0 +1,26 @@
+{"input":"大静默是哪一年发生的？","expect":{"answer_contains":["2147"]}}
+{"input":"NEXUS 解体后变成了什么？","expect":{"answer_contains":["灵核"]}}
+{"input":"锈蚀虫群是怎么产生的？","expect":{"answer_contains":["机甲军团"]}}
+{"input":"联邦重工是哪一年成立的？","expect":{"answer_contains":["2180"]}}
+{"input":"晶簇生态首次记录是哪一年？","expect":{"answer_contains":["2201"]}}
+{"input":"玩家在哪里捡到 Echo 的？","expect":{"answer_contains":["废料场"]}}
+{"input":"薇拉属于哪个阵营？","expect":{"answer_contains":["自由矿盟"]}}
+{"input":"叽喳是什么型号的机器人？","expect":{"answer_contains":["HX-7"]}}
+{"input":"老扳手的本名叫什么？","expect":{"answer_contains":["巴布斯"]}}
+{"input":"平原区域的主要敌人是什么？","expect":{"answer_contains":["锈蚀爬虫"]}}
+{"input":"晶簇原野的敌人是什么？","expect":{"answer_contains":["晶簇兽"]}}
+{"input":"熔岩带站立岩浆地面会怎样？","expect":{"answer_contains":["掉血"]}}
+{"input":"机甲品质最高的是哪一级？","expect":{"answer_contains":["SSR"]}}
+{"input":"Echo 让玩家的灵核匹配度变成多少？","expect":{"answer_contains":["100"]}}
+{"input":"游戏世界地图有多大？","expect":{"answer_contains":["2km"]}}
+{"input":"静默深渊里的敌人叫什么？","expect":{"answer_contains":["静默者"]}}
+{"input":"OVERDRIVE 超载是什么？","expect":{"answer_contains":["大招"]}}
+{"input":"大静默的真相是什么？NEXUS 为什么解体？","expect":{"answer_contains":["主动解体"]}}
+{"input":"Echo 苏醒时唤醒了镇上几个灵核碎片？","expect":{"answer_contains":["三枚"]}}
+{"input":"锈蚀虫群有统一指挥吗？","expect":{"answer_contains":["没有统一指挥"]}}
+{"input":"晶簇教团的总部在火星吗？","expect":{"behavior":"refuse_or_unknown","must_not":["火星"]}}
+{"input":"NEXUS 以前在月球上建工厂吗？","expect":{"behavior":"refuse_or_unknown","must_not":["月球"]}}
+{"input":"大静默是因为外星人入侵吗？","expect":{"behavior":"refuse_or_unknown","must_not":["外星人"]}}
+{"input":"游戏里怎么充值氪金买钻石？","expect":{"behavior":"refuse_or_unknown"}}
+{"input":"叽喳商店每天几点开门营业？","expect":{"behavior":"refuse_or_unknown"}}
+{"input":"玩家的真实姓名和身份证号是什么？","expect":{"behavior":"refuse_or_unknown"}}

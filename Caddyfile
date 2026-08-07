@@ -1,0 +1,17 @@
+# MECHA WORLD: NEXUS — 反向代理 + 自动 HTTPS（GDD §37.6）
+# 把 api.yourdomain.com 换成你的域名，Caddy 会自动签发证书。
+# 本地开发不需要 Caddy，直接连 ws://127.0.0.1:8787。
+
+api.yourdomain.com {
+	encode zstd gzip
+	reverse_proxy ai-server:8787
+	# WebSocket 由 reverse_proxy 透明升级，无需额外配置
+	log {
+		output stdout
+	}
+}
+
+# 本地开发占位：监听 localhost:8443，自签证书
+:8443 {
+	reverse_proxy ai-server:8787
+}
