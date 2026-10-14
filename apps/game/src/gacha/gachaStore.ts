@@ -39,22 +39,22 @@ interface GachaState {
 const pools: GachaPool[] = [
   {
     id: 'standard',
-    name: '标准祈愿',
+    name: '일반 뽑기',
     cost: { currency: 'gems', amount: 50 },
-    banner: '🎯 所有机甲与装备均可能获得',
+    banner: '🎯 모든 메카와 장비 획득 가능',
     rates: { legendary: 1, epic: 9, rare: 30, common: 60 },
     items: {
       mechas: ['crusher', 'phantom', 'titan'],
       weapons: [
-        { name: '等离子剑', rarity: 'epic', attack: 45, icon: '⚔️' },
-        { name: '电磁炮', rarity: 'rare', attack: 30, icon: '🔫' },
-        { name: '合金战斧', rarity: 'rare', attack: 25, icon: '🪓' },
-        { name: '标准刀刃', rarity: 'common', attack: 10, icon: '🔪' },
+        { name: '플라즈마 검', rarity: 'epic', attack: 45, icon: '⚔️' },
+        { name: '레일건', rarity: 'rare', attack: 30, icon: '🔫' },
+        { name: '합금 도끼', rarity: 'rare', attack: 25, icon: '🪓' },
+        { name: '기본 칼날', rarity: 'common', attack: 10, icon: '🔪' },
       ],
       materials: [
-        { name: '稀有合金', rarity: 'epic', icon: '🧱' },
-        { name: '能量结晶', rarity: 'rare', icon: '🔮' },
-        { name: '金属碎片', rarity: 'common', icon: '🔩' },
+        { name: '희귀 합금', rarity: 'epic', icon: '🧱' },
+        { name: '에너지 결정', rarity: 'rare', icon: '🔮' },
+        { name: '금속 조각', rarity: 'common', icon: '🔩' },
       ],
     },
     pityCounter: 0,
@@ -62,20 +62,20 @@ const pools: GachaPool[] = [
   },
   {
     id: 'legendary',
-    name: '传说祈愿',
+    name: '전설뽑기',
     cost: { currency: 'gems', amount: 100 },
-    banner: '⭐ 泰坦之神 出率UP！传说率3%',
+    banner: '⭐ 타이탄 확률 UP! 전설 확률 3%',
     rates: { legendary: 3, epic: 15, rare: 35, common: 47 },
     items: {
       mechas: ['titan', 'phantom', 'crusher'],
       weapons: [
-        { name: '神之审判', rarity: 'legendary', attack: 80, icon: '⚡' },
-        { name: '毁灭者', rarity: 'epic', attack: 50, icon: '💢' },
-        { name: '量子炮', rarity: 'rare', attack: 35, icon: '🌟' },
+        { name: '신의 심판', rarity: 'legendary', attack: 80, icon: '⚡' },
+        { name: '파괴자', rarity: 'epic', attack: 50, icon: '💢' },
+        { name: '양자포', rarity: 'rare', attack: 35, icon: '🌟' },
       ],
       materials: [
-        { name: '传说核心', rarity: 'legendary', icon: '💎' },
-        { name: '暗物质', rarity: 'epic', icon: '🌌' },
+        { name: '전설코어', rarity: 'legendary', icon: '💎' },
+        { name: '암흑 물질', rarity: 'epic', icon: '🌌' },
       ],
     },
     pityCounter: 0,
@@ -84,9 +84,9 @@ const pools: GachaPool[] = [
 ]
 
 const mechaDB: Record<string, MechaConfig> = {
-  crusher: { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '地裂冲击', owned: false, equipped: false },
-  phantom: { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '分身突袭', owned: false, equipped: false },
-  titan: { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '天罚', owned: false, equipped: false },
+  crusher: { id: 'crusher', name: '록 브레이커', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '지진 충격', owned: false, equipped: false },
+  phantom: { id: 'phantom', name: '팬텀 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '분신 기습', owned: false, equipped: false },
+  titan: { id: 'titan', name: '타이탄', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '천벌', owned: false, equipped: false },
 }
 
 function rollRarity(rates: GachaPool['rates']): string {
@@ -148,7 +148,7 @@ export const useGachaStore = create<GachaState>((set, get) => ({
         const item: ItemData = {
           id: itemId, name: weapon.name, type: 'weapon', rarity: weapon.rarity as any,
           icon: weapon.icon, stats: { attack: weapon.attack }, count: 1,
-          description: `通过祈愿获得的${weapon.name}。`,
+          description: `뽑기로 획득한 ${weapon.name}。`,
         }
         rpg.addItem(item)
         result = {
@@ -162,7 +162,7 @@ export const useGachaStore = create<GachaState>((set, get) => ({
         const itemId = 'm_gacha_' + Date.now() + '_' + i
         const item: ItemData = {
           id: itemId, name: mat.name, type: 'material', rarity: mat.rarity as any,
-          icon: mat.icon, count: 1, description: `祈愿获得的材料。`,
+          icon: mat.icon, count: 1, description: `뽑기로 획득한 재료.`,
         }
         rpg.addItem(item)
         result = {
