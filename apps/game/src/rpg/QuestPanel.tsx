@@ -4,10 +4,10 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
   const { quests, claimQuest, updateQuest } = useRPGStore()
 
   const statusLabels: Record<string, { text: string; color: string }> = {
-    available: { text: '可接取', color: '#888899' },
-    active: { text: '进行中', color: '#44aaff' },
-    completed: { text: '可领取', color: '#44ff88' },
-    claimed: { text: '已完成', color: '#666666' },
+    available: { text: '수락 가능', color: '#888899' },
+    active: { text: '진행 중', color: '#44aaff' },
+    completed: { text: '보상 대기', color: '#44ff88' },
+    claimed: { text: '완료', color: '#666666' },
   }
 
   return (
@@ -28,7 +28,7 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         }}>
           <span style={{ color: '#ffcc00', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            ⚡ 任务列表
+            ⚡ 퀘스트 목록
           </span>
           <span onClick={onClose} style={{
             color: '#ff6666', cursor: 'pointer', fontSize: 20, padding: '0 8px',
@@ -73,17 +73,17 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
                 <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#ffcc44' }}>
                   <span>💰 {q.reward.gold}</span>
                   <span>⭐ {q.reward.exp}</span>
-                  {q.reward.items && <span>🎁 特殊奖励</span>}
+                  {q.reward.items && <span>🎁 특별 보상</span>}
                 </div>
                 {/* Action button */}
                 {q.status === 'available' && (
                   <button onClick={() => updateQuest(q.id, 0)} style={actionBtn('#44aaff')}>
-                    接受任务
+                    퀘스트 수락
                   </button>
                 )}
                 {q.status === 'completed' && (
                   <button onClick={() => claimQuest(q.id)} style={actionBtn('#44ff88')}>
-                    领取奖励
+                    보상 받기
                   </button>
                 )}
               </div>
