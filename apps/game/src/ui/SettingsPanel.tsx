@@ -25,14 +25,14 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
           borderBottom: '1px solid rgba(0,255,255,0.15)',
         }}>
           <span style={{ color: '#00ffff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            ⚙️ 设置
+            ⚙️ 설정
           </span>
           <span onClick={onClose} style={{ color: '#ff6666', cursor: 'pointer', fontSize: 20 }}>✕</span>
         </div>
 
         <div style={{ padding: 20 }}>
           {/* Quality */}
-          <Section title="画面质量">
+          <Section title="그래픽 품질">
             <div style={{ display: 'flex', gap: 8 }}>
               {(['low', 'medium', 'high'] as const).map(q => (
                 <button key={q} onClick={() => setQuality(q)} style={{
@@ -42,20 +42,20 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
                   color: quality === q ? '#00ffff' : '#666',
                   fontSize: 12, fontWeight: 'bold',
                 }}>
-                  {q === 'low' ? '流畅' : q === 'medium' ? '平衡' : '极致'}
+                  {q === 'low' ? '낮음' : q === 'medium' ? '보통' : '높음'}
                 </button>
               ))}
             </div>
           </Section>
 
           {/* Toggles */}
-          <Section title="特效">
-            <Toggle label="泛光 (Bloom)" checked={bloom} onChange={() => setBloom(!bloom)} />
-            <Toggle label="阴影" checked={shadows} onChange={() => setShadows(!shadows)} />
+          <Section title="효과">
+            <Toggle label="빛 번짐 (Bloom)" checked={bloom} onChange={() => setBloom(!bloom)} />
+            <Toggle label="그림자" checked={shadows} onChange={() => setShadows(!shadows)} />
           </Section>
 
           {/* Audio */}
-          <Section title="音效">
+          <Section title="소리">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <span style={{ fontSize: 20 }}>🔊</span>
               <input
@@ -68,7 +68,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
           </Section>
 
           {/* Weather control (debug/fun) */}
-          <Section title="天气">
+          <Section title="날씨">
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {(['clear', 'rain', 'storm', 'snow', 'sandstorm'] as const).map(w => (
                 <button key={w} onClick={() => setWeather(w)} style={{
@@ -78,14 +78,14 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
                   color: world.weather === w ? '#00ffcc' : '#666',
                   fontSize: 11,
                 }}>
-                  {w === 'clear' ? '☀️ 晴' : w === 'rain' ? '🌧️ 雨' : w === 'storm' ? '⛈️ 暴' : w === 'snow' ? '❄️ 雪' : '🌪️ 沙'}
+                  {w === 'clear' ? '☀️ 맑음' : w === 'rain' ? '🌧️ 비' : w === 'storm' ? '⛈️ 폭풍' : w === 'snow' ? '❄️ 눈' : '🌪️ 모래'}
                 </button>
               ))}
             </div>
           </Section>
 
           {/* Time slider */}
-          <Section title="时间">
+          <Section title="시간">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <span style={{ fontSize: 20 }}>{world.timeOfDay < 6 || world.timeOfDay > 18 ? '🌙' : '☀️'}</span>
               <input
