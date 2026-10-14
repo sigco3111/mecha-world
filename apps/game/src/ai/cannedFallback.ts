@@ -9,54 +9,21 @@ interface CannedPool {
 }
 
 const POOLS: Record<NpcId, CannedPool> = {
-  echo: {
-    default: [
-      "本核在呢……吧？信号有点飘，但本核没走。",
-      "喂——你还在吗？本核听不太清自己了，但记得你。",
-      "线不太稳，本核先凑合着陪你。别担心。",
-      "（灵核信号噪声）……本核刚才说什么来着？算了，你还在就好。",
-    ],
-  },
-  babs: {
-    default: [
-      "小子，灵核信号断了，回头再聊。修东西的事不跑。",
-      "我这儿收音机都雪花屏了，晚点来找我。",
-      "信号不好，但我老扳手还在。机甲有事就放着。",
-      "想当年信号好的时候……算了，不讲了，回头说。",
-    ],
-    repair: ["机甲先放着，信号回来我给你看。老规矩。"],
-    quest: ["委托的事我记下了，回头细说。"],
-  },
-  vera: {
-    default: [
-      "……信号不稳。我的王牌，回头再谈。",
-      "情报暂时收不到，你先小心野外的虫群。",
-      "特价还作数，但现在我说不了话。回头来。",
-      "（沉默片刻）……线路有杂音。保重。",
-    ],
-    quest: ["悬赏的事，信号好了我给你留一单。特价。"],
-    trade: ["交易回头办，先保命要紧。"],
-  },
-  jicha: {
-    default: [
-      "哐当！信号断了！本机先收摊！",
-      "叮——本机听不见！回头再聊！哐当！",
-      "本机精密零件怕这破信号！晚点来！",
-      "（静电噪音）……本机刚才在唱歌你听见没？没有？那算了哐当！",
-    ],
-    trade: ["买卖回头办哐当！本机先躲雷雨去！"],
-  },
+  echo: { default: ["나 여기 있어. 정적 배포에서는 로컬 대화만 할 수 있어.", "걱정하지 마. 함께 탐험해 보자.", "새로운 AI 답변은 없지만 준비된 대사로 이야기할 수 있어.", "오늘은 어느 쪽으로 갈까?"] },
+  babs: { default: ["렌치 타운에 온 걸 환영해, 꼬마.", "정비소는 언제나 열려 있어. 메카를 잘 돌보라고.", "동쪽 폐기장의 적은 연습 상대로 좋아.", "든든한 장비가 목숨을 지켜주지."], repair: ["수리 키트는 가방에서 사용할 수 있어. 이 대화로 자동 수리되지는 않아."], quest: ["퀘스트 목록에서 의뢰를 확인해. 여기서는 새 AI 의뢰가 생성되지 않아."] },
+  vera: { default: ["우리 에이스, 야외의 적을 조심해.", "적 메카 10대를 처치하면 보스가 나타나.", "준비된 퀘스트부터 확인해 봐.", "좋은 장비와 전략이 필요해."], quest: ["기본 퀘스트는 퀘스트 목록에서 받을 수 있어."], trade: ["아이템 거래는 상점 메뉴를 이용해."] },
+  jicha: { default: ["딩! 귀한 손님! 오늘도 좋은 하루예요!", "골드가 모자라면 적 메카를 잡으세요! 쾅!", "좋은 장비가 생존의 열쇠랍니다!", "여기는 로컬 대화예요. 거래는 상점 메뉴로!"], trade: ["물건은 상점에서 보세요! 쾅!"] },
 };
 
 function pick(arr: string[]): string {
   return arr[Math.floor(Math.random() * arr.length)] ?? arr[0] ?? "...";
 }
 
-/** 罐头回复：根据玩家文本关键词路由（任务/修理/交易/闲聊） */
+/** 罐头回复：根据玩家文本关键词路由（퀘스트/修理/交易/闲聊） */
 export function cannedReply(npcId: NpcId, text: string): string {
   const pool = POOLS[npcId];
-  if (/任务|委托|活儿|赏金|差事/.test(text) && pool.quest) return pick(pool.quest);
-  if (/修|坏|装|改/.test(text) && pool.repair) return pick(pool.repair);
-  if (/买|卖|价|交易|货|多少钱/.test(text) && pool.trade) return pick(pool.trade);
+  if (/퀘스트|의뢰|임무|현상금/.test(text) && pool.quest) return pick(pool.quest);
+  if (/수리|고장|정비/.test(text) && pool.repair) return pick(pool.repair);
+  if (/구매|판매|가격|거래|물건|얼마/.test(text) && pool.trade) return pick(pool.trade);
   return pick(pool.default);
 }
