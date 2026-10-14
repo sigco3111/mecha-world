@@ -3,7 +3,7 @@ import { useGameStore } from './stores/gameStore'
 import { isTouchDevice } from './controls/TouchControls'
 import { cameraMode } from './Player'
 
-// === 血条/护盾/能量 ===
+// === 血条/护盾/에너지 ===
 function StatusBar({ value, max, color, bgColor, icon }: {
   value: number; max: number; color: string; bgColor: string; icon: string
 }) {
@@ -75,7 +75,7 @@ function SkillIcon({ name, hotkey, ready }: {
   )
 }
 
-// === 弹药计数 ===
+// === 탄약计数 ===
 function AmmoCounter({ ammo, max }: { ammo: number; max: number }) {
   return (
     <div style={{
@@ -85,7 +85,7 @@ function AmmoCounter({ ammo, max }: { ammo: number; max: number }) {
       <div style={{ fontSize: 28, fontWeight: 'bold', textShadow: '0 0 8px rgba(0,255,255,0.6)' }}>
         {ammo}
       </div>
-      <div style={{ fontSize: 10, color: '#446688' }}>/ {max} 弹药</div>
+      <div style={{ fontSize: 10, color: '#446688' }}>/ {max} 탄약</div>
     </div>
   )
 }
@@ -101,7 +101,7 @@ function HitFlash({ intensity }: { intensity: number }) {
   )
 }
 
-// === 大招屏幕特效 ===
+// === 궁극기屏幕효과 ===
 function UltFlash({ ultCastTime }: { ultCastTime: number }) {
   const [show, setShow] = useState(false)
   
@@ -129,7 +129,7 @@ function UltFlash({ ultCastTime }: { ultCastTime: number }) {
         background: 'radial-gradient(circle at center, transparent 20%, rgba(255,180,0,0.3) 40%, transparent 60%)',
         animation: 'ultRing 1s ease-out forwards',
       }} />
-      {/* 大招文字 */}
+      {/* 궁극기文字 */}
       <div style={{
         position: 'absolute', top: '30%', left: '50%',
         transform: 'translate(-50%, -50%)',
@@ -280,7 +280,7 @@ function Crosshair() {
   )
 }
 
-// === 视角模式指示器 ===
+// === 시점模式指示器 ===
 function ViewModeIndicator() {
   const [, forceUpdate] = useState(0)
   useEffect(() => {
@@ -301,7 +301,7 @@ function ViewModeIndicator() {
         fontSize: 11, fontFamily: 'monospace', fontWeight: 'bold',
         color: cameraMode.firstPerson ? '#ff44ff' : '#44ff88',
       }}>
-        {cameraMode.firstPerson ? '🎯 FPS' : '👁️ TPS'}  [V切换]
+        {cameraMode.firstPerson ? '🎯 FPS' : '👁️ TPS'}  [V전환]
       </span>
     </div>
   )
@@ -337,8 +337,8 @@ export function BattleHUD() {
           position: 'absolute', bottom: 20, right: 20, zIndex: 100,
           display: 'flex', gap: 12, alignItems: 'flex-end',
         }}>
-          <SkillIcon name="👊" hotkey="J / 左键" ready={true} />
-          <SkillIcon name="🔫" hotkey="K / 右键" ready={weapon.rangedAmmo > 0} />
+          <SkillIcon name="👊" hotkey="J / 왼쪽 버튼" ready={true} />
+          <SkillIcon name="🔫" hotkey="K / 오른쪽 버튼" ready={weapon.rangedAmmo > 0} />
           <SkillIcon name="💨" hotkey="SPACE" ready={player.energy > 10} />
           <SkillIcon name="🌟" hotkey="R" ready={player.energy >= 100} />
         </div>
@@ -350,4 +350,3 @@ export function BattleHUD() {
     </>
   )
 }
-
