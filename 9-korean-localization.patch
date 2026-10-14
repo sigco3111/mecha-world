@@ -1,0 +1,1618 @@
+diff --git a/apps/game/index.html b/apps/game/index.html
+index 4366dfb..8dcb885 100644
+--- a/apps/game/index.html
++++ b/apps/game/index.html
+@@ -10,7 +10,7 @@
+     <meta name="mobile-web-app-capable" content="yes" />
+     <link rel="manifest" href="/manifest.json" />
+     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+-    <title>MECHA WORLD</title>
++    <title>MECHA WORLD 한글판</title>
+     <style>
+       * { margin: 0; padding: 0; box-sizing: border-box; }
+       html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a1a; }
+diff --git a/apps/game/src/App.tsx b/apps/game/src/App.tsx
+index f631f86..c1642cd 100644
+--- a/apps/game/src/App.tsx
++++ b/apps/game/src/App.tsx
+@@ -1,22 +1,15 @@
+-import { useEffect, useState } from 'react'
+ import Game from './Game'
+ import { DialoguePanel } from './ai/DialoguePanel'
+ import { EchoButton } from './ai/EchoButton'
+ import { DirectorToast } from './ai/directorToast'
+-import { DevDashboard } from './ai/devDashboard'
+ 
+ export default function App() {
+-  const [dev, setDev] = useState(false)
+-  useEffect(() => {
+-    if (new URLSearchParams(window.location.search).get('dev') === '1') setDev(true)
+-  }, [])
+   return (
+     <>
+       <Game />
+       <DialoguePanel />
+       <DirectorToast />
+       <EchoButton />
+-      {dev && <DevDashboard onClose={() => setDev(false)} />}
+     </>
+   )
+ }
+diff --git a/apps/game/src/BattleHUD.tsx b/apps/game/src/BattleHUD.tsx
+index 6dbab74..10cd72b 100644
+--- a/apps/game/src/BattleHUD.tsx
++++ b/apps/game/src/BattleHUD.tsx
+@@ -3,7 +3,7 @@ import { useGameStore } from './stores/gameStore'
+ import { isTouchDevice } from './controls/TouchControls'
+ import { cameraMode } from './Player'
+ 
+-// === 血条/护盾/能量 ===
++// === 血条/护盾/에너지 ===
+ function StatusBar({ value, max, color, bgColor, icon }: {
+   value: number; max: number; color: string; bgColor: string; icon: string
+ }) {
+@@ -75,7 +75,7 @@ function SkillIcon({ name, hotkey, ready }: {
+   )
+ }
+ 
+-// === 弹药计数 ===
++// === 탄약计数 ===
+ function AmmoCounter({ ammo, max }: { ammo: number; max: number }) {
+   return (
+     <div style={{
+@@ -85,7 +85,7 @@ function AmmoCounter({ ammo, max }: { ammo: number; max: number }) {
+       <div style={{ fontSize: 28, fontWeight: 'bold', textShadow: '0 0 8px rgba(0,255,255,0.6)' }}>
+         {ammo}
+       </div>
+-      <div style={{ fontSize: 10, color: '#446688' }}>/ {max} 弹药</div>
++      <div style={{ fontSize: 10, color: '#446688' }}>/ {max} 탄약</div>
+     </div>
+   )
+ }
+@@ -101,7 +101,7 @@ function HitFlash({ intensity }: { intensity: number }) {
+   )
+ }
+ 
+-// === 大招屏幕特效 ===
++// === 궁극기屏幕효과 ===
+ function UltFlash({ ultCastTime }: { ultCastTime: number }) {
+   const [show, setShow] = useState(false)
+   
+@@ -129,7 +129,7 @@ function UltFlash({ ultCastTime }: { ultCastTime: number }) {
+         background: 'radial-gradient(circle at center, transparent 20%, rgba(255,180,0,0.3) 40%, transparent 60%)',
+         animation: 'ultRing 1s ease-out forwards',
+       }} />
+-      {/* 大招文字 */}
++      {/* 궁극기文字 */}
+       <div style={{
+         position: 'absolute', top: '30%', left: '50%',
+         transform: 'translate(-50%, -50%)',
+@@ -280,7 +280,7 @@ function Crosshair() {
+   )
+ }
+ 
+-// === 视角模式指示器 ===
++// === 시점模式指示器 ===
+ function ViewModeIndicator() {
+   const [, forceUpdate] = useState(0)
+   useEffect(() => {
+@@ -301,7 +301,7 @@ function ViewModeIndicator() {
+         fontSize: 11, fontFamily: 'monospace', fontWeight: 'bold',
+         color: cameraMode.firstPerson ? '#ff44ff' : '#44ff88',
+       }}>
+-        {cameraMode.firstPerson ? '🎯 FPS' : '👁️ TPS'}  [V切换]
++        {cameraMode.firstPerson ? '🎯 FPS' : '👁️ TPS'}  [V전환]
+       </span>
+     </div>
+   )
+@@ -337,8 +337,8 @@ export function BattleHUD() {
+           position: 'absolute', bottom: 20, right: 20, zIndex: 100,
+           display: 'flex', gap: 12, alignItems: 'flex-end',
+         }}>
+-          <SkillIcon name="👊" hotkey="J / 左键" ready={true} />
+-          <SkillIcon name="🔫" hotkey="K / 右键" ready={weapon.rangedAmmo > 0} />
++          <SkillIcon name="👊" hotkey="J / 왼쪽 버튼" ready={true} />
++          <SkillIcon name="🔫" hotkey="K / 오른쪽 버튼" ready={weapon.rangedAmmo > 0} />
+           <SkillIcon name="💨" hotkey="SPACE" ready={player.energy > 10} />
+           <SkillIcon name="🌟" hotkey="R" ready={player.energy >= 100} />
+         </div>
+diff --git a/apps/game/src/Effects.tsx b/apps/game/src/Effects.tsx
+index 30431d9..e733103 100644
+--- a/apps/game/src/Effects.tsx
++++ b/apps/game/src/Effects.tsx
+@@ -94,7 +94,7 @@ export function ProjectileRenderer() {
+   return <group ref={groupRef} />
+ }
+ 
+-// 冲击波特效
++// 冲击波효과
+ export function ImpactRenderer() {
+   const groupRef = useRef<THREE.Group>(null)
+   const activeImpacts = useRef<Map<string, { mesh: THREE.Mesh; born: number; type: string }>>(new Map())
+@@ -104,7 +104,7 @@ export function ImpactRenderer() {
+     const now = Date.now()
+     if (!groupRef.current) return
+ 
+-    // 添加新特效
++    // 添加新효과
+     for (const imp of impacts) {
+       if (activeImpacts.current.has(imp.id)) continue
+       const ring = new THREE.Mesh(
+@@ -148,7 +148,7 @@ export function ImpactRenderer() {
+       useGameStore.getState().clearImpact(imp.id)
+     }
+ 
+-    // 更新特效
++    // 更新효과
+     const toDelete: string[] = []
+     activeImpacts.current.forEach((data, id) => {
+       const age = (now - data.born) / 1000
+diff --git a/apps/game/src/Environment.tsx b/apps/game/src/Environment.tsx
+index 0f2f002..ddfb2bd 100644
+--- a/apps/game/src/Environment.tsx
++++ b/apps/game/src/Environment.tsx
+@@ -40,7 +40,7 @@ export function Obstacles() {
+           <meshStandardMaterial color={b.color} metalness={0.6} roughness={0.4} />
+         </mesh>
+       ))}
+-      {/* 散布的能量柱 */}
++      {/* 散布的에너지柱 */}
+       {Array.from({ length: 15 }).map((_, i) => {
+         const angle = (i / 15) * Math.PI * 2
+         const radius = 20 + (i % 3) * 5
+diff --git a/apps/game/src/Game.tsx b/apps/game/src/Game.tsx
+index 03dc8ea..a9d2d71 100644
+--- a/apps/game/src/Game.tsx
++++ b/apps/game/src/Game.tsx
+@@ -89,10 +89,10 @@ export default function Game() {
+         textShadow: '0 0 10px rgba(0,255,255,0.5)', pointerEvents: 'none', lineHeight: 1.8,
+       }}>
+         <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 8 }}>MECHA WORLD</div>
+-        <div style={{ color: '#88aaff' }}>WASD — 移动</div>
+-        <div style={{ color: '#88aaff' }}>SHIFT — 冲刺 | SPACE — 喷气</div>
+-        <div style={{ color: '#ff4444' }}>J / 左键 — 近战 | K / 右键 — 射击</div>
+-        <div style={{ color: '#88aaff' }}>鼠标拖拽 — 视角 | V — 切换第一人称</div>
++        <div style={{ color: '#88aaff' }}>WASD — 이동</div>
++        <div style={{ color: '#88aaff' }}>SHIFT — 돌진 | SPACE — 제트 점프</div>
++        <div style={{ color: '#ff4444' }}>J / 왼쪽 버튼 — 근접 | K / 오른쪽 버튼 — 사격</div>
++        <div style={{ color: '#88aaff' }}>마우스 드래그 — 시점 | V — 1인칭 전환</div>
+       </div>
+ 
+       {/* Right HUD: stats */}
+@@ -102,10 +102,10 @@ export default function Game() {
+         textShadow: '0 0 10px rgba(0,255,255,0.5)', pointerEvents: 'none', textAlign: 'right',
+       }}>
+         <div style={{ marginBottom: 4, fontSize: 14 }}>RYZER-X</div>
+-        <div style={{ color: '#ffaa00' }}>击杀: {killCount}</div>
++        <div style={{ color: '#ffaa00' }}>처치: {killCount}</div>
+         <div style={{ color: '#88aaff' }}>Wave: {waveNumber}</div>
+         <div style={{ marginTop: 8, fontSize: 10, color: '#446688' }}>
+-          击杀10个敌人触发Boss
++          적 10대를 처치하면 보스 등장
+         </div>
+       </div>
+ 
+@@ -116,7 +116,7 @@ export default function Game() {
+ 
+       {/* Rewarded ad — top right corner */}
+       <div style={{ position: 'absolute', top: 70, right: 180, zIndex: 90 }}>
+-        <RewardedAdTrigger label="📺 免费钻石" />
++        <RewardedAdTrigger label="📺 무료 다이아" />
+       </div>
+ 
+       {/* RPG Menu buttons — bottom center */}
+@@ -124,11 +124,11 @@ export default function Game() {
+         position: 'absolute', bottom: 25, left: '50%', transform: 'translateX(-50%)',
+         zIndex: 95, display: 'flex', gap: 8,
+       }}>
+-        <MenuBtn icon="📦" label="背包" onClick={() => setShowInventory(true)} />
+-        <MenuBtn icon="⚡" label="任务" onClick={() => setShowQuests(true)} />
+-        <MenuBtn icon="🤖" label="机甲" onClick={() => setShowMechas(true)} />
+-        <MenuBtn icon="🎰" label="祈愿" onClick={() => setShowGacha(true)} />
+-        <MenuBtn icon="🛒" label="商店" onClick={() => setShowShop(true)} />
++        <MenuBtn icon="📦" label="가방" onClick={() => setShowInventory(true)} />
++        <MenuBtn icon="⚡" label="퀘스트" onClick={() => setShowQuests(true)} />
++        <MenuBtn icon="🤖" label="메카" onClick={() => setShowMechas(true)} />
++        <MenuBtn icon="🎰" label="뽑기" onClick={() => setShowGacha(true)} />
++        <MenuBtn icon="🛒" label="상점" onClick={() => setShowShop(true)} />
+       </div>
+ 
+       {/* RPG Panels */}
+diff --git a/apps/game/src/MechaModel.tsx b/apps/game/src/MechaModel.tsx
+index f30d997..2eb028f 100644
+--- a/apps/game/src/MechaModel.tsx
++++ b/apps/game/src/MechaModel.tsx
+@@ -2,7 +2,7 @@ import { useRef, forwardRef, useImperativeHandle } from 'react'
+ import { useFrame } from '@react-three/fiber'
+ import * as THREE from 'three'
+ 
+-// 暴露给父组件的接口 — 控制手臂动画
++// 폭풍露给父组件的接口 — 控制手臂动画
+ export type MechaHandle = {
+   setAttackPhase: (phase: number) => void // 0=idle, 1=left, 2=right, 3=double
+   setMoving: (moving: boolean) => void
+@@ -55,7 +55,7 @@ export const MechaModel = forwardRef<MechaHandle, MechaModelProps>(
+       a.attackTime += dt
+       a.walkTime += dt * (a.moving ? 8 : 0)
+ 
+-      // 核心呼吸
++      // 코어呼吸
+       if (coreRef.current) {
+         const s = 1 + Math.sin(t * 3) * 0.08
+         coreRef.current.scale.set(s, s, s)
+@@ -92,7 +92,7 @@ export const MechaModel = forwardRef<MechaHandle, MechaModelProps>(
+         }
+       }
+ 
+-      // 攻击完成后自动恢复
++      // 공격完成后自动恢复
+       if (a.attackTime > 0.4) {
+         a.attackPhase = 0
+       }
+diff --git a/apps/game/src/TrainingDummy.tsx b/apps/game/src/TrainingDummy.tsx
+index 3375782..b3d50a2 100644
+--- a/apps/game/src/TrainingDummy.tsx
++++ b/apps/game/src/TrainingDummy.tsx
+@@ -70,7 +70,7 @@ export const TrainingDummy = ({ position: initialPos, color = '#ff4444', onRef }
+       g.rotation.z = THREE.MathUtils.lerp(g.rotation.z, 0, 0.2)
+     }
+ 
+-    // 血量过低时机甲倾斜
++    // 血量过低时메카倾斜
+     if (hpRef.current < maxHp * 0.3) {
+       g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, -0.15, 0.05)
+     } else {
+diff --git a/apps/game/src/ai/DialoguePanel.tsx b/apps/game/src/ai/DialoguePanel.tsx
+index 436d9e7..efdfbdf 100644
+--- a/apps/game/src/ai/DialoguePanel.tsx
++++ b/apps/game/src/ai/DialoguePanel.tsx
+@@ -4,10 +4,10 @@ import type { NpcId } from "@nexus/shared";
+ import { useDialogueStore } from "../stores/dialogueStore";
+ 
+ const NPC_META: Record<NpcId, { name: string; color: string; hint: string }> = {
+-  echo: { name: "Echo（灵核）", color: "#66ddff", hint: "和本核聊聊……吧？" },
+-  babs: { name: "老扳手（巴布斯）", color: "#ffaa00", hint: "小子，说事儿" },
+-  vera: { name: "薇拉", color: "#44ff88", hint: "情报和委托，都是生意" },
+-  jicha: { name: "叽喳", color: "#ff66cc", hint: "叮——！买点什么？" },
++  echo: { name: "Echo (영혼 코어)", color: "#66ddff", hint: "나랑 얘기해 볼래...?" },
++  babs: { name: "바브스 (정비공)", color: "#ffaa00", hint: "꼬마, 무슨 일이야?" },
++  vera: { name: "베라", color: "#44ff88", hint: "정보도 의뢰도 모두 거래야" },
++  jicha: { name: "지차", color: "#ff66cc", hint: "딩! 뭘 살까요?" },
+ };
+ 
+ export function DialoguePanel() {
+@@ -42,10 +42,10 @@ export function DialoguePanel() {
+       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderBottom: `1px solid ${meta.color}55` }}>
+         <span style={{ color: meta.color, fontWeight: "bold" }}>{meta.name}</span>
+         <span style={{ fontSize: 11, color: "#889" }}>
+-          {status === "connecting" && "连接中…"}
+-          {status === "streaming" && "对方输入中…"}
+-          {status === "fallback" && "灵核信号不稳定（离线模式）"}
+-          {status === "online" && (lastUsage ? `tokens ${lastUsage.tokensIn}/${lastUsage.tokensOut} · ¥${lastUsage.costCny.toFixed(4)}` : "在线")}
++          {status === "connecting" && "연결 중..."}
++          {status === "streaming" && "입력 중..."}
++          {status === "fallback" && "정적 배포: 로컬 대화 모드"}
++          {status === "online" && (lastUsage ? `tokens ${lastUsage.tokensIn}/${lastUsage.tokensOut} · ¥${lastUsage.costCny.toFixed(4)}` : "온라인")}
+         </span>
+         <button onClick={close} style={{ background: "none", border: "none", color: "#889", cursor: "pointer", fontSize: 16 }}>✕</button>
+       </div>
+@@ -78,7 +78,7 @@ export function DialoguePanel() {
+         <div ref={bottomRef} />
+       </div>
+ 
+-      {/* 动态任务确认卡（P4 §38.4）*/}
++      {/* 动态퀘스트确认卡（P4 §38.4）*/}
+       {offeredQuest && (
+         <div style={{ padding: "10px 14px", borderTop: `1px solid ${meta.color}55`, background: "rgba(255,215,0,0.06)" }}>
+           <div style={{ color: "#ffdd55", fontWeight: "bold", marginBottom: 4 }}>
+@@ -88,10 +88,10 @@ export function DialoguePanel() {
+             </span>
+           </div>
+           <div style={{ fontSize: 12, color: "#ccb" }}>
+-            目标：{offeredQuest.objective.targetId} × {offeredQuest.objective.count}
++            목표：{offeredQuest.objective.targetId} × {offeredQuest.objective.count}
+           </div>
+           <div style={{ fontSize: 12, color: "#ffb" }}>
+-            奖励：{offeredQuest.rewards.gold} 金币 · {offeredQuest.rewards.exp} 经验{offeredQuest.rewards.crystal ? ` · ${offeredQuest.rewards.crystal} 晶核` : ""}
++            보상：{offeredQuest.rewards.gold} 골드 · {offeredQuest.rewards.exp} 경험치{offeredQuest.rewards.crystal ? ` · ${offeredQuest.rewards.crystal} 수정 코어` : ""}
+           </div>
+           <div style={{ fontSize: 11, color: "#998", margin: "4px 0 6px" }}>{offeredQuest.dialogue.offer}</div>
+           <div style={{ display: "flex", gap: 8 }}>
+@@ -99,13 +99,13 @@ export function DialoguePanel() {
+               onClick={acceptQuest}
+               style={{ flex: 1, background: "#ffdd55", color: "#0a0f1e", border: "none", borderRadius: 6, padding: "6px", fontWeight: "bold", cursor: "pointer", fontFamily: "monospace" }}
+             >
+-              接受委托
++              의뢰 수락
+             </button>
+             <button
+               onClick={rejectQuest}
+               style={{ flex: 1, background: "transparent", color: "#889", border: "1px solid #445", borderRadius: 6, padding: "6px", cursor: "pointer", fontFamily: "monospace" }}
+             >
+-              婉拒
++              거절
+             </button>
+           </div>
+         </div>
+@@ -117,7 +117,7 @@ export function DialoguePanel() {
+           value={input}
+           onChange={(e) => setInput(e.target.value)}
+           onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
+-          placeholder={status === "fallback" ? "离线模式：本地回复（重开面板重试连接）" : "输入…（Enter 发送）"}
++          placeholder={status === "fallback" ? "메시지 입력... (로컬 대화)" : "입력... (Enter 전송)"}
+           maxLength={300}
+           style={{
+             flex: 1, background: "#0d1526", border: `1px solid ${meta.color}55`, borderRadius: 8,
+@@ -131,7 +131,7 @@ export function DialoguePanel() {
+             padding: "8px 14px", fontWeight: "bold", cursor: "pointer", fontFamily: "monospace",
+           }}
+         >
+-          发送
++          전송
+         </button>
+       </div>
+     </div>
+diff --git a/apps/game/src/ai/EchoButton.tsx b/apps/game/src/ai/EchoButton.tsx
+index 070a5cb..0586be3 100644
+--- a/apps/game/src/ai/EchoButton.tsx
++++ b/apps/game/src/ai/EchoButton.tsx
+@@ -7,7 +7,7 @@ export function EchoButton() {
+   return (
+     <button
+       onClick={() => open("echo")}
+-      title="和 Echo 说话"
++      title="Echo와 대화"
+       style={{
+         position: "fixed", right: 18, bottom: 180, zIndex: 999,
+         width: 52, height: 52, borderRadius: "50%",
+diff --git a/apps/game/src/ai/aiClient.ts b/apps/game/src/ai/aiClient.ts
+index e8e1d3f..64a6573 100644
+--- a/apps/game/src/ai/aiClient.ts
++++ b/apps/game/src/ai/aiClient.ts
+@@ -17,7 +17,7 @@ export interface AiClient {
+ }
+ 
+ const RECONNECT_DELAYS = [500, 1000, 2000]; // §38.3 指数退避 ×3（约 3.5s 内判定降级）
+-const CONNECT_TIMEOUT = 2000; // 单次握手超时，避免 refused 连接挂起拖慢降级判定
++const CONNECT_TIMEOUT = 2000; // 单회握手超时，避免 refused 连接挂起拖慢降级判定
+ 
+ export function connect(opts: AiClientOptions): AiClient {
+   let ws: WebSocket | null = null;
+diff --git a/apps/game/src/ai/cannedFallback.ts b/apps/game/src/ai/cannedFallback.ts
+index 765a2e1..4420972 100644
+--- a/apps/game/src/ai/cannedFallback.ts
++++ b/apps/game/src/ai/cannedFallback.ts
+@@ -9,54 +9,21 @@ interface CannedPool {
+ }
+ 
+ const POOLS: Record<NpcId, CannedPool> = {
+-  echo: {
+-    default: [
+-      "本核在呢……吧？信号有点飘，但本核没走。",
+-      "喂——你还在吗？本核听不太清自己了，但记得你。",
+-      "线不太稳，本核先凑合着陪你。别担心。",
+-      "（灵核信号噪声）……本核刚才说什么来着？算了，你还在就好。",
+-    ],
+-  },
+-  babs: {
+-    default: [
+-      "小子，灵核信号断了，回头再聊。修东西的事不跑。",
+-      "我这儿收音机都雪花屏了，晚点来找我。",
+-      "信号不好，但我老扳手还在。机甲有事就放着。",
+-      "想当年信号好的时候……算了，不讲了，回头说。",
+-    ],
+-    repair: ["机甲先放着，信号回来我给你看。老规矩。"],
+-    quest: ["委托的事我记下了，回头细说。"],
+-  },
+-  vera: {
+-    default: [
+-      "……信号不稳。我的王牌，回头再谈。",
+-      "情报暂时收不到，你先小心野外的虫群。",
+-      "特价还作数，但现在我说不了话。回头来。",
+-      "（沉默片刻）……线路有杂音。保重。",
+-    ],
+-    quest: ["悬赏的事，信号好了我给你留一单。特价。"],
+-    trade: ["交易回头办，先保命要紧。"],
+-  },
+-  jicha: {
+-    default: [
+-      "哐当！信号断了！本机先收摊！",
+-      "叮——本机听不见！回头再聊！哐当！",
+-      "本机精密零件怕这破信号！晚点来！",
+-      "（静电噪音）……本机刚才在唱歌你听见没？没有？那算了哐当！",
+-    ],
+-    trade: ["买卖回头办哐当！本机先躲雷雨去！"],
+-  },
++  echo: { default: ["나 여기 있어. 정적 배포에서는 로컬 대화만 할 수 있어.", "걱정하지 마. 함께 탐험해 보자.", "새로운 AI 답변은 없지만 준비된 대사로 이야기할 수 있어.", "오늘은 어느 쪽으로 갈까?"] },
++  babs: { default: ["렌치 타운에 온 걸 환영해, 꼬마.", "정비소는 언제나 열려 있어. 메카를 잘 돌보라고.", "동쪽 폐기장의 적은 연습 상대로 좋아.", "든든한 장비가 목숨을 지켜주지."], repair: ["수리 키트는 가방에서 사용할 수 있어. 이 대화로 자동 수리되지는 않아."], quest: ["퀘스트 목록에서 의뢰를 확인해. 여기서는 새 AI 의뢰가 생성되지 않아."] },
++  vera: { default: ["우리 에이스, 야외의 적을 조심해.", "적 메카 10대를 처치하면 보스가 나타나.", "준비된 퀘스트부터 확인해 봐.", "좋은 장비와 전략이 필요해."], quest: ["기본 퀘스트는 퀘스트 목록에서 받을 수 있어."], trade: ["아이템 거래는 상점 메뉴를 이용해."] },
++  jicha: { default: ["딩! 귀한 손님! 오늘도 좋은 하루예요!", "골드가 모자라면 적 메카를 잡으세요! 쾅!", "좋은 장비가 생존의 열쇠랍니다!", "여기는 로컬 대화예요. 거래는 상점 메뉴로!"], trade: ["물건은 상점에서 보세요! 쾅!"] },
+ };
+ 
+ function pick(arr: string[]): string {
+   return arr[Math.floor(Math.random() * arr.length)] ?? arr[0] ?? "...";
+ }
+ 
+-/** 罐头回复：根据玩家文本关键词路由（任务/修理/交易/闲聊） */
++/** 罐头回复：根据玩家文本关键词路由（퀘스트/修理/交易/闲聊） */
+ export function cannedReply(npcId: NpcId, text: string): string {
+   const pool = POOLS[npcId];
+-  if (/任务|委托|活儿|赏金|差事/.test(text) && pool.quest) return pick(pool.quest);
+-  if (/修|坏|装|改/.test(text) && pool.repair) return pick(pool.repair);
+-  if (/买|卖|价|交易|货|多少钱/.test(text) && pool.trade) return pick(pool.trade);
++  if (/퀘스트|의뢰|임무|현상금/.test(text) && pool.quest) return pick(pool.quest);
++  if (/수리|고장|정비/.test(text) && pool.repair) return pick(pool.repair);
++  if (/구매|판매|가격|거래|물건|얼마/.test(text) && pool.trade) return pick(pool.trade);
+   return pick(pool.default);
+ }
+diff --git a/apps/game/src/ai/devDashboard.tsx b/apps/game/src/ai/devDashboard.tsx
+index ef830ca..18e32f0 100644
+--- a/apps/game/src/ai/devDashboard.tsx
++++ b/apps/game/src/ai/devDashboard.tsx
+@@ -81,7 +81,7 @@ export function DevDashboard({ onClose }: { onClose: () => void }) {
+       {m && (
+         <>
+           <div style={{ marginBottom: 6 }}>Provider: <span style={{ color: "#ffaa00" }}>{m.provider}</span></div>
+-          <div style={{ marginBottom: 6 }}>KV: {m.kv.backend} {m.kv.ready ? "✓" : "✗"} · 在线 {m.sessions}</div>
++          <div style={{ marginBottom: 6 }}>KV: {m.kv.backend} {m.kv.ready ? "✓" : "✗"} · 온라인 {m.sessions}</div>
+           <div style={{ marginBottom: 4 }}>
+             今日成本：¥{m.budget.todayCostCny.toFixed(4)} / {m.budget.dailyBudgetCny}
+           </div>
+diff --git a/apps/game/src/ai/directorToast.tsx b/apps/game/src/ai/directorToast.tsx
+index 85636f8..6d16f31 100644
+--- a/apps/game/src/ai/directorToast.tsx
++++ b/apps/game/src/ai/directorToast.tsx
+@@ -1,18 +1,18 @@
+-// GDD §9.1 —— AI 导演世界事件 toast（屏幕顶部，可忽略）
++// GDD §9.1 —— AI 导演월드 이벤트 toast（屏幕顶部，可忽略）
+ import { useWorldEventStore } from "../stores/worldEventStore";
+ 
+ const KIND_LABEL: Record<string, string> = {
+-  caravan_attack: "🚚 商队遇袭",
+-  crystal_surge: "💎 晶簇爆发",
+-  swarm_tide: "🌀 虫群潮汐",
+-  bounty_target: "🎯 悬赏目标",
++  caravan_attack: "🚚 상단 습격",
++  crystal_surge: "💎 수정 분출",
++  swarm_tide: "🌀 벌레 떼",
++  bounty_target: "🎯 현상금 대상",
+ };
+ 
+ export function DirectorToast() {
+   const current = useWorldEventStore((s) => s.current);
+   const dismiss = useWorldEventStore((s) => s.dismiss);
+   if (!current) return null;
+-  const label = KIND_LABEL[current.kind] ?? "📡 世界事件";
++  const label = KIND_LABEL[current.kind] ?? "📡 월드 이벤트";
+ 
+   return (
+     <div
+@@ -46,8 +46,8 @@ export function DirectorToast() {
+       </div>
+       <div style={{ fontSize: 12, color: "#ccb" }}>{current.broadcast}</div>
+       <div style={{ fontSize: 11, color: "#998" }}>
+-        {current.zone} · {current.durationMin}min · 奖励 {current.rewardPack.gold} 金币 ·{" "}
+-        {current.spawns.reduce((s, sp) => s + sp.count, 0)} 敌
++        {current.zone} · {current.durationMin}min · 보상 {current.rewardPack.gold} 골드 ·{" "}
++        {current.spawns.reduce((s, sp) => s + sp.count, 0)} 적
+       </div>
+     </div>
+   );
+diff --git a/apps/game/src/ai/toolExecutor.ts b/apps/game/src/ai/toolExecutor.ts
+index 5c02f4d..6a3a7d2 100644
+--- a/apps/game/src/ai/toolExecutor.ts
++++ b/apps/game/src/ai/toolExecutor.ts
+@@ -1,4 +1,4 @@
+-// GDD §34.4 —— tool_call 前端执行器：zod 二次校验 → store action → 回执 {ok, detail}。
++// GDD §34.4 —— tool_call 前端执行器：zod 二회校验 → store action → 回执 {ok, detail}。
+ // 不信任后端之外的任何输入；所有写回走现有 gameStore / rpgStore。
+ import { ToolSchemas, type ToolName, type DynamicQuest } from "@nexus/shared";
+ import { useGameStore } from "../stores/gameStore";
+@@ -6,18 +6,18 @@ import { useRPGStore, type ItemData, type QuestData } from "../rpg/rpgStore";
+ 
+ // §19.1/§19.2/§19.3 —— 白名单物品 → ItemData 模板（count 由调用方覆盖）
+ const ITEM_MAP: Record<string, ItemData> = {
+-  mat_iron: { id: "mat_iron", name: "铁矿", type: "material", rarity: "common", icon: "⛏️", count: 1, description: "平原采集的铁矿，用于强化。" },
+-  mat_parts: { id: "mat_parts", name: "通用零件", type: "material", rarity: "common", icon: "🔩", count: 1, description: "通用机械零件，修理/任务用。" },
+-  mat_crystal: { id: "mat_crystal", name: "晶簇", type: "material", rarity: "rare", icon: "💎", count: 1, description: "晶簇原野采集，突破/抽卡材料。" },
+-  con_repair: { id: "con_repair", name: "修理包", type: "consumable", rarity: "common", icon: "🧰", count: 1, stats: { maxHp: 0 }, description: "野外恢复 30% HP。", effect: { type: "heal", value: 300 } } as ItemData,
+-  con_energy: { id: "con_energy", name: "能量饮料", type: "consumable", rarity: "common", icon: "⚡", count: 1, stats: { maxHp: 0 }, description: "大招能量 +30。", effect: { type: "energy", value: 50 } } as ItemData,
+-  con_bait: { id: "con_bait", name: "虫群诱饵", type: "consumable", rarity: "common", icon: "🪤", count: 1, stats: { maxHp: 0 }, description: "吸引 20m 内敌人。", effect: { type: "taunt" } } as ItemData,
+-  con_shield: { id: "con_shield", name: "应急护盾", type: "consumable", rarity: "rare", icon: "💊", count: 1, stats: { maxHp: 0 }, description: "立即回充护盾。", effect: { type: "shield", value: 999 } } as ItemData,
+-  eq_w_std: { id: "eq_w_std", name: "制式步枪刃", type: "weapon", rarity: "common", icon: "⚔️", count: 1, stats: { attack: 18 }, description: "制式武器，攻守均衡。" },
+-  eq_w_blade: { id: "eq_w_blade", name: "近战偏重型刃", type: "weapon", rarity: "common", icon: "🗡️", count: 1, stats: { attack: 22 }, description: "近战强化武器。" },
+-  eq_w_rail: { id: "eq_w_rail", name: "远程偏轨枪", type: "weapon", rarity: "common", icon: "🔫", count: 1, stats: { attack: 20 }, description: "远程强化武器。" },
+-  eq_a_std: { id: "eq_a_std", name: "制式装甲", type: "armor", rarity: "common", icon: "🛡️", count: 1, stats: { defense: 10, maxHp: 180 }, description: "制式装甲。" },
+-  eq_c_std: { id: "eq_c_std", name: "制式核心", type: "core", rarity: "common", icon: "🔋", count: 1, stats: { maxEnergy: 15 }, description: "制式能量核心。" },
++  mat_iron: { id: "mat_iron", name: "철광석", type: "material", rarity: "common", icon: "⛏️", count: 1, description: "평원에서 채집한 강화용 철광석." },
++  mat_parts: { id: "mat_parts", name: "범용 부품", type: "material", rarity: "common", icon: "🔩", count: 1, description: "수리·퀘스트용 범용 기계 부품." },
++  mat_crystal: { id: "mat_crystal", name: "수정 군집", type: "material", rarity: "rare", icon: "💎", count: 1, description: "수정 평원에서 채집한 돌파·뽑기 재료." },
++  con_repair: { id: "con_repair", name: "수리 키트", type: "consumable", rarity: "common", icon: "🧰", count: 1, stats: { maxHp: 0 }, description: "야외에서 HP 30% 회복.", effect: { type: "heal", value: 300 } } as ItemData,
++  con_energy: { id: "con_energy", name: "에너지 음료", type: "consumable", rarity: "common", icon: "⚡", count: 1, stats: { maxHp: 0 }, description: "궁극기 에너지 +30.", effect: { type: "energy", value: 50 } } as ItemData,
++  con_bait: { id: "con_bait", name: "벌레 유인제", type: "consumable", rarity: "common", icon: "🪤", count: 1, stats: { maxHp: 0 }, description: "20m 안의 적 유인.", effect: { type: "taunt" } } as ItemData,
++  con_shield: { id: "con_shield", name: "비상 방패", type: "consumable", rarity: "rare", icon: "💊", count: 1, stats: { maxHp: 0 }, description: "즉시 방패 충전.", effect: { type: "shield", value: 999 } } as ItemData,
++  eq_w_std: { id: "eq_w_std", name: "제식 소총검", type: "weapon", rarity: "common", icon: "⚔️", count: 1, stats: { attack: 18 }, description: "공격과 방어가 균형 잡힌 제식 무기." },
++  eq_w_blade: { id: "eq_w_blade", name: "근접 칼날", type: "weapon", rarity: "common", icon: "🗡️", count: 1, stats: { attack: 22 }, description: "근접 강화 무기." },
++  eq_w_rail: { id: "eq_w_rail", name: "원거리 레일건", type: "weapon", rarity: "common", icon: "🔫", count: 1, stats: { attack: 20 }, description: "원거리 강화 무기." },
++  eq_a_std: { id: "eq_a_std", name: "제식 장갑", type: "armor", rarity: "common", icon: "🛡️", count: 1, stats: { defense: 10, maxHp: 180 }, description: "제식 장갑." },
++  eq_c_std: { id: "eq_c_std", name: "제식 코어", type: "core", rarity: "common", icon: "🔋", count: 1, stats: { maxEnergy: 15 }, description: "제식 에너지 코어." },
+ };
+ 
+ function toQuestData(q: DynamicQuest): QuestData {
+@@ -43,18 +43,18 @@ export async function executeTool(
+   tool: ToolName,
+   args: unknown
+ ): Promise<{ ok: boolean; detail: string }> {
+-  // §34.4 前端二次 zod 校验
++  // §34.4 前端二회 zod 校验
+   const schema = ToolSchemas[tool];
+   const parsed = schema.safeParse(args);
+   if (!parsed.success) {
+-    return { ok: false, detail: `参数校验失败：${parsed.error.issues[0]?.message ?? "?"}` };
++    return { ok: false, detail: `입력 확인 실패：${parsed.error.issues[0]?.message ?? "?"}` };
+   }
+   const a = parsed.data as Record<string, unknown> & { quest?: DynamicQuest };
+ 
+   switch (tool) {
+     case "set_weather": {
+       useGameStore.getState().setWeather(String(a.weather));
+-      return { ok: true, detail: `天气已切换为 ${String(a.weather)}` };
++      return { ok: true, detail: `날씨 변경: ${String(a.weather)}` };
+     }
+     case "give_currency": {
+       const rpg = useRPGStore.getState();
+@@ -62,41 +62,41 @@ export async function executeTool(
+       const crystal = Number(a.crystal ?? 0);
+       if (gold) rpg.addGold(gold);
+       if (crystal) rpg.addGems(crystal);
+-      return { ok: true, detail: `发放 ${gold} 金币、${crystal} 晶钻` };
++      return { ok: true, detail: `지급: ${gold} 골드、${crystal} 수정` };
+     }
+     case "give_item": {
+       const tpl = ITEM_MAP[String(a.itemId)];
+-      if (!tpl) return { ok: false, detail: `未知物品 ${String(a.itemId)}` };
++      if (!tpl) return { ok: false, detail: `알 수 없는 아이템 ${String(a.itemId)}` };
+       useRPGStore.getState().addItem({ ...tpl, count: Number(a.count) });
+-      return { ok: true, detail: `获得 ${tpl.name} ×${Number(a.count)}` };
++      return { ok: true, detail: `획득: ${tpl.name} ×${Number(a.count)}` };
+     }
+     case "repair_mecha": {
+       const g = useGameStore.getState();
+       const heal = g.player.maxHp - g.player.hp;
+-      if (heal <= 0) return { ok: true, detail: "机甲完好，无需修理" };
++      if (heal <= 0) return { ok: true, detail: "메카가 멀쩡해요. 수리가 필요 없어요" };
+       g.healPlayer(heal);
+       const fee = Math.floor(heal * 0.4);
+       useRPGStore.getState().addGold(-fee);
+-      return { ok: true, detail: `修理完成：恢复 ${heal} HP，费用 ${fee} 金币` };
++      return { ok: true, detail: `수리 완료: 회복 ${heal} HP，비용 ${fee} 골드` };
+     }
+     case "give_quest": {
+-      if (!a.quest) return { ok: false, detail: "任务对象缺失" };
++      if (!a.quest) return { ok: false, detail: "퀘스트 정보 없음" };
+       useRPGStore.setState((s) => ({ quests: [...s.quests, toQuestData(a.quest as DynamicQuest)] }));
+-      return { ok: true, detail: `已接取委托「${a.quest.title}」` };
++      return { ok: true, detail: `의뢰 수락「${a.quest.title}」` };
+     }
+     case "spawn_enemy": {
+-      // P5/P6 接入 EnemySystem 实际生成；当前回执确认（NPC 可叙述"已发出信号"）
+-      return { ok: true, detail: `已标记 ${Number(a.count)}×${String(a.enemyId)} 出现位置` };
++      // P5/P6 接入 EnemySystem 实际生成；현재回执确认（NPC 可叙述"已发出信号"）
++      return { ok: true, detail: `위치 표시: ${Number(a.count)}×${String(a.enemyId)} 등장 위치` };
+     }
+     case "unlock_map_marker": {
+-      return { ok: true, detail: `已点亮地图标记 ${String(a.poiId)}` };
++      return { ok: true, detail: `지도 표시 추가: ${String(a.poiId)}` };
+     }
+     case "trade": {
+-      // P5/P6 完整购物车结算（好感折扣）；当前回执确认
++      // P5/P6 完整购物车结算（好感折扣）；현재回执确认
+       const cartLen = Array.isArray(a.cart) ? a.cart.length : 0;
+-      return { ok: true, detail: `交易完成（${cartLen} 项商品）` };
++      return { ok: true, detail: `거래 완료（${cartLen} 개 상품）` };
+     }
+     default:
+-      return { ok: false, detail: `未知工具 ${String(tool)}` };
++      return { ok: false, detail: `알 수 없는 도구 ${String(tool)}` };
+   }
+ }
+diff --git a/apps/game/src/combat/CombatLogic.ts b/apps/game/src/combat/CombatLogic.ts
+index 4f477fd..50b531f 100644
+--- a/apps/game/src/combat/CombatLogic.ts
++++ b/apps/game/src/combat/CombatLogic.ts
+@@ -1,6 +1,6 @@
+ import * as THREE from 'three'
+ 
+-// 扇形近战命中检测
++// 扇形근접命中检测
+ export function checkMeleeHit(
+   attackerPos: THREE.Vector3,
+   attackerRotY: number,
+@@ -64,7 +64,7 @@ export function checkProjectileHit(
+   return dx * dx + dy * dy + dz * dz < radius * radius
+ }
+ 
+-// 找最佳锁定目标
++// 找最佳锁定목표
+ export function findLockTarget(
+   playerPos: THREE.Vector3,
+   playerForward: THREE.Vector3,
+diff --git a/apps/game/src/controls/TouchControls.tsx b/apps/game/src/controls/TouchControls.tsx
+index 9592fbd..9429e42 100644
+--- a/apps/game/src/controls/TouchControls.tsx
++++ b/apps/game/src/controls/TouchControls.tsx
+@@ -197,18 +197,18 @@ export function TouchSkillButtons() {
+     }}>
+       {/* Top row: boost + ult */}
+       <div style={{ display: 'flex', gap: 10 }}>
+-        <SkillBtn icon="💨" label="冲刺" k="boost" color="#44aaff" />
+-        <SkillBtn icon="🌟" label="大招" k="ult" color="#ff44ff" />
++        <SkillBtn icon="💨" label="돌진" k="boost" color="#44aaff" />
++        <SkillBtn icon="🌟" label="궁극기" k="ult" color="#ff44ff" />
+       </div>
+       {/* Bottom row: melee + ranged + view toggle */}
+       <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+-        <SkillBtn icon="👊" label="近战" k="melee" color="#ff8800" />
+-        <SkillBtn icon="🔫" label="射击" k="ranged" color="#00ffff" />
++        <SkillBtn icon="👊" label="근접" k="melee" color="#ff8800" />
++        <SkillBtn icon="🔫" label="사격" k="ranged" color="#00ffff" />
+         <ViewToggleBtn />
+       </div>
+       {/* Jump button below */}
+       <div style={{ position: 'absolute', bottom: 0, right: 74 }}>
+-        <SkillBtn icon="🚀" label="喷气" k="jump" color="#ffdd00" />
++        <SkillBtn icon="🚀" label="제트 점프" k="jump" color="#ffdd00" />
+       </div>
+     </div>
+   )
+diff --git a/apps/game/src/gacha/DailyLogin.tsx b/apps/game/src/gacha/DailyLogin.tsx
+index 9f69a23..4e1c96a 100644
+--- a/apps/game/src/gacha/DailyLogin.tsx
++++ b/apps/game/src/gacha/DailyLogin.tsx
+@@ -2,22 +2,22 @@ import { useState } from 'react'
+ import { useRPGStore } from '../rpg/rpgStore'
+ 
+ const dailyRewards = [
+-  { day: 1, icon: '💰', name: '500金币', type: 'gold', amount: 500 },
+-  { day: 2, icon: '💎', name: '20钻石', type: 'gems', amount: 20 },
+-  { day: 3, icon: '🔩', name: '机甲碎片×5', type: 'item', amount: 5 },
+-  { day: 4, icon: '💰', name: '1000金币', type: 'gold', amount: 1000 },
+-  { day: 5, icon: '💎', name: '50钻石', type: 'gems', amount: 50 },
+-  { day: 6, icon: '🔋', name: '稀有能量核心', type: 'item', amount: 1 },
+-  { day: 7, icon: '🎁', name: '传说宝箱', type: 'gems', amount: 200 },
++  { day: 1, icon: '💰', name: '500골드', type: 'gold', amount: 500 },
++  { day: 2, icon: '💎', name: '20다이아', type: 'gems', amount: 20 },
++  { day: 3, icon: '🔩', name: '메카 조각×5', type: 'item', amount: 5 },
++  { day: 4, icon: '💰', name: '1000골드', type: 'gold', amount: 1000 },
++  { day: 5, icon: '💎', name: '50다이아', type: 'gems', amount: 50 },
++  { day: 6, icon: '🔋', name: '희귀에너지코어', type: 'item', amount: 1 },
++  { day: 7, icon: '🎁', name: '전설상자', type: 'gems', amount: 200 },
+ ]
+ 
+ export function DailyLogin({ onClose }: { onClose: () => void }) {
+   const { addGold, addGems } = useRPGStore()
+-  // 用本地日期字符串(YYYY-MM-DD)作为key（toISOString 是 UTC，东八区 0-8 点会错一天）
++  // 用本地日期字符串(YYYY-MM-DD)作为key（toISOString 是 UTC，东八区 0-8 点会错一일차）
+   const localKey = (d: Date) =>
+     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+   const todayKey = localKey(new Date())
+-  // 连续签到天数：昨天领过则 +1，断签/完成7天周期则重置为 1 并清空已领记录，今天已领则保持
++  // 连续签到일차数：昨일차领过则 +1，断签/完成7일차周期则重置为 1 并清空已领记录，今일차已领则保持
+   const [streak, _setStreak] = useState<number>(() => {
+     const prev = parseInt(localStorage.getItem('loginStreak') || '0')
+     const last = localStorage.getItem('lastClaimDate')
+@@ -38,7 +38,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
+     return saved ? JSON.parse(saved) : []
+   })
+   const today = streak
+-  // 今天是否已领
++  // 今일차是否已领
+   const claimedToday = localStorage.getItem(`claimed_${todayKey}`) === '1'
+ 
+   const claim = (day: number) => {
+@@ -73,7 +73,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
+           borderBottom: '1px solid rgba(255,200,100,0.15)',
+         }}>
+           <span style={{ color: '#ffcc66', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
+-            📅 每日签到
++            📅 매일 출석
+           </span>
+           <span onClick={onClose} style={{ color: '#ff6666', cursor: 'pointer', fontSize: 20 }}>✕</span>
+         </div>
+@@ -107,7 +107,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
+                     animation: 'pulse 1s infinite',
+                   }}>!</div>
+                 )}
+-                <div style={{ fontSize: 10, color: '#8899aa', marginBottom: 4 }}>第{day}天</div>
++                <div style={{ fontSize: 10, color: '#8899aa', marginBottom: 4 }}> {day}일차</div>
+                 <div style={{ fontSize: 24, marginBottom: 4, filter: isClaimed ? 'grayscale(1) opacity(0.5)' : 'none' }}>
+                   {reward.icon}
+                 </div>
+@@ -123,7 +123,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
+         </div>
+ 
+         <div style={{ padding: '0 16px 16px', textAlign: 'center', color: '#667788', fontSize: 11 }}>
+-          连续签到7天可获得传说宝箱！
++          7일 연속 출석하면 전설 상자를 받아요!
+         </div>
+         <style>{`@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }`}</style>
+       </div>
+diff --git a/apps/game/src/gacha/GachaPanel.tsx b/apps/game/src/gacha/GachaPanel.tsx
+index 3840d57..ad923bb 100644
+--- a/apps/game/src/gacha/GachaPanel.tsx
++++ b/apps/game/src/gacha/GachaPanel.tsx
+@@ -44,7 +44,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
+           borderBottom: '1px solid rgba(170,68,255,0.15)',
+         }}>
+           <span style={{ color: '#cc88ff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
+-            🎰 祈愿系统
++            🎰 뽑기 시스템
+           </span>
+           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+             <span style={{ color: '#44ddff', fontSize: 13 }}>💎 {gems}</span>
+@@ -70,7 +70,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
+                 {p.name}
+               </div>
+               <div style={{ fontSize: 10, color: '#888', marginTop: 4 }}>
+-                💎 {p.cost.amount}/次
++                💎 {p.cost.amount}/회
+               </div>
+             </div>
+           ))}
+@@ -87,12 +87,12 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
+           </div>
+           <div style={{ color: '#ccddff', fontSize: 12 }}>{selectedPool.banner}</div>
+           <div style={{ display: 'flex', gap: 16, marginTop: 8, fontSize: 11 }}>
+-            <span style={{ color: '#ffaa00' }}>传说 {selectedPool.rates.legendary}%</span>
+-            <span style={{ color: '#aa44ff' }}>史诗 {selectedPool.rates.epic}%</span>
+-            <span style={{ color: '#4488ff' }}>稀有 {selectedPool.rates.rare}%</span>
++            <span style={{ color: '#ffaa00' }}>전설 {selectedPool.rates.legendary}%</span>
++            <span style={{ color: '#aa44ff' }}>영웅 {selectedPool.rates.epic}%</span>
++            <span style={{ color: '#4488ff' }}>희귀 {selectedPool.rates.rare}%</span>
+           </div>
+           <div style={{ fontSize: 10, color: '#667788', marginTop: 6 }}>
+-            保底：{selectedPool.guaranteedAt}抽必出传说 | 当前：{selectedPool.pityCounter}抽
++            확정 보장：{selectedPool.guaranteedAt}회에 전설 확정 | 현재：{selectedPool.pityCounter}회
+           </div>
+         </div>
+ 
+@@ -103,7 +103,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
+             disabled={gems < selectedPool.cost.amount}
+             style={pullBtnStyle(gems >= selectedPool.cost.amount, '#8866cc')}
+           >
+-            祈愿 ×1
++            뽑기 ×1
+             <div style={{ fontSize: 11, opacity: 0.8 }}>💎 {selectedPool.cost.amount}</div>
+           </button>
+           <button
+@@ -111,7 +111,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
+             disabled={gems < selectedPool.cost.amount * 10}
+             style={pullBtnStyle(gems >= selectedPool.cost.amount * 10, '#cc88ff')}
+           >
+-            祈愿 ×10
++            뽑기 ×10
+             <div style={{ fontSize: 11, opacity: 0.8 }}>💎 {selectedPool.cost.amount * 10}</div>
+           </button>
+         </div>
+@@ -153,7 +153,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
+             {result.name}
+           </div>
+           <div style={{ color: color, fontSize: 12, marginBottom: 4 }}>
+-            {result.rarity === 'legendary' ? '★★★★ 传说' : result.rarity === 'epic' ? '★★★ 史诗' : result.rarity === 'rare' ? '★★ 稀有' : '★ 普通'}
++            {result.rarity === 'legendary' ? '★★★★ 전설' : result.rarity === 'epic' ? '★★★ 영웅' : result.rarity === 'rare' ? '★★ 희귀' : '★ 일반'}
+           </div>
+           {result.isNew && (
+             <div style={{
+@@ -162,7 +162,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
+             }}>✦ NEW ✦</div>
+           )}
+           <div style={{ color: '#8899aa', fontSize: 12, marginTop: 24 }}>
+-            {revealed + 1 < results.length ? '点击继续 ▶' : '点击完成 ✓'}
++            {revealed + 1 < results.length ? '클릭하여 계속 ▶' : '클릭하여 완료 ✓'}
+           </div>
+         </div>
+         <style>{`
+@@ -181,7 +181,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
+       alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+     }} onClick={onClose}>
+       <div style={{ textAlign: 'center', maxWidth: 400 }}>
+-        <div style={{ color: '#cc88ff', fontSize: 18, marginBottom: 16 }}>祈愿结果</div>
++        <div style={{ color: '#cc88ff', fontSize: 18, marginBottom: 16 }}>뽑기 결과</div>
+         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+           {results.map((r, i) => (
+             <div key={i} style={{
+@@ -195,7 +195,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
+             </div>
+           ))}
+         </div>
+-        <div style={{ color: '#667788', fontSize: 12, marginTop: 24 }}>点击关闭</div>
++        <div style={{ color: '#667788', fontSize: 12, marginTop: 24 }}>클릭하여 닫기</div>
+       </div>
+     </div>
+   )
+diff --git a/apps/game/src/gacha/RewardedAd.tsx b/apps/game/src/gacha/RewardedAd.tsx
+index 4778817..a4beadb 100644
+--- a/apps/game/src/gacha/RewardedAd.tsx
++++ b/apps/game/src/gacha/RewardedAd.tsx
+@@ -1,7 +1,7 @@
+ import { useState, useEffect } from 'react'
+ import { useRPGStore } from '../rpg/rpgStore'
+ 
+-export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: { onReward?: () => void; label?: string }) {
++export function RewardedAdTrigger({ onReward, label = '모의 광고 보상' }: { onReward?: () => void; label?: string }) {
+   const [showAd, setShowAd] = useState(false)
+   const [adProgress, setAdProgress] = useState(0)
+   const [rewarded, setRewarded] = useState(false)
+@@ -52,7 +52,7 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: {
+         <div style={{ textAlign: 'center' }}>
+           <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
+           <div style={{ color: '#44ff88', fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
+-            获得 +10 💎
++            획득 +10 💎
+           </div>
+           <button
+             onClick={() => setShowAd(false)}
+@@ -63,7 +63,7 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: {
+               marginTop: 16,
+             }}
+           >
+-            收下
++            받기
+           </button>
+         </div>
+       </div>
+@@ -86,8 +86,8 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: {
+         border: '2px solid rgba(255,255,255,0.1)',
+       }}>
+         <div style={{ fontSize: 40 }}>🎮</div>
+-        <div style={{ color: '#88aaff', fontSize: 14, marginTop: 8 }}>下载更多好玩游戏</div>
+-        <div style={{ color: '#556677', fontSize: 11, marginTop: 4 }}>— 模拟广告 —</div>
++        <div style={{ color: '#88aaff', fontSize: 14, marginTop: 8 }}>모의 광고 체험</div>
++        <div style={{ color: '#556677', fontSize: 11, marginTop: 4 }}>— 실제 광고 아님 —</div>
+         {/* Ad progress bar */}
+         <div style={{
+           position: 'absolute', bottom: 0, left: 0, right: 0, height: 4,
+@@ -100,7 +100,7 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: {
+         </div>
+       </div>
+       <div style={{ color: '#8899aa', fontSize: 12, marginTop: 16 }}>
+-        {Math.ceil((100 - adProgress) / 20)}秒后获得奖励...
++        {Math.ceil((100 - adProgress) / 20)}초 후 보상 지급...
+       </div>
+     </div>
+   )
+diff --git a/apps/game/src/gacha/ShopPanel.tsx b/apps/game/src/gacha/ShopPanel.tsx
+index fcd06c2..a07c06b 100644
+--- a/apps/game/src/gacha/ShopPanel.tsx
++++ b/apps/game/src/gacha/ShopPanel.tsx
+@@ -12,22 +12,22 @@ interface ShopItem {
+ }
+ 
+ const shopItems: ShopItem[] = [
+-  { id: 'hp_potion', name: '生命药剂', icon: '❤️‍🩹', description: '恢复500生命', price: { currency: 'gold', amount: 100 }, type: 'consumable' },
+-  { id: 'energy_potion', name: '能量药剂', icon: '⚡', description: '恢复100能量', price: { currency: 'gold', amount: 80 }, type: 'consumable' },
+-  { id: 'repair_kit', name: '修理包', icon: '🔧', description: '恢复全部生命和能量', price: { currency: 'gold', amount: 300 }, type: 'consumable' },
+-  { id: 'weapon_sword2', name: '高频刀刃', icon: '⚔️', description: '攻击+25 稀有武器', price: { currency: 'gems', amount: 30 }, type: 'item',
+-    itemData: { name: '高频刀刃', type: 'weapon', rarity: 'rare', icon: '⚔️', stats: { attack: 25 } } },
+-  { id: 'weapon_hammer', name: '冲击战锤', icon: '🔨', description: '攻击+40 史诗武器', price: { currency: 'gems', amount: 60 }, type: 'item',
+-    itemData: { name: '冲击战锤', type: 'weapon', rarity: 'epic', icon: '🔨', stats: { attack: 40 } } },
+-  { id: 'armor_heavy', name: '重型装甲', icon: '🦾', description: '防御+30 生命+200', price: { currency: 'gems', amount: 50 }, type: 'item',
+-    itemData: { name: '重型装甲', type: 'armor', rarity: 'epic', icon: '🦾', stats: { defense: 30, maxHp: 200 } } },
++  { id: 'hp_potion', name: '체력 물약', icon: '❤️‍🩹', description: '체력 500 회복', price: { currency: 'gold', amount: 100 }, type: 'consumable' },
++  { id: 'energy_potion', name: '에너지 물약', icon: '⚡', description: '에너지 100 회복', price: { currency: 'gold', amount: 80 }, type: 'consumable' },
++  { id: 'repair_kit', name: '수리 키트', icon: '🔧', description: '체력과 에너지 전체 회복', price: { currency: 'gold', amount: 300 }, type: 'consumable' },
++  { id: 'weapon_sword2', name: '고주파 칼날', icon: '⚔️', description: '공격+25 희귀무기', price: { currency: 'gems', amount: 30 }, type: 'item',
++    itemData: { name: '고주파 칼날', type: 'weapon', rarity: 'rare', icon: '⚔️', stats: { attack: 25 } } },
++  { id: 'weapon_hammer', name: '충격 망치', icon: '🔨', description: '공격+40 영웅무기', price: { currency: 'gems', amount: 60 }, type: 'item',
++    itemData: { name: '충격 망치', type: 'weapon', rarity: 'epic', icon: '🔨', stats: { attack: 40 } } },
++  { id: 'armor_heavy', name: '중장갑', icon: '🦾', description: '방어+30 체력+200', price: { currency: 'gems', amount: 50 }, type: 'item',
++    itemData: { name: '중장갑', type: 'armor', rarity: 'epic', icon: '🦾', stats: { defense: 30, maxHp: 200 } } },
+ ]
+ 
+ const gemPacks = [
+-  { id: 'gems_s', name: '少量钻石', icon: '💎', amount: 100, price: '¥6', desc: '入门首选' },
+-  { id: 'gems_m', name: '中等钻石', icon: '💎', amount: 560, price: '¥30', desc: '性价比高', popular: true },
+-  { id: 'gems_l', name: '大量钻石', icon: '💎', amount: 1200, price: '¥68', desc: '月卡玩家推荐' },
+-  { id: 'gems_xl', name: '巨量钻石', icon: '💎', amount: 3300, price: '¥168', desc: '重氪首选' },
++  { id: 'gems_s', name: '소량 다이아', icon: '💎', amount: 100, price: '무료 테스트', desc: '입문용' },
++  { id: 'gems_m', name: '중간 다이아', icon: '💎', amount: 560, price: '무료 테스트', desc: '효율적', popular: true },
++  { id: 'gems_l', name: '대량 다이아', icon: '💎', amount: 1200, price: '무료 테스트', desc: '정기 이용자용' },
++  { id: 'gems_xl', name: '초대량 다이아', icon: '💎', amount: 3300, price: '무료 테스트', desc: '대량 구매용' },
+ ]
+ 
+ export function ShopPanel({ onClose }: { onClose: () => void }) {
+@@ -75,7 +75,7 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
+           borderBottom: '1px solid rgba(0,255,200,0.15)',
+         }}>
+           <span style={{ color: '#00ffcc', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
+-            🛒 商店
++            🛒 상점
+           </span>
+           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+             <span style={{ color: '#ffcc44', fontSize: 13 }}>💰 {gold}</span>
+@@ -86,8 +86,8 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
+ 
+         {/* Tabs */}
+         <div style={{ display: 'flex', gap: 8, padding: 12 }}>
+-          <div onClick={() => setTab('items')} style={tabBtn(tab === 'items', '#00ffcc')}>道具装备</div>
+-          <div onClick={() => setTab('gems')} style={tabBtn(tab === 'gems', '#44ddff')}>充值钻石</div>
++          <div onClick={() => setTab('items')} style={tabBtn(tab === 'items', '#00ffcc')}>아이템·장비</div>
++          <div onClick={() => setTab('gems')} style={tabBtn(tab === 'gems', '#44ddff')}>무료 테스트 다이아</div>
+         </div>
+ 
+         {/* Content */}
+@@ -134,7 +134,7 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
+                       position: 'absolute', top: -8, left: '50%', transform: 'translateX(-50%)',
+                       background: '#44ddff', color: '#000', padding: '2px 8px',
+                       borderRadius: 4, fontSize: 9, fontWeight: 'bold',
+-                    }}>推荐</div>
++                    }}>추천</div>
+                   )}
+                   <div style={{ fontSize: 36, marginBottom: 8 }}>{pack.icon}</div>
+                   <div style={{ color: '#44ddff', fontSize: 20, fontWeight: 'bold' }}>{pack.amount}</div>
+@@ -166,7 +166,7 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
+             borderRadius: 8, fontSize: 13, fontWeight: 'bold',
+             animation: 'slideUp 0.3s ease-out',
+           }}>
+-            ✓ 购买成功：{purchased}
++            ✓ 획득 완료：{purchased}
+           </div>
+         )}
+       </div>
+diff --git a/apps/game/src/gacha/gachaStore.ts b/apps/game/src/gacha/gachaStore.ts
+index c2c52b7..699bb48 100644
+--- a/apps/game/src/gacha/gachaStore.ts
++++ b/apps/game/src/gacha/gachaStore.ts
+@@ -39,22 +39,22 @@ interface GachaState {
+ const pools: GachaPool[] = [
+   {
+     id: 'standard',
+-    name: '标准祈愿',
++    name: '일반 뽑기',
+     cost: { currency: 'gems', amount: 50 },
+-    banner: '🎯 所有机甲与装备均可能获得',
++    banner: '🎯 모든 메카와 장비 획득 가능',
+     rates: { legendary: 1, epic: 9, rare: 30, common: 60 },
+     items: {
+       mechas: ['crusher', 'phantom', 'titan'],
+       weapons: [
+-        { name: '等离子剑', rarity: 'epic', attack: 45, icon: '⚔️' },
+-        { name: '电磁炮', rarity: 'rare', attack: 30, icon: '🔫' },
+-        { name: '合金战斧', rarity: 'rare', attack: 25, icon: '🪓' },
+-        { name: '标准刀刃', rarity: 'common', attack: 10, icon: '🔪' },
++        { name: '플라즈마 검', rarity: 'epic', attack: 45, icon: '⚔️' },
++        { name: '레일건', rarity: 'rare', attack: 30, icon: '🔫' },
++        { name: '합금 도끼', rarity: 'rare', attack: 25, icon: '🪓' },
++        { name: '기본 칼날', rarity: 'common', attack: 10, icon: '🔪' },
+       ],
+       materials: [
+-        { name: '稀有合金', rarity: 'epic', icon: '🧱' },
+-        { name: '能量结晶', rarity: 'rare', icon: '🔮' },
+-        { name: '金属碎片', rarity: 'common', icon: '🔩' },
++        { name: '희귀 합금', rarity: 'epic', icon: '🧱' },
++        { name: '에너지 결정', rarity: 'rare', icon: '🔮' },
++        { name: '금속 조각', rarity: 'common', icon: '🔩' },
+       ],
+     },
+     pityCounter: 0,
+@@ -62,20 +62,20 @@ const pools: GachaPool[] = [
+   },
+   {
+     id: 'legendary',
+-    name: '传说祈愿',
++    name: '전설뽑기',
+     cost: { currency: 'gems', amount: 100 },
+-    banner: '⭐ 泰坦之神 出率UP！传说率3%',
++    banner: '⭐ 타이탄 확률 UP! 전설 확률 3%',
+     rates: { legendary: 3, epic: 15, rare: 35, common: 47 },
+     items: {
+       mechas: ['titan', 'phantom', 'crusher'],
+       weapons: [
+-        { name: '神之审判', rarity: 'legendary', attack: 80, icon: '⚡' },
+-        { name: '毁灭者', rarity: 'epic', attack: 50, icon: '💢' },
+-        { name: '量子炮', rarity: 'rare', attack: 35, icon: '🌟' },
++        { name: '신의 심판', rarity: 'legendary', attack: 80, icon: '⚡' },
++        { name: '파괴자', rarity: 'epic', attack: 50, icon: '💢' },
++        { name: '양자포', rarity: 'rare', attack: 35, icon: '🌟' },
+       ],
+       materials: [
+-        { name: '传说核心', rarity: 'legendary', icon: '💎' },
+-        { name: '暗物质', rarity: 'epic', icon: '🌌' },
++        { name: '전설코어', rarity: 'legendary', icon: '💎' },
++        { name: '암흑 물질', rarity: 'epic', icon: '🌌' },
+       ],
+     },
+     pityCounter: 0,
+@@ -84,9 +84,9 @@ const pools: GachaPool[] = [
+ ]
+ 
+ const mechaDB: Record<string, MechaConfig> = {
+-  crusher: { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '地裂冲击', owned: false, equipped: false },
+-  phantom: { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '分身突袭', owned: false, equipped: false },
+-  titan: { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '天罚', owned: false, equipped: false },
++  crusher: { id: 'crusher', name: '록 브레이커', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '지진 충격', owned: false, equipped: false },
++  phantom: { id: 'phantom', name: '팬텀 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '분신 기습', owned: false, equipped: false },
++  titan: { id: 'titan', name: '타이탄', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '천벌', owned: false, equipped: false },
+ }
+ 
+ function rollRarity(rates: GachaPool['rates']): string {
+@@ -148,7 +148,7 @@ export const useGachaStore = create<GachaState>((set, get) => ({
+         const item: ItemData = {
+           id: itemId, name: weapon.name, type: 'weapon', rarity: weapon.rarity as any,
+           icon: weapon.icon, stats: { attack: weapon.attack }, count: 1,
+-          description: `通过祈愿获得的${weapon.name}。`,
++          description: `뽑기로 획득한 ${weapon.name}。`,
+         }
+         rpg.addItem(item)
+         result = {
+@@ -162,7 +162,7 @@ export const useGachaStore = create<GachaState>((set, get) => ({
+         const itemId = 'm_gacha_' + Date.now() + '_' + i
+         const item: ItemData = {
+           id: itemId, name: mat.name, type: 'material', rarity: mat.rarity as any,
+-          icon: mat.icon, count: 1, description: `祈愿获得的材料。`,
++          icon: mat.icon, count: 1, description: `뽑기로 획득한 재료.`,
+         }
+         rpg.addItem(item)
+         result = {
+diff --git a/apps/game/src/index.css b/apps/game/src/index.css
+index 3af035a..542ae6c 100644
+--- a/apps/game/src/index.css
++++ b/apps/game/src/index.css
+@@ -2,3 +2,5 @@
+ html, body, #root { width: 100%; height: 100%; overflow: hidden; background: #000; }
+ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+ canvas { display: block; touch-action: none; }
++
++body, button, input { font-family: "Noto Sans KR", system-ui, sans-serif; }
+diff --git a/apps/game/src/rpg/InventoryPanel.tsx b/apps/game/src/rpg/InventoryPanel.tsx
+index 27bd116..7499247 100644
+--- a/apps/game/src/rpg/InventoryPanel.tsx
++++ b/apps/game/src/rpg/InventoryPanel.tsx
+@@ -9,10 +9,10 @@ const rarityColors: Record<string, string> = {
+ }
+ 
+ const rarityLabels: Record<string, string> = {
+-  common: '普通',
+-  rare: '稀有',
+-  epic: '史诗',
+-  legendary: '传说',
++  common: '일반',
++  rare: '희귀',
++  epic: '영웅',
++  legendary: '전설',
+ }
+ 
+ export function InventoryPanel({ onClose }: { onClose: () => void }) {
+@@ -43,7 +43,7 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
+           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+         }}>
+           <span style={{ color: '#00ffff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
+-            📦 装备背包
++            📦 장비 가방
+           </span>
+           <span onClick={onClose} style={{
+             color: '#ff6666', cursor: 'pointer', fontSize: 20, padding: '0 8px',
+@@ -90,7 +90,7 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
+             ))}
+             {inventory.length === 0 && (
+               <div style={{ gridColumn: '1/-1', textAlign: 'center', color: '#666', padding: 40 }}>
+-                背包是空的，去打怪吧！
++                가방이 비었어요. 적을 처치해 보세요!
+               </div>
+             )}
+           </div>
+@@ -112,16 +112,16 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
+                 <div style={{
+                   textAlign: 'center', fontSize: 11, color: rarityColors[selected.rarity],
+                   marginBottom: 12,
+-                }}>{rarityLabels[selected.rarity]} · {selected.type === 'weapon' ? '武器' : selected.type === 'armor' ? '护甲' : selected.type === 'core' ? '核心' : selected.type === 'material' ? '材料' : '消耗品'}</div>
++                }}>{rarityLabels[selected.rarity]} · {selected.type === 'weapon' ? '무기' : selected.type === 'armor' ? '장갑' : selected.type === 'core' ? '코어' : selected.type === 'material' ? '재료' : '소모품'}</div>
+                 <div style={{ fontSize: 12, color: '#aabbcc', lineHeight: 1.6, marginBottom: 12 }}>
+                   {selected.description}
+                 </div>
+                 {selected.stats && (
+                   <div style={{ fontSize: 12, marginBottom: 12 }}>
+-                    {selected.stats.attack && <div style={{ color: '#ff8844' }}>攻击 +{selected.stats.attack}</div>}
+-                    {selected.stats.defense && <div style={{ color: '#44aaff' }}>防御 +{selected.stats.defense}</div>}
+-                    {selected.stats.maxHp && <div style={{ color: '#ff4444' }}>生命 +{selected.stats.maxHp}</div>}
+-                    {selected.stats.maxEnergy && <div style={{ color: '#44ddff' }}>能量 +{selected.stats.maxEnergy}</div>}
++                    {selected.stats.attack && <div style={{ color: '#ff8844' }}>공격 +{selected.stats.attack}</div>}
++                    {selected.stats.defense && <div style={{ color: '#44aaff' }}>방어 +{selected.stats.defense}</div>}
++                    {selected.stats.maxHp && <div style={{ color: '#ff4444' }}>체력 +{selected.stats.maxHp}</div>}
++                    {selected.stats.maxEnergy && <div style={{ color: '#44ddff' }}>에너지 +{selected.stats.maxEnergy}</div>}
+                   </div>
+                 )}
+                 {(selected.type === 'weapon' || selected.type === 'armor' || selected.type === 'core') && (
+@@ -129,12 +129,12 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
+                     <button
+                       onClick={() => { unequipItem(selected.type as 'weapon' | 'armor' | 'core'); setSelected({ ...selected, equipped: false }) }}
+                       style={btnStyle('#ff6644')}
+-                    >卸下</button>
++                    >해제</button>
+                   ) : (
+                     <button
+                       onClick={() => { equipItem(selected.id); setSelected({ ...selected, equipped: true }) }}
+                       style={btnStyle('#44ff88')}
+-                    >装备</button>
++                    >장비</button>
+                   )
+                 )}
+                 {selected.type === 'consumable' && (
+@@ -150,17 +150,17 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
+                     }}
+                     disabled={selected.count <= 0}
+                     style={btnStyle('#44ddff')}
+-                  >使用 ({selected.count})</button>
++                  >사용 ({selected.count})</button>
+                 )}
+                 {selected.type === 'material' && (
+                   <div style={{ textAlign: 'center', color: '#888', padding: 12, fontSize: 12 }}>
+-                    💧 材料物品，用于装备升级
++                    💧 장비 업그레이드용 재료
+                   </div>
+                 )}
+               </div>
+             ) : (
+               <div style={{ color: '#666', textAlign: 'center', paddingTop: 40, fontSize: 13 }}>
+-                选择一个装备查看详情
++                장비를 선택하면 자세히 볼 수 있어요
+               </div>
+             )}
+           </div>
+diff --git a/apps/game/src/rpg/MechaSelectPanel.tsx b/apps/game/src/rpg/MechaSelectPanel.tsx
+index 4a0da2e..39fa108 100644
+--- a/apps/game/src/rpg/MechaSelectPanel.tsx
++++ b/apps/game/src/rpg/MechaSelectPanel.tsx
+@@ -30,7 +30,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
+           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+         }}>
+           <span style={{ color: '#cc88ff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
+-            🤖 机甲图鉴
++            🤖 메카 도감
+           </span>
+           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+             <span style={{ color: '#44ddff', fontSize: 13 }}>💎 {gems}</span>
+@@ -85,7 +85,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
+                       position: 'absolute', top: 8, right: 8,
+                       background: '#44ff88', color: '#000', padding: '2px 8px',
+                       borderRadius: 4, fontSize: 10, fontWeight: 'bold',
+-                    }}>使用中</div>
++                    }}>사용 중</div>
+                   )}
+                 </div>
+ 
+@@ -97,7 +97,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
+                 </div>
+                 <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                   <span style={{ fontSize: 11, color: rarityColors[selected.rarity] }}>
+-                    {selected.rarity === 'common' ? '普通' : selected.rarity === 'rare' ? '稀有' : selected.rarity === 'epic' ? '史诗' : '传说'}
++                    {selected.rarity === 'common' ? '일반' : selected.rarity === 'rare' ? '희귀' : selected.rarity === 'epic' ? '영웅' : '전설'}
+                   </span>
+                 </div>
+ 
+@@ -105,10 +105,10 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
+                 <div style={{
+                   display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16,
+                 }}>
+-                  <StatCard label="生命" value={selected.baseHp} icon="❤️" color="#ff4444" locked={!selected.owned} />
+-                  <StatCard label="攻击" value={selected.baseAttack} icon="⚔️" color="#ff8844" locked={!selected.owned} />
+-                  <StatCard label="防御" value={selected.baseDefense} icon="🛡️" color="#44aaff" locked={!selected.owned} />
+-                  <StatCard label="速度" value={selected.baseSpeed} icon="💨" color="#44ddff" locked={!selected.owned} />
++                  <StatCard label="체력" value={selected.baseHp} icon="❤️" color="#ff4444" locked={!selected.owned} />
++                  <StatCard label="공격" value={selected.baseAttack} icon="⚔️" color="#ff8844" locked={!selected.owned} />
++                  <StatCard label="방어" value={selected.baseDefense} icon="🛡️" color="#44aaff" locked={!selected.owned} />
++                  <StatCard label="속도" value={selected.baseSpeed} icon="💨" color="#44ddff" locked={!selected.owned} />
+                 </div>
+ 
+                 {/* Skill */}
+@@ -116,7 +116,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
+                   background: 'rgba(170,68,255,0.1)', borderRadius: 8, padding: 10, marginBottom: 16,
+                   border: '1px solid rgba(170,68,255,0.2)',
+                 }}>
+-                  <div style={{ fontSize: 11, color: '#aa66cc', marginBottom: 4 }}>特殊技能</div>
++                  <div style={{ fontSize: 11, color: '#aa66cc', marginBottom: 4 }}>특수 스킬</div>
+                   <div style={{ fontSize: 14, color: '#cc88ff', fontWeight: 'bold' }}>{selected.skill}</div>
+                 </div>
+ 
+@@ -124,11 +124,11 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
+                 {selected.owned ? (
+                   selected.equipped ? (
+                     <div style={{ textAlign: 'center', color: '#44ff88', padding: 12 }}>
+-                      ✓ 当前装备中
++                      ✓ 현재 장착 중
+                     </div>
+                   ) : (
+                     <button onClick={() => equipMecha(selected.id)} style={btnStyle('#44ff88')}>
+-                      装备这台机甲
++                      이 메카 장착
+                     </button>
+                   )
+                 ) : (
+@@ -137,7 +137,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
+                     disabled={gems < 100}
+                     style={btnStyle(gems >= 100 ? '#ffaa00' : '#555555')}
+                   >
+-                    {gems >= 100 ? `解锁 (💎 100)` : '钻石不足 (需100)'}
++                    {gems >= 100 ? `해금 (💎 100)` : '다이아 부족 (100개 필요)'}
+                   </button>
+                 )}
+               </div>
+diff --git a/apps/game/src/rpg/QuestPanel.tsx b/apps/game/src/rpg/QuestPanel.tsx
+index aaaaea5..d2ff183 100644
+--- a/apps/game/src/rpg/QuestPanel.tsx
++++ b/apps/game/src/rpg/QuestPanel.tsx
+@@ -4,10 +4,10 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
+   const { quests, claimQuest, updateQuest } = useRPGStore()
+ 
+   const statusLabels: Record<string, { text: string; color: string }> = {
+-    available: { text: '可接取', color: '#888899' },
+-    active: { text: '进行中', color: '#44aaff' },
+-    completed: { text: '可领取', color: '#44ff88' },
+-    claimed: { text: '已完成', color: '#666666' },
++    available: { text: '수락 가능', color: '#888899' },
++    active: { text: '진행 중', color: '#44aaff' },
++    completed: { text: '보상 대기', color: '#44ff88' },
++    claimed: { text: '완료', color: '#666666' },
+   }
+ 
+   return (
+@@ -28,7 +28,7 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
+           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+         }}>
+           <span style={{ color: '#ffcc00', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
+-            ⚡ 任务列表
++            ⚡ 퀘스트 목록
+           </span>
+           <span onClick={onClose} style={{
+             color: '#ff6666', cursor: 'pointer', fontSize: 20, padding: '0 8px',
+@@ -73,17 +73,17 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
+                 <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#ffcc44' }}>
+                   <span>💰 {q.reward.gold}</span>
+                   <span>⭐ {q.reward.exp}</span>
+-                  {q.reward.items && <span>🎁 特殊奖励</span>}
++                  {q.reward.items && <span>🎁 특별 보상</span>}
+                 </div>
+                 {/* Action button */}
+                 {q.status === 'available' && (
+                   <button onClick={() => updateQuest(q.id, 0)} style={actionBtn('#44aaff')}>
+-                    接受任务
++                    퀘스트 수락
+                   </button>
+                 )}
+                 {q.status === 'completed' && (
+                   <button onClick={() => claimQuest(q.id)} style={actionBtn('#44ff88')}>
+-                    领取奖励
++                    보상 받기
+                   </button>
+                 )}
+               </div>
+diff --git a/apps/game/src/rpg/rpgStore.ts b/apps/game/src/rpg/rpgStore.ts
+index 7a9c30e..7e11317 100644
+--- a/apps/game/src/rpg/rpgStore.ts
++++ b/apps/game/src/rpg/rpgStore.ts
+@@ -77,41 +77,41 @@ interface RPGState {
+ const expForLevel = (lv: number) => Math.floor(100 * Math.pow(1.15, lv - 1))
+ 
+ const initialMechas: MechaConfig[] = [
+-  { id: 'starter', name: '游骑兵 MK-I', rarity: 'common', baseHp: 1000, baseAttack: 50, baseDefense: 20, baseSpeed: 8, color: '#4488ff', accentColor: '#00ffff', skill: '冲锋斩', owned: true, equipped: true },
+-  { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '地裂冲击', owned: false, equipped: false },
+-  { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '分身突袭', owned: false, equipped: false },
+-  { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '天罚', owned: false, equipped: false },
++  { id: 'starter', name: '레인저 MK-I', rarity: 'common', baseHp: 1000, baseAttack: 50, baseDefense: 20, baseSpeed: 8, color: '#4488ff', accentColor: '#00ffff', skill: '돌진 베기', owned: true, equipped: true },
++  { id: 'crusher', name: '록 브레이커', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '지진 충격', owned: false, equipped: false },
++  { id: 'phantom', name: '팬텀 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '분신 기습', owned: false, equipped: false },
++  { id: 'titan', name: '타이탄', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '천벌', owned: false, equipped: false },
+ ]
+ 
+ const initialItems: ItemData[] = [
+-  { id: 'w_sword1', name: '合金斩剑', type: 'weapon', rarity: 'common', icon: '⚔️', stats: { attack: 15 }, count: 1, equipped: true, description: '基础合金武器，坚固可靠。' },
+-  { id: 'w_gun1', name: '光束步枪', type: 'weapon', rarity: 'common', icon: '🔫', stats: { attack: 12, critRate: 0.1 }, count: 1, equipped: false, description: '远程光束武器，射速快但伤害较低。' },
+-  { id: 'w_blade2', name: '等离子巨刃', type: 'weapon', rarity: 'rare', icon: '🗡️', stats: { attack: 35, critDmg: 0.5 }, count: 1, equipped: false, description: '等离子切割刃，暴击伤害极高。' },
+-  { id: 'a_plate1', name: '复合装甲', type: 'armor', rarity: 'common', icon: '🛡️', stats: { defense: 10, maxHp: 100 }, count: 1, equipped: true, description: '标准防御装甲。' },
+-  { id: 'a_shield2', name: '力场护盾', type: 'armor', rarity: 'rare', icon: '🛡️', stats: { defense: 25, maxHp: 250 }, count: 1, equipped: false, description: '能量力场护盾，大幅提升生存能力。' },
+-  { id: 'c_core1', name: '能量核心 I', type: 'core', rarity: 'common', icon: '🔋', stats: { maxEnergy: 50 }, count: 1, equipped: true, description: '基础能量核心。' },
+-  { id: 'c_core2', name: '聚变核心 II', type: 'core', rarity: 'rare', icon: '🔋', stats: { maxEnergy: 100, attack: 10 }, count: 1, equipped: false, description: '高能聚变核心，提升能量和攻击。' },
++  { id: 'w_sword1', name: '합금 검', type: 'weapon', rarity: 'common', icon: '⚔️', stats: { attack: 15 }, count: 1, equipped: true, description: '튼튼하고 믿을 수 있는 기본 합금 무기.' },
++  { id: 'w_gun1', name: '빔 소총', type: 'weapon', rarity: 'common', icon: '🔫', stats: { attack: 12, critRate: 0.1 }, count: 1, equipped: false, description: '빠르게 발사하지만 피해가 낮은 원거리 빔 무기.' },
++  { id: 'w_blade2', name: '플라즈마 대검', type: 'weapon', rarity: 'rare', icon: '🗡️', stats: { attack: 35, critDmg: 0.5 }, count: 1, equipped: false, description: '치명타 피해가 큰 플라즈마 절단 칼날.' },
++  { id: 'a_plate1', name: '복합 장갑', type: 'armor', rarity: 'common', icon: '🛡️', stats: { defense: 10, maxHp: 100 }, count: 1, equipped: true, description: '기본 방어 장갑.' },
++  { id: 'a_shield2', name: '역장 방패', type: 'armor', rarity: 'rare', icon: '🛡️', stats: { defense: 25, maxHp: 250 }, count: 1, equipped: false, description: '생존력을 크게 높이는 에너지 역장 방패.' },
++  { id: 'c_core1', name: '에너지 코어 I', type: 'core', rarity: 'common', icon: '🔋', stats: { maxEnergy: 50 }, count: 1, equipped: true, description: '기본 에너지 코어.' },
++  { id: 'c_core2', name: '핵융합 코어 II', type: 'core', rarity: 'rare', icon: '🔋', stats: { maxEnergy: 100, attack: 10 }, count: 1, equipped: false, description: '에너지와 공격력을 높이는 핵융합 코어.' },
+   // Consumables
+-  { id: 'potion_hp', name: '生命药剂', type: 'consumable', rarity: 'common', icon: '🧪', stats: { maxHp: 0 }, count: 5, description: '恢复300点生命值。', effect: { type: 'heal', value: 300 } } as any,
+-  { id: 'potion_energy', name: '能量药剂', type: 'consumable', rarity: 'common', icon: '⚡', stats: { maxHp: 0 }, count: 5, description: '恢复50点能量值。', effect: { type: 'energy', value: 50 } } as any,
+-  { id: 'potion_shield', name: '护盾药剂', type: 'consumable', rarity: 'rare', icon: '💊', stats: { maxHp: 0 }, count: 3, description: '恢复全部护盾值。', effect: { type: 'shield', value: 999 } } as any,
++  { id: 'potion_hp', name: '체력 물약', type: 'consumable', rarity: 'common', icon: '🧪', stats: { maxHp: 0 }, count: 5, description: '체력 300 회복.', effect: { type: 'heal', value: 300 } } as any,
++  { id: 'potion_energy', name: '에너지 물약', type: 'consumable', rarity: 'common', icon: '⚡', stats: { maxHp: 0 }, count: 5, description: '에너지 50 회복.', effect: { type: 'energy', value: 50 } } as any,
++  { id: 'potion_shield', name: '방패 물약', type: 'consumable', rarity: 'rare', icon: '💊', stats: { maxHp: 0 }, count: 3, description: '방패 전체 회복.', effect: { type: 'shield', value: 999 } } as any,
+ ]
+ 
+ const initialQuests: QuestData[] = [
+   {
+-    id: 'q_kill5', title: '初次试炼', description: '击败5台敌机',
++    id: 'q_kill5', title: '첫 시련', description: '적 메카 5대 처치',
+     type: 'kill', target: 'enemy', required: 5, current: 0,
+     reward: { gold: 200, exp: 150 },
+     status: 'active',
+   },
+   {
+-    id: 'q_crystal', title: '水晶峡谷', description: '前往水晶峡谷收集3块能量水晶',
++    id: 'q_crystal', title: '수정 협곡', description: '수정 협곡에서 에너지 수정 3개 수집',
+     type: 'collect', target: 'crystal', required: 3, current: 0,
+     reward: { gold: 500, exp: 300, items: ['c_core2'] },
+     status: 'available',
+   },
+   {
+-    id: 'q_boss', title: '终焉之战', description: '击败Boss机甲',
++    id: 'q_boss', title: '최후의 전투', description: '보스 메카 처치',
+     type: 'kill', target: 'boss', required: 1, current: 0,
+     reward: { gold: 1000, exp: 500 },
+     status: 'available',
+@@ -278,21 +278,21 @@ export function rollLoot(enemyType: string): { gold: number; exp: number; item?:
+   const baseExp = enemyType === 'boss' ? 300 : 20 + Math.floor(Math.random() * 15)
+   const item = enemyType === 'boss' ? {
+     id: 'legendary_core_' + Date.now(),
+-    name: '传说核心碎片',
++    name: '전설 코어 조각',
+     type: 'core' as const,
+     rarity: 'legendary' as const,
+     icon: '💎',
+     stats: { attack: 30, defense: 20, maxHp: 300 },
+     count: 1,
+-    description: '蕴含巨大能量的传说级核心碎片。',
++    description: '거대한 에너지를 품은 전설 코어 조각.',
+   } : Math.random() < 0.15 ? {
+     id: 'mat_scrap_' + Date.now(),
+-    name: '机甲碎片',
++    name: '메카 조각',
+     type: 'material' as const,
+     rarity: 'common' as const,
+     icon: '🔩',
+     count: 1,
+-    description: '击毁敌机掉落的金属碎片，可用于升级。',
++    description: '적 메카가 떨어뜨린 업그레이드용 금속 조각.',
+   } : undefined
+   return { gold: baseGold, exp: baseExp, item }
+ }
+diff --git a/apps/game/src/stores/dialogueStore.ts b/apps/game/src/stores/dialogueStore.ts
+index 88dadc9..bd6e8b4 100644
+--- a/apps/game/src/stores/dialogueStore.ts
++++ b/apps/game/src/stores/dialogueStore.ts
+@@ -1,7 +1,7 @@
+-// GDD §32.7 dialogueStore —— 对话状态管理（含 P3 工具执行 + P4 任务确认）
++// GDD §32.7 dialogueStore —— 对话状态管理（含 P3 工具执行 + P4 퀘스트确认）
+ import { create } from "zustand";
+ import type { NpcId, DynamicQuest } from "@nexus/shared";
+-import { connect, getAiServerUrl, type AiClient, type ServerMsg } from "../ai/aiClient";
++import { type AiClient, type ServerMsg } from "../ai/aiClient";
+ import { executeTool } from "../ai/toolExecutor";
+ import { cannedReply } from "../ai/cannedFallback";
+ import { useWorldEventStore } from "./worldEventStore";
+@@ -21,7 +21,7 @@ interface DialogueStore {
+   messages: ChatMessage[];
+   streamingText: string;
+   lastUsage: { tokensIn: number; tokensOut: number; costCny: number } | null;
+-  offeredQuest: DynamicQuest | null; // P4：当前待确认的动态任务预览
++  offeredQuest: DynamicQuest | null; // P4：현재待确认的动态퀘스트预览
+   client: AiClient | null;
+ 
+   open: (npc: NpcId) => void;
+@@ -55,13 +55,7 @@ export const useDialogueStore = create<DialogueStore>((set, get) => ({
+       lastUsage: null,
+       offeredQuest: null,
+     });
+-    const client = connect({
+-      url: getAiServerUrl(),
+-      onMessage: (msg) => get()._handle(msg),
+-      onFallback: () => set({ status: "fallback" }),
+-      onOpen: () => set({ status: "online" }),
+-    });
+-    set({ client });
++    set({ status: "fallback", client: null, sessionId: null });
+   },
+ 
+   close: () => {
+@@ -98,14 +92,14 @@ export const useDialogueStore = create<DialogueStore>((set, get) => ({
+     const { offeredQuest, client, sessionId, activeNpc } = get();
+     if (!offeredQuest || !client || !sessionId || !activeNpc) return;
+     const q = offeredQuest;
+-    // 写入任务面板（复用 toolExecutor give_quest 逻辑）+ 发 intent 确认给后端
++    // 写入퀘스트面板（复用 toolExecutor give_quest 逻辑）+ 发 intent 确认给后端
+     executeTool("give_quest", { quest: q }).then((res) => {
+       client.send({ type: "intent", sessionId, npcId: activeNpc, intent: "quest" });
+       set((s) => ({
+         offeredQuest: null,
+         messages: [
+           ...s.messages,
+-          { role: "system", text: `📋 接受委托「${q.title}」 — ${res.detail}`, ts: Date.now() },
++          { role: "system", text: `📋 의뢰 수락「${q.title}」 — ${res.detail}`, ts: Date.now() },
+         ],
+       }));
+     });
+@@ -118,7 +112,7 @@ export const useDialogueStore = create<DialogueStore>((set, get) => ({
+     }
+     set((s) => ({
+       offeredQuest: null,
+-      messages: [...s.messages, { role: "system", text: "委婉拒绝了委托。", ts: Date.now() }],
++      messages: [...s.messages, { role: "system", text: "의뢰를 거절했어요.", ts: Date.now() }],
+     }));
+   },
+ 
+diff --git a/apps/game/src/stores/worldEventStore.ts b/apps/game/src/stores/worldEventStore.ts
+index 167711b..e5acdef 100644
+--- a/apps/game/src/stores/worldEventStore.ts
++++ b/apps/game/src/stores/worldEventStore.ts
+@@ -1,4 +1,4 @@
+-// GDD §32.9 worldEventStore —— AI 导演世界事件（toast + 历史）
++// GDD §32.9 worldEventStore —— AI 导演월드 이벤트（toast + 历史）
+ import { create } from "zustand";
+ import type { WorldEvent } from "@nexus/shared";
+ 
+diff --git a/apps/game/src/ui/LoadingScreen.tsx b/apps/game/src/ui/LoadingScreen.tsx
+index a2b0a7a..25fe099 100644
+--- a/apps/game/src/ui/LoadingScreen.tsx
++++ b/apps/game/src/ui/LoadingScreen.tsx
+@@ -5,11 +5,11 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
+   const [tip, setTip] = useState(0)
+ 
+   const tips = [
+-    '提示：按住SHIFT冲刺可以快速接近敌人',
+-    '提示：J键近战可以打断敌人攻击',
+-    '提示：击杀敌人有概率掉落装备',
+-    '提示：祈愿90抽必出传说机甲',
+-    '提示：不同地形有不同资源和敌人',
++    '팁: Shift를 눌러 돌진하면 적에게 빠르게 접근할 수 있어요',
++    '팁: J 근접 공격으로 적의 공격을 끊을 수 있어요',
++    '팁: 적을 처치하면 장비가 나올 수 있어요',
++    '팁: 90회 뽑기에서 전설 메카를 확정 획득해요',
++    '팁: 지형마다 자원과 적이 달라요',
+   ]
+ 
+   useEffect(() => {
+@@ -58,7 +58,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
+         MECHA WORLD
+       </div>
+       <div style={{ color: '#4466aa', fontSize: 12, marginBottom: 40, fontFamily: 'monospace' }}>
+-        机甲世界
++        메카 월드
+       </div>
+ 
+       {/* Progress bar */}
+@@ -74,7 +74,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
+         }} />
+       </div>
+       <div style={{ color: '#446688', fontSize: 11, marginTop: 8, fontFamily: 'monospace' }}>
+-        {progress < 100 ? `加载中... ${progress}%` : '准备就绪！'}
++        {progress < 100 ? `로딩 중... ${progress}%` : '준비 완료!'}
+       </div>
+ 
+       {/* Tips */}
+diff --git a/apps/game/src/ui/SettingsPanel.tsx b/apps/game/src/ui/SettingsPanel.tsx
+index 031a60e..b0fedec 100644
+--- a/apps/game/src/ui/SettingsPanel.tsx
++++ b/apps/game/src/ui/SettingsPanel.tsx
+@@ -25,14 +25,14 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
+           borderBottom: '1px solid rgba(0,255,255,0.15)',
+         }}>
+           <span style={{ color: '#00ffff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
+-            ⚙️ 设置
++            ⚙️ 설정
+           </span>
+           <span onClick={onClose} style={{ color: '#ff6666', cursor: 'pointer', fontSize: 20 }}>✕</span>
+         </div>
+ 
+         <div style={{ padding: 20 }}>
+           {/* Quality */}
+-          <Section title="画面质量">
++          <Section title="그래픽 품질">
+             <div style={{ display: 'flex', gap: 8 }}>
+               {(['low', 'medium', 'high'] as const).map(q => (
+                 <button key={q} onClick={() => setQuality(q)} style={{
+@@ -42,20 +42,20 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
+                   color: quality === q ? '#00ffff' : '#666',
+                   fontSize: 12, fontWeight: 'bold',
+                 }}>
+-                  {q === 'low' ? '流畅' : q === 'medium' ? '平衡' : '极致'}
++                  {q === 'low' ? '낮음' : q === 'medium' ? '보통' : '높음'}
+                 </button>
+               ))}
+             </div>
+           </Section>
+ 
+           {/* Toggles */}
+-          <Section title="特效">
+-            <Toggle label="泛光 (Bloom)" checked={bloom} onChange={() => setBloom(!bloom)} />
+-            <Toggle label="阴影" checked={shadows} onChange={() => setShadows(!shadows)} />
++          <Section title="효과">
++            <Toggle label="빛 번짐 (Bloom)" checked={bloom} onChange={() => setBloom(!bloom)} />
++            <Toggle label="그림자" checked={shadows} onChange={() => setShadows(!shadows)} />
+           </Section>
+ 
+           {/* Audio */}
+-          <Section title="音效">
++          <Section title="소리">
+             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+               <span style={{ fontSize: 20 }}>🔊</span>
+               <input
+@@ -68,7 +68,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
+           </Section>
+ 
+           {/* Weather control (debug/fun) */}
+-          <Section title="天气">
++          <Section title="날씨">
+             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+               {(['clear', 'rain', 'storm', 'snow', 'sandstorm'] as const).map(w => (
+                 <button key={w} onClick={() => setWeather(w)} style={{
+@@ -78,14 +78,14 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
+                   color: world.weather === w ? '#00ffcc' : '#666',
+                   fontSize: 11,
+                 }}>
+-                  {w === 'clear' ? '☀️ 晴' : w === 'rain' ? '🌧️ 雨' : w === 'storm' ? '⛈️ 暴' : w === 'snow' ? '❄️ 雪' : '🌪️ 沙'}
++                  {w === 'clear' ? '☀️ 맑음' : w === 'rain' ? '🌧️ 비' : w === 'storm' ? '⛈️ 폭풍' : w === 'snow' ? '❄️ 눈' : '🌪️ 모래'}
+                 </button>
+               ))}
+             </div>
+           </Section>
+ 
+           {/* Time slider */}
+-          <Section title="时间">
++          <Section title="시간">
+             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+               <span style={{ fontSize: 20 }}>{world.timeOfDay < 6 || world.timeOfDay > 18 ? '🌙' : '☀️'}</span>
+               <input
+diff --git a/apps/game/src/world/NPC.tsx b/apps/game/src/world/NPC.tsx
+index 46aa0d9..e083337 100644
+--- a/apps/game/src/world/NPC.tsx
++++ b/apps/game/src/world/NPC.tsx
+@@ -22,38 +22,38 @@ const NPCS: NPCData[] = [
+   {
+     id: 'mechanic',
+     gddId: 'babs',
+-    name: '老扳手·巴布斯',
++    name: '바브스·베테랑 정비공',
+     position: [12, 0, 8],
+     color: '#ffaa00',
+     dialog: [
+-      '欢迎来到扳手镇，小子。',
+-      '这台机甲……嗯，凑合。需要修就说话。',
+-      '东边废料场有锈爬虫，练手正好。',
++      '렌치 타운에 온 걸 환영해, 꼬마.',
++      '이 메카... 뭐, 쓸 만하군. 수리가 필요하면 말해.',
++      '동쪽 폐기장에 녹슨 벌레가 있어. 연습하기 좋지.',
+     ],
+     questId: 'quest_crystal',
+   },
+   {
+     id: 'merchant',
+     gddId: 'jicha',
+-    name: '叽喳 HX-7',
++    name: '지차 HX-7',
+     position: [-15, 0, 5],
+     color: '#ff66cc',
+     dialog: [
+-      '叮——！尊贵的客人！看货吗？',
+-      '金币不够去打几台敌机就有了哐当！',
+-      '好装备是活命的关键——本机说的！',
++      '딩! 귀한 손님! 물건 좀 볼까요?',
++      '골드가 모자라면 적 메카 몇 대를 잡으세요! 쾅!',
++      '좋은 장비가 생존의 열쇠예요! 제가 보증해요!',
+     ],
+   },
+   {
+     id: 'commander',
+     gddId: 'vera',
+-    name: '薇拉·军需官',
++    name: '베라·군수 담당관',
+     position: [0, 0, -20],
+     color: '#44ff88',
+     dialog: [
+-      '我的王牌，前线有新情况。',
+-      '悬赏随时更新，对你来说特价。',
+-      '击杀十台敌机后会出现 Boss——准备好了来找我。',
++      '우리 에이스, 전선에 새 소식이 있어.',
++      '현상금은 계속 갱신돼. 네겐 특별가야.',
++      '적 메카 10대를 처치하면 보스가 나타나. 준비되면 날 찾아와.',
+     ],
+     questId: 'quest_boss',
+   },
