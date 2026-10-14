@@ -12,22 +12,22 @@ interface ShopItem {
 }
 
 const shopItems: ShopItem[] = [
-  { id: 'hp_potion', name: '生命药剂', icon: '❤️‍🩹', description: '恢复500生命', price: { currency: 'gold', amount: 100 }, type: 'consumable' },
-  { id: 'energy_potion', name: '能量药剂', icon: '⚡', description: '恢复100能量', price: { currency: 'gold', amount: 80 }, type: 'consumable' },
-  { id: 'repair_kit', name: '修理包', icon: '🔧', description: '恢复全部生命和能量', price: { currency: 'gold', amount: 300 }, type: 'consumable' },
-  { id: 'weapon_sword2', name: '高频刀刃', icon: '⚔️', description: '攻击+25 稀有武器', price: { currency: 'gems', amount: 30 }, type: 'item',
-    itemData: { name: '高频刀刃', type: 'weapon', rarity: 'rare', icon: '⚔️', stats: { attack: 25 } } },
-  { id: 'weapon_hammer', name: '冲击战锤', icon: '🔨', description: '攻击+40 史诗武器', price: { currency: 'gems', amount: 60 }, type: 'item',
-    itemData: { name: '冲击战锤', type: 'weapon', rarity: 'epic', icon: '🔨', stats: { attack: 40 } } },
-  { id: 'armor_heavy', name: '重型装甲', icon: '🦾', description: '防御+30 生命+200', price: { currency: 'gems', amount: 50 }, type: 'item',
-    itemData: { name: '重型装甲', type: 'armor', rarity: 'epic', icon: '🦾', stats: { defense: 30, maxHp: 200 } } },
+  { id: 'hp_potion', name: '체력 물약', icon: '❤️‍🩹', description: '체력 500 회복', price: { currency: 'gold', amount: 100 }, type: 'consumable' },
+  { id: 'energy_potion', name: '에너지 물약', icon: '⚡', description: '에너지 100 회복', price: { currency: 'gold', amount: 80 }, type: 'consumable' },
+  { id: 'repair_kit', name: '수리 키트', icon: '🔧', description: '체력과 에너지 전체 회복', price: { currency: 'gold', amount: 300 }, type: 'consumable' },
+  { id: 'weapon_sword2', name: '고주파 칼날', icon: '⚔️', description: '공격+25 희귀무기', price: { currency: 'gems', amount: 30 }, type: 'item',
+    itemData: { name: '고주파 칼날', type: 'weapon', rarity: 'rare', icon: '⚔️', stats: { attack: 25 } } },
+  { id: 'weapon_hammer', name: '충격 망치', icon: '🔨', description: '공격+40 영웅무기', price: { currency: 'gems', amount: 60 }, type: 'item',
+    itemData: { name: '충격 망치', type: 'weapon', rarity: 'epic', icon: '🔨', stats: { attack: 40 } } },
+  { id: 'armor_heavy', name: '중장갑', icon: '🦾', description: '방어+30 체력+200', price: { currency: 'gems', amount: 50 }, type: 'item',
+    itemData: { name: '중장갑', type: 'armor', rarity: 'epic', icon: '🦾', stats: { defense: 30, maxHp: 200 } } },
 ]
 
 const gemPacks = [
-  { id: 'gems_s', name: '少量钻石', icon: '💎', amount: 100, price: '¥6', desc: '入门首选' },
-  { id: 'gems_m', name: '中等钻石', icon: '💎', amount: 560, price: '¥30', desc: '性价比高', popular: true },
-  { id: 'gems_l', name: '大量钻石', icon: '💎', amount: 1200, price: '¥68', desc: '月卡玩家推荐' },
-  { id: 'gems_xl', name: '巨量钻石', icon: '💎', amount: 3300, price: '¥168', desc: '重氪首选' },
+  { id: 'gems_s', name: '소량 다이아', icon: '💎', amount: 100, price: '무료 테스트', desc: '입문용' },
+  { id: 'gems_m', name: '중간 다이아', icon: '💎', amount: 560, price: '무료 테스트', desc: '효율적', popular: true },
+  { id: 'gems_l', name: '대량 다이아', icon: '💎', amount: 1200, price: '무료 테스트', desc: '정기 이용자용' },
+  { id: 'gems_xl', name: '초대량 다이아', icon: '💎', amount: 3300, price: '무료 테스트', desc: '대량 구매용' },
 ]
 
 export function ShopPanel({ onClose }: { onClose: () => void }) {
@@ -75,7 +75,7 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
           borderBottom: '1px solid rgba(0,255,200,0.15)',
         }}>
           <span style={{ color: '#00ffcc', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            🛒 商店
+            🛒 상점
           </span>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
             <span style={{ color: '#ffcc44', fontSize: 13 }}>💰 {gold}</span>
@@ -86,8 +86,8 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, padding: 12 }}>
-          <div onClick={() => setTab('items')} style={tabBtn(tab === 'items', '#00ffcc')}>道具装备</div>
-          <div onClick={() => setTab('gems')} style={tabBtn(tab === 'gems', '#44ddff')}>充值钻石</div>
+          <div onClick={() => setTab('items')} style={tabBtn(tab === 'items', '#00ffcc')}>아이템·장비</div>
+          <div onClick={() => setTab('gems')} style={tabBtn(tab === 'gems', '#44ddff')}>무료 테스트 다이아</div>
         </div>
 
         {/* Content */}
@@ -134,7 +134,7 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
                       position: 'absolute', top: -8, left: '50%', transform: 'translateX(-50%)',
                       background: '#44ddff', color: '#000', padding: '2px 8px',
                       borderRadius: 4, fontSize: 9, fontWeight: 'bold',
-                    }}>推荐</div>
+                    }}>추천</div>
                   )}
                   <div style={{ fontSize: 36, marginBottom: 8 }}>{pack.icon}</div>
                   <div style={{ color: '#44ddff', fontSize: 20, fontWeight: 'bold' }}>{pack.amount}</div>
@@ -166,7 +166,7 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
             borderRadius: 8, fontSize: 13, fontWeight: 'bold',
             animation: 'slideUp 0.3s ease-out',
           }}>
-            ✓ 购买成功：{purchased}
+            ✓ 획득 완료：{purchased}
           </div>
         )}
       </div>
