@@ -81,7 +81,7 @@ export function DevDashboard({ onClose }: { onClose: () => void }) {
       {m && (
         <>
           <div style={{ marginBottom: 6 }}>Provider: <span style={{ color: "#ffaa00" }}>{m.provider}</span></div>
-          <div style={{ marginBottom: 6 }}>KV: {m.kv.backend} {m.kv.ready ? "✓" : "✗"} · 在线 {m.sessions}</div>
+          <div style={{ marginBottom: 6 }}>KV: {m.kv.backend} {m.kv.ready ? "✓" : "✗"} · 온라인 {m.sessions}</div>
           <div style={{ marginBottom: 4 }}>
             今日成本：¥{m.budget.todayCostCny.toFixed(4)} / {m.budget.dailyBudgetCny}
           </div>
