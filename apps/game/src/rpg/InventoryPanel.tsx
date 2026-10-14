@@ -9,10 +9,10 @@ const rarityColors: Record<string, string> = {
 }
 
 const rarityLabels: Record<string, string> = {
-  common: '普通',
-  rare: '稀有',
-  epic: '史诗',
-  legendary: '传说',
+  common: '일반',
+  rare: '희귀',
+  epic: '영웅',
+  legendary: '전설',
 }
 
 export function InventoryPanel({ onClose }: { onClose: () => void }) {
@@ -43,7 +43,7 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         }}>
           <span style={{ color: '#00ffff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            📦 装备背包
+            📦 장비 가방
           </span>
           <span onClick={onClose} style={{
             color: '#ff6666', cursor: 'pointer', fontSize: 20, padding: '0 8px',
@@ -90,7 +90,7 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
             ))}
             {inventory.length === 0 && (
               <div style={{ gridColumn: '1/-1', textAlign: 'center', color: '#666', padding: 40 }}>
-                背包是空的，去打怪吧！
+                가방이 비었어요. 적을 처치해 보세요!
               </div>
             )}
           </div>
@@ -112,16 +112,16 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
                 <div style={{
                   textAlign: 'center', fontSize: 11, color: rarityColors[selected.rarity],
                   marginBottom: 12,
-                }}>{rarityLabels[selected.rarity]} · {selected.type === 'weapon' ? '武器' : selected.type === 'armor' ? '护甲' : selected.type === 'core' ? '核心' : selected.type === 'material' ? '材料' : '消耗品'}</div>
+                }}>{rarityLabels[selected.rarity]} · {selected.type === 'weapon' ? '무기' : selected.type === 'armor' ? '장갑' : selected.type === 'core' ? '코어' : selected.type === 'material' ? '재료' : '소모품'}</div>
                 <div style={{ fontSize: 12, color: '#aabbcc', lineHeight: 1.6, marginBottom: 12 }}>
                   {selected.description}
                 </div>
                 {selected.stats && (
                   <div style={{ fontSize: 12, marginBottom: 12 }}>
-                    {selected.stats.attack && <div style={{ color: '#ff8844' }}>攻击 +{selected.stats.attack}</div>}
-                    {selected.stats.defense && <div style={{ color: '#44aaff' }}>防御 +{selected.stats.defense}</div>}
-                    {selected.stats.maxHp && <div style={{ color: '#ff4444' }}>生命 +{selected.stats.maxHp}</div>}
-                    {selected.stats.maxEnergy && <div style={{ color: '#44ddff' }}>能量 +{selected.stats.maxEnergy}</div>}
+                    {selected.stats.attack && <div style={{ color: '#ff8844' }}>공격 +{selected.stats.attack}</div>}
+                    {selected.stats.defense && <div style={{ color: '#44aaff' }}>방어 +{selected.stats.defense}</div>}
+                    {selected.stats.maxHp && <div style={{ color: '#ff4444' }}>체력 +{selected.stats.maxHp}</div>}
+                    {selected.stats.maxEnergy && <div style={{ color: '#44ddff' }}>에너지 +{selected.stats.maxEnergy}</div>}
                   </div>
                 )}
                 {(selected.type === 'weapon' || selected.type === 'armor' || selected.type === 'core') && (
@@ -129,12 +129,12 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
                     <button
                       onClick={() => { unequipItem(selected.type as 'weapon' | 'armor' | 'core'); setSelected({ ...selected, equipped: false }) }}
                       style={btnStyle('#ff6644')}
-                    >卸下</button>
+                    >해제</button>
                   ) : (
                     <button
                       onClick={() => { equipItem(selected.id); setSelected({ ...selected, equipped: true }) }}
                       style={btnStyle('#44ff88')}
-                    >装备</button>
+                    >장비</button>
                   )
                 )}
                 {selected.type === 'consumable' && (
@@ -150,17 +150,17 @@ export function InventoryPanel({ onClose }: { onClose: () => void }) {
                     }}
                     disabled={selected.count <= 0}
                     style={btnStyle('#44ddff')}
-                  >使用 ({selected.count})</button>
+                  >사용 ({selected.count})</button>
                 )}
                 {selected.type === 'material' && (
                   <div style={{ textAlign: 'center', color: '#888', padding: 12, fontSize: 12 }}>
-                    💧 材料物品，用于装备升级
+                    💧 장비 업그레이드용 재료
                   </div>
                 )}
               </div>
             ) : (
               <div style={{ color: '#666', textAlign: 'center', paddingTop: 40, fontSize: 13 }}>
-                选择一个装备查看详情
+                장비를 선택하면 자세히 볼 수 있어요
               </div>
             )}
           </div>
