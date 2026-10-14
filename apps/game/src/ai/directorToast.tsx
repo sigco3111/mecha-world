@@ -1,18 +1,18 @@
-// GDD §9.1 —— AI 导演世界事件 toast（屏幕顶部，可忽略）
+// GDD §9.1 —— AI 导演월드 이벤트 toast（屏幕顶部，可忽略）
 import { useWorldEventStore } from "../stores/worldEventStore";
 
 const KIND_LABEL: Record<string, string> = {
-  caravan_attack: "🚚 商队遇袭",
-  crystal_surge: "💎 晶簇爆发",
-  swarm_tide: "🌀 虫群潮汐",
-  bounty_target: "🎯 悬赏目标",
+  caravan_attack: "🚚 상단 습격",
+  crystal_surge: "💎 수정 분출",
+  swarm_tide: "🌀 벌레 떼",
+  bounty_target: "🎯 현상금 대상",
 };
 
 export function DirectorToast() {
   const current = useWorldEventStore((s) => s.current);
   const dismiss = useWorldEventStore((s) => s.dismiss);
   if (!current) return null;
-  const label = KIND_LABEL[current.kind] ?? "📡 世界事件";
+  const label = KIND_LABEL[current.kind] ?? "📡 월드 이벤트";
 
   return (
     <div
@@ -46,8 +46,8 @@ export function DirectorToast() {
       </div>
       <div style={{ fontSize: 12, color: "#ccb" }}>{current.broadcast}</div>
       <div style={{ fontSize: 11, color: "#998" }}>
-        {current.zone} · {current.durationMin}min · 奖励 {current.rewardPack.gold} 金币 ·{" "}
-        {current.spawns.reduce((s, sp) => s + sp.count, 0)} 敌
+        {current.zone} · {current.durationMin}min · 보상 {current.rewardPack.gold} 골드 ·{" "}
+        {current.spawns.reduce((s, sp) => s + sp.count, 0)} 적
       </div>
     </div>
   );
