@@ -5,11 +5,11 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
   const [tip, setTip] = useState(0)
 
   const tips = [
-    '提示：按住SHIFT冲刺可以快速接近敌人',
-    '提示：J键近战可以打断敌人攻击',
-    '提示：击杀敌人有概率掉落装备',
-    '提示：祈愿90抽必出传说机甲',
-    '提示：不同地形有不同资源和敌人',
+    '팁: Shift를 눌러 돌진하면 적에게 빠르게 접근할 수 있어요',
+    '팁: J 근접 공격으로 적의 공격을 끊을 수 있어요',
+    '팁: 적을 처치하면 장비가 나올 수 있어요',
+    '팁: 90회 뽑기에서 전설 메카를 확정 획득해요',
+    '팁: 지형마다 자원과 적이 달라요',
   ]
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
         MECHA WORLD
       </div>
       <div style={{ color: '#4466aa', fontSize: 12, marginBottom: 40, fontFamily: 'monospace' }}>
-        机甲世界
+        메카 월드
       </div>
 
       {/* Progress bar */}
@@ -74,7 +74,7 @@ export function LoadingScreen({ onDone }: { onDone: () => void }) {
         }} />
       </div>
       <div style={{ color: '#446688', fontSize: 11, marginTop: 8, fontFamily: 'monospace' }}>
-        {progress < 100 ? `加载中... ${progress}%` : '准备就绪！'}
+        {progress < 100 ? `로딩 중... ${progress}%` : '준비 완료!'}
       </div>
 
       {/* Tips */}
