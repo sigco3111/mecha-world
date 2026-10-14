@@ -2,7 +2,7 @@ import { useRef, forwardRef, useImperativeHandle } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// 暴露给父组件的接口 — 控制手臂动画
+// 폭풍露给父组件的接口 — 控制手臂动画
 export type MechaHandle = {
   setAttackPhase: (phase: number) => void // 0=idle, 1=left, 2=right, 3=double
   setMoving: (moving: boolean) => void
@@ -55,7 +55,7 @@ export const MechaModel = forwardRef<MechaHandle, MechaModelProps>(
       a.attackTime += dt
       a.walkTime += dt * (a.moving ? 8 : 0)
 
-      // 核心呼吸
+      // 코어呼吸
       if (coreRef.current) {
         const s = 1 + Math.sin(t * 3) * 0.08
         coreRef.current.scale.set(s, s, s)
@@ -92,7 +92,7 @@ export const MechaModel = forwardRef<MechaHandle, MechaModelProps>(
         }
       }
 
-      // 攻击完成后自动恢复
+      // 공격完成后自动恢复
       if (a.attackTime > 0.4) {
         a.attackPhase = 0
       }
