@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-// 扇形近战命中检测
+// 扇形근접命中检测
 export function checkMeleeHit(
   attackerPos: THREE.Vector3,
   attackerRotY: number,
@@ -64,7 +64,7 @@ export function checkProjectileHit(
   return dx * dx + dy * dy + dz * dz < radius * radius
 }
 
-// 找最佳锁定目标
+// 找最佳锁定목표
 export function findLockTarget(
   playerPos: THREE.Vector3,
   playerForward: THREE.Vector3,
