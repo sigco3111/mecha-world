@@ -44,7 +44,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
           borderBottom: '1px solid rgba(170,68,255,0.15)',
         }}>
           <span style={{ color: '#cc88ff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            🎰 祈愿系统
+            🎰 뽑기 시스템
           </span>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
             <span style={{ color: '#44ddff', fontSize: 13 }}>💎 {gems}</span>
@@ -70,7 +70,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
                 {p.name}
               </div>
               <div style={{ fontSize: 10, color: '#888', marginTop: 4 }}>
-                💎 {p.cost.amount}/次
+                💎 {p.cost.amount}/회
               </div>
             </div>
           ))}
@@ -87,12 +87,12 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
           </div>
           <div style={{ color: '#ccddff', fontSize: 12 }}>{selectedPool.banner}</div>
           <div style={{ display: 'flex', gap: 16, marginTop: 8, fontSize: 11 }}>
-            <span style={{ color: '#ffaa00' }}>传说 {selectedPool.rates.legendary}%</span>
-            <span style={{ color: '#aa44ff' }}>史诗 {selectedPool.rates.epic}%</span>
-            <span style={{ color: '#4488ff' }}>稀有 {selectedPool.rates.rare}%</span>
+            <span style={{ color: '#ffaa00' }}>전설 {selectedPool.rates.legendary}%</span>
+            <span style={{ color: '#aa44ff' }}>영웅 {selectedPool.rates.epic}%</span>
+            <span style={{ color: '#4488ff' }}>희귀 {selectedPool.rates.rare}%</span>
           </div>
           <div style={{ fontSize: 10, color: '#667788', marginTop: 6 }}>
-            保底：{selectedPool.guaranteedAt}抽必出传说 | 当前：{selectedPool.pityCounter}抽
+            확정 보장：{selectedPool.guaranteedAt}회에 전설 확정 | 현재：{selectedPool.pityCounter}회
           </div>
         </div>
 
@@ -103,7 +103,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
             disabled={gems < selectedPool.cost.amount}
             style={pullBtnStyle(gems >= selectedPool.cost.amount, '#8866cc')}
           >
-            祈愿 ×1
+            뽑기 ×1
             <div style={{ fontSize: 11, opacity: 0.8 }}>💎 {selectedPool.cost.amount}</div>
           </button>
           <button
@@ -111,7 +111,7 @@ export function GachaPanel({ onClose }: { onClose: () => void }) {
             disabled={gems < selectedPool.cost.amount * 10}
             style={pullBtnStyle(gems >= selectedPool.cost.amount * 10, '#cc88ff')}
           >
-            祈愿 ×10
+            뽑기 ×10
             <div style={{ fontSize: 11, opacity: 0.8 }}>💎 {selectedPool.cost.amount * 10}</div>
           </button>
         </div>
@@ -153,7 +153,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
             {result.name}
           </div>
           <div style={{ color: color, fontSize: 12, marginBottom: 4 }}>
-            {result.rarity === 'legendary' ? '★★★★ 传说' : result.rarity === 'epic' ? '★★★ 史诗' : result.rarity === 'rare' ? '★★ 稀有' : '★ 普通'}
+            {result.rarity === 'legendary' ? '★★★★ 전설' : result.rarity === 'epic' ? '★★★ 영웅' : result.rarity === 'rare' ? '★★ 희귀' : '★ 일반'}
           </div>
           {result.isNew && (
             <div style={{
@@ -162,7 +162,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
             }}>✦ NEW ✦</div>
           )}
           <div style={{ color: '#8899aa', fontSize: 12, marginTop: 24 }}>
-            {revealed + 1 < results.length ? '点击继续 ▶' : '点击完成 ✓'}
+            {revealed + 1 < results.length ? '클릭하여 계속 ▶' : '클릭하여 완료 ✓'}
           </div>
         </div>
         <style>{`
@@ -181,7 +181,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
       alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
     }} onClick={onClose}>
       <div style={{ textAlign: 'center', maxWidth: 400 }}>
-        <div style={{ color: '#cc88ff', fontSize: 18, marginBottom: 16 }}>祈愿结果</div>
+        <div style={{ color: '#cc88ff', fontSize: 18, marginBottom: 16 }}>뽑기 결과</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
           {results.map((r, i) => (
             <div key={i} style={{
@@ -195,7 +195,7 @@ function PullReveal({ results, onClose }: { results: PullResult[]; onClose: () =
             </div>
           ))}
         </div>
-        <div style={{ color: '#667788', fontSize: 12, marginTop: 24 }}>点击关闭</div>
+        <div style={{ color: '#667788', fontSize: 12, marginTop: 24 }}>클릭하여 닫기</div>
       </div>
     </div>
   )
