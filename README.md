@@ -1,237 +1,60 @@
-<div align="center">
+# MECHA WORLD 한국어 정적판
 
-<img src="docs/screenshots/gameplay-combat.png" width="100%" alt="Mecha World Gameplay" />
+**YTyangtao666/mecha-world**의 React Three Fiber 기반 3D 메카 액션 게임을 한국어로 번역했습니다. 오픈월드 탐험, 근접·원거리 전투, 장비, 퀘스트, 메카 선택과 뽑기를 브라우저에서 체험할 수 있습니다.
 
-# 🤖 MECHA WORLD
+## 시작과 조작
 
-**A 3D open-world mecha action game that runs in your browser.**
+화면을 열면 월드가 자동으로 시작됩니다. 로딩 안내가 끝난 뒤 메카를 움직이세요.
 
-Fight waves of enemies, explore a procedurally generated world, collect mechas through the gacha system, and unleash devastating ultimate attacks — all without downloading anything.
+| 기능 | 조작 |
+|---|---|
+| 이동 | WASD |
+| 돌진 | Shift |
+| 제트 점프 | Space |
+| 근접 공격 | J / 왼쪽 버튼 |
+| 원거리 공격 | K / 오른쪽 버튼 |
+| 시점 이동 | 마우스 드래그 |
+| 1인칭 전환 | V |
 
-[![Play Now](https://img.shields.io/badge/▶_PLAY_NOW-GitHub_Pages-22c55e?style=for-the-badge)](https://ytyangtao666.github.io/mecha-world/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
-[![Three.js](https://img.shields.io/badge/Three.js-R3F-000000?style=flat-square&logo=threedotjs&logoColor=white)](https://docs.pmnd.rs/react-three-fiber)
-[![Vite](https://img.shields.io/badge/Vite-8-646cff?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
+화면 아래 메뉴에서 가방, 퀘스트, 메카, 뽑기, 상점을 엽니다. 모바일에서는 이동 조이스틱과 스킬 버튼을 사용합니다. Echo 버튼과 NPC 대화는 한국어 로컬 대사를 보여줍니다.
 
-</div>
+## 진행
 
----
+- 퀘스트 목록에서 기본 의뢰를 수락하고 보상을 받습니다.
+- 적을 처치하면 경험치와 아이템을 얻을 수 있고, 10대를 처치하면 보스가 나타납니다.
+- 가방에서 장비를 바꾸거나 물약을 사용합니다.
+- 메카 도감에서 능력치를 비교하고 보유한 메카를 장착합니다.
+- 뽑기, 출석과 상점은 게임 안의 테스트 재화로 동작합니다. 다이아 메뉴는 무료 테스트 지급이며 실제 결제·청구가 없습니다.
+- 광고 보상은 원본의 모의 광고입니다. 실제 광고 네트워크에 연결하지 않습니다.
 
-## 📸 Screenshots
+## AI 서버 제외
 
-<div align="center">
-<table>
-<tr>
-<td align="center"><b>⚔️ Open-World Combat</b></td>
-<td align="center"><b>🎰 Gacha System</b></td>
-</tr>
-<tr>
-<td><img src="docs/screenshots/gameplay-combat.png" width="400" alt="Combat" /></td>
-<td><img src="docs/screenshots/gacha-panel.png" width="400" alt="Gacha" /></td>
-</tr>
-<tr>
-<td align="center"><b>📦 Inventory & Equipment</b></td>
-<td align="center"><b>📋 Quest System</b></td>
-</tr>
-<tr>
-<td><img src="docs/screenshots/inventory-panel.png" width="400" alt="Inventory" /></td>
-<td><img src="docs/screenshots/quest-panel.png" width="400" alt="Quests" /></td>
-</tr>
-</table>
-</div>
+**이 배포는 정적 클라이언트만 제공합니다. `apps/ai-server`를 운영하지 않으며 외부 AI API를 호출하지 않습니다.** 대화창은 즉시 로컬 대화 모드로 열리고, 준비된 한국어 NPC 대사를 사용합니다. AI 생성 답변, 동적 AI 의뢰, 서버가 생성하는 월드 이벤트, 관계·AI 비용 대시보드 기능은 제공하지 않습니다. 원작 서버 소스는 참고용으로 포크에 남아 있으나 Pages 실행과 무관합니다.
 
----
+기본 전투·탐험·정적 퀘스트·장비·뽑기는 유지합니다. 로컬 대화는 실제 수리나 거래를 수행하지 않으며 해당 메뉴를 안내합니다.
 
-## ✨ Features
+## 번역과 배포
 
-### ⚔️ Combat System
-- **Melee + Ranged** — sword slashes and energy projectiles, switch on the fly
-- **Combo system** — chain attacks for bonus damage with visual counter
-- **OVERDRIVE Ultimate** — charge energy, unleash screen-shaking attacks
-- **Shield + HP** — layered damage mitigation
-- **Critical hits** — random crits with special effects
-- **Lock-on targeting** — auto-target nearest enemy
+중국어 HUD, 조작 안내, 퀘스트, 장비·메카 이름과 설명, 메뉴, 설정, 출석, 모의 광고, 뽑기, 상점과 NPC 대사를 한국어로 바꿨습니다. 내부 ID와 원작자 표시는 유지했습니다. 원본 README는 `README.en.md`, 변경 기록은 `korean-localization.patch`에 있습니다.
 
-### 🌍 Open World
-- **Procedural terrain** — multi-biome (plains, crystal fields, volcanic zones)
-- **Dynamic day/night** — sun position and lighting shift in real-time
-- **Weather system** — rain, storms, snow, sandstorms
-- **Instanced props** — trees, crystals, rocks, ruins (optimized rendering)
-- **Mini-map** — real-time radar
-- **NPCs** — interactable characters
+GitHub Pages 루트는 사전 빌드된 `ko.html`을 iframe으로 열며 게임 번들은 HTML 안에 포함됩니다. 원작은 React 19, TypeScript, Vite 8, Three.js와 Zustand를 사용합니다. 서버 프로세스는 필요하지 않습니다.
 
-### 🎰 RPG Systems
-- **Gacha** — pull mechas/equipment with SSR/SR/R/N rarity tiers
-- **Mecha collection** — unlock and switch between multiple mechas
-- **Inventory** — weapons, armor, cores with stats
-- **Quests** — objectives with rewards
-- **Daily login** — 7-day streak rewards
-- **Shop** — spend currency on items and pulls
-
-### 📱 Mobile-First
-- **Touch controls** — dual virtual joysticks + action buttons
-- **Responsive** — works portrait and landscape
-- **PWA** — installable on mobile devices
-- **Optimized** — instanced rendering, LOD, object pooling
-
----
-
-## 🎮 Controls
-
-| Action | Desktop | Mobile |
-|--------|---------|--------|
-| Move | `WASD` | Left joystick |
-| Camera | Mouse drag | Right joystick |
-| Melee | `J` / Left Click | Attack button |
-| Shoot | `K` / Right Click | Shoot button |
-| Dash | `Space` | Dash button |
-| Ultimate | `R` | Ult button |
-| View Toggle | `V` (FPS/TPS) | — |
-| Inventory | `I` | 📦 button |
-| Quests | `Q` | ⚡ button |
-| Mecha Select | `M` | 🤖 button |
-
----
-
-## 🚀 Quick Start
+## 개발과 재빌드
 
 ```bash
-git clone https://github.com/YTyangtao666/mecha-world.git
-cd mecha-world
-npm install
+npm ci
+VITE_BASE_PATH=/mecha-world/ npm run build
 npm run dev
 ```
 
-Open http://localhost:5173
+루트 빌드는 shared 패키지와 game 클라이언트를 빌드합니다. AI 서버를 빌드하거나 실행하지 않습니다. Vite의 `/mecha-world/` 기본 경로를 지정해 Pages 경로에서 자산이 맞게 로드되도록 합니다. 재배포 시 `apps/game/dist`의 파일을 Pages 정적 경로에 넣거나 포함된 단일 HTML 빌드 스크립트를 사용하세요.
 
-### Production Build
-```bash
-npm run build
-npm run preview
-```
+## 원작과 라이선스
 
----
+원작: **YTyangtao666** 및 원본 기여자
 
-## 🏗️ Tech Stack
+원본 저장소: https://github.com/YTyangtao666/mecha-world
 
-| Layer | Technology | Why |
-|-------|-----------|-----|
-| Rendering | **Three.js** via **React Three Fiber** | Declarative 3D in React |
-| Physics | **@react-three/rapier** | WASM physics, fast |
-| Framework | **React 19** + **TypeScript 6** | Type-safe, modern |
-| Build | **Vite 8** (Oxc) | Instant HMR |
-| State | **Zustand** | Lightweight, no boilerplate |
-| Lint | **Oxlint** | 50-100x faster than ESLint |
+한글화·정적 배포: **sigco3111** 포크
 
----
-
-## 🧠 AI Backend (NEXUS)
-
-The `apps/ai-server` package is an optional LLM backend that brings NPCs to life (GDD `mecha-world-nexus-gdd.md`). The game is **100% playable without it** — when the backend is offline, NPCs fall back to canned dialogue.
-
-**M0–M2 complete** — monorepo, WebSocket streaming dialogue, 4 NPC personas, 4-tier memory (working/episodic/profile/world), lore RAG (hybrid vector + BM25 retrieval), and an offline eval harness.
-
-```bash
-# Zero-config (in-memory fallback, no API keys needed)
-npm run dev:server          # ai-server on :8787
-
-# Production-grade (Redis + real embedding model)
-cp .env.example .env        # fill LLM_* / EMBEDDING_API_KEY
-docker compose up -d redis qdrant
-npm run dev:server
-
-# Run the lore retrieval eval
-npx tsx apps/ai-server/src/eval/run.ts
-```
-
-See [`docs/plans/2026-08-01-m2-memory-rag-complete.md`](docs/plans/2026-08-01-m2-memory-rag-complete.md) for the full M2 report.
-
----
-
-## 📁 Project Structure
-
-```
-mecha-world/
-├── src/
-│   ├── combat/          # Damage, projectiles, hit detection
-│   ├── controls/        # Touch input (joysticks, buttons)
-│   ├── enemies/         # AI, models, spawning, rendering
-│   ├── gacha/           # Gacha pulls, daily login, shop
-│   ├── performance/     # LOD, culling
-│   ├── rpg/             # Inventory, quests, level, mecha select
-│   ├── stores/          # Zustand global state
-│   ├── ui/              # Loading screen, settings
-│   ├── world/           # Terrain, weather, day/night, minimap
-│   ├── Game.tsx         # Main scene composition
-│   ├── Player.tsx       # Player controller
-│   └── MechaModel.tsx   # Player mecha 3D model
-├── docs/screenshots/    # Game screenshots
-└── .github/workflows/   # CI/CD (GitHub Pages deploy)
-```
-
----
-
-## 🎯 Design Philosophy
-
-1. **Web-first** — No downloads. Open a URL, play immediately.
-2. **Mobile-first** — Touch controls designed first, desktop enhanced.
-3. **Performance** — Instanced rendering, object pooling, LOD. Target 60fps on phones.
-4. **Modular** — Each system (combat, world, RPG, gacha) is self-contained.
-
----
-
-## 📋 Roadmap
-
-- [x] Player controller (move, jump, dash, fly)
-- [x] Melee + ranged combat with combos
-- [x] Enemy AI (patrol → chase → attack → stagger)
-- [x] Boss enemies
-- [x] Procedural terrain with biomes
-- [x] Day/night + weather system
-- [x] Gacha + inventory + quests
-- [x] Touch controls
-- [x] GitHub Pages deployment
-- [x] **AI backend** — LLM NPC dialogue with streaming, personas, memory & lore RAG (M0-M2)
-- [x] **Function calling** — 8 tools + arbiter + audit log + frontend executor (M3)
-- [x] **Dynamic quests** — 5-tier validation + LLM generation + chain + confirmation UI (M4)
-- [x] **AI Director** — world events + budget circuit-breaker + cost dashboard (M5)
-- [x] **Content** — 50 data shards (lore RAG ×84) + canned fallback dialogue + item DB (M6)
-- [ ] Polish: perf benchmarks, recording, boss arenas & audio assets (M7)
-- [ ] Sound effects + music
-- [ ] Unique mecha models per type
-- [ ] Story mode with dungeons
-- [ ] Co-op multiplayer
-
----
-
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Areas needing help:
-
-| Area | Details |
-|------|---------|
-| 🎨 3D Models | Blender → glTF mechas, enemies, environment |
-| 🔊 Sound | SFX, BGM tracks |
-| 🗺️ Level Design | Dungeons, boss arenas |
-| ⚡ Optimization | Draw call reduction, mobile perf |
-| 🧪 Testing | E2E browser testing, benchmarks |
-
----
-
-## 📄 License
-
-**MIT** — see [LICENSE](LICENSE). Free for commercial use.
-
----
-
-<div align="center">
-
-**⭐ Star this repo if you like it!**
-
-Made with 💜 by [YTyangtao666](https://github.com/YTyangtao666)
-
-[▶ Play Now](https://ytyangtao666.github.io/mecha-world/) · [📊 Report Bug](https://github.com/YTyangtao666/mecha-world/issues) · [💡 Request Feature](https://github.com/YTyangtao666/mecha-world/issues)
-
-</div>
+원본 MIT `LICENSE`를 그대로 보존했습니다. 저사양 기기에서는 3D 월드 생성·렌더링이 느릴 수 있습니다. 브라우저 저장소를 지우면 로컬 진행 상황도 사라질 수 있습니다. 이 프로젝트는 개발 중인 체험판이므로 모든 퀘스트와 지형이 완성된 게임처럼 동작한다고 보장하지 않습니다.
