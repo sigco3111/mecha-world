@@ -30,7 +30,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         }}>
           <span style={{ color: '#cc88ff', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            🤖 机甲图鉴
+            🤖 메카 도감
           </span>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
             <span style={{ color: '#44ddff', fontSize: 13 }}>💎 {gems}</span>
@@ -85,7 +85,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
                       position: 'absolute', top: 8, right: 8,
                       background: '#44ff88', color: '#000', padding: '2px 8px',
                       borderRadius: 4, fontSize: 10, fontWeight: 'bold',
-                    }}>使用中</div>
+                    }}>사용 중</div>
                   )}
                 </div>
 
@@ -97,7 +97,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
                 </div>
                 <div style={{ textAlign: 'center', marginBottom: 16 }}>
                   <span style={{ fontSize: 11, color: rarityColors[selected.rarity] }}>
-                    {selected.rarity === 'common' ? '普通' : selected.rarity === 'rare' ? '稀有' : selected.rarity === 'epic' ? '史诗' : '传说'}
+                    {selected.rarity === 'common' ? '일반' : selected.rarity === 'rare' ? '희귀' : selected.rarity === 'epic' ? '영웅' : '전설'}
                   </span>
                 </div>
 
@@ -105,10 +105,10 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
                 <div style={{
                   display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16,
                 }}>
-                  <StatCard label="生命" value={selected.baseHp} icon="❤️" color="#ff4444" locked={!selected.owned} />
-                  <StatCard label="攻击" value={selected.baseAttack} icon="⚔️" color="#ff8844" locked={!selected.owned} />
-                  <StatCard label="防御" value={selected.baseDefense} icon="🛡️" color="#44aaff" locked={!selected.owned} />
-                  <StatCard label="速度" value={selected.baseSpeed} icon="💨" color="#44ddff" locked={!selected.owned} />
+                  <StatCard label="체력" value={selected.baseHp} icon="❤️" color="#ff4444" locked={!selected.owned} />
+                  <StatCard label="공격" value={selected.baseAttack} icon="⚔️" color="#ff8844" locked={!selected.owned} />
+                  <StatCard label="방어" value={selected.baseDefense} icon="🛡️" color="#44aaff" locked={!selected.owned} />
+                  <StatCard label="속도" value={selected.baseSpeed} icon="💨" color="#44ddff" locked={!selected.owned} />
                 </div>
 
                 {/* Skill */}
@@ -116,7 +116,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
                   background: 'rgba(170,68,255,0.1)', borderRadius: 8, padding: 10, marginBottom: 16,
                   border: '1px solid rgba(170,68,255,0.2)',
                 }}>
-                  <div style={{ fontSize: 11, color: '#aa66cc', marginBottom: 4 }}>特殊技能</div>
+                  <div style={{ fontSize: 11, color: '#aa66cc', marginBottom: 4 }}>특수 스킬</div>
                   <div style={{ fontSize: 14, color: '#cc88ff', fontWeight: 'bold' }}>{selected.skill}</div>
                 </div>
 
@@ -124,11 +124,11 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
                 {selected.owned ? (
                   selected.equipped ? (
                     <div style={{ textAlign: 'center', color: '#44ff88', padding: 12 }}>
-                      ✓ 当前装备中
+                      ✓ 현재 장착 중
                     </div>
                   ) : (
                     <button onClick={() => equipMecha(selected.id)} style={btnStyle('#44ff88')}>
-                      装备这台机甲
+                      이 메카 장착
                     </button>
                   )
                 ) : (
@@ -137,7 +137,7 @@ export function MechaSelectPanel({ onClose }: { onClose: () => void }) {
                     disabled={gems < 100}
                     style={btnStyle(gems >= 100 ? '#ffaa00' : '#555555')}
                   >
-                    {gems >= 100 ? `解锁 (💎 100)` : '钻石不足 (需100)'}
+                    {gems >= 100 ? `해금 (💎 100)` : '다이아 부족 (100개 필요)'}
                   </button>
                 )}
               </div>
