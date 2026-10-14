@@ -40,7 +40,7 @@ export function Obstacles() {
           <meshStandardMaterial color={b.color} metalness={0.6} roughness={0.4} />
         </mesh>
       ))}
-      {/* 散布的能量柱 */}
+      {/* 散布的에너지柱 */}
       {Array.from({ length: 15 }).map((_, i) => {
         const angle = (i / 15) * Math.PI * 2
         const radius = 20 + (i % 3) * 5
