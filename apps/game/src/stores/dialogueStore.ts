@@ -1,7 +1,7 @@
-// GDD §32.7 dialogueStore —— 对话状态管理（含 P3 工具执行 + P4 任务确认）
+// GDD §32.7 dialogueStore —— 对话状态管理（含 P3 工具执行 + P4 퀘스트确认）
 import { create } from "zustand";
 import type { NpcId, DynamicQuest } from "@nexus/shared";
-import { connect, getAiServerUrl, type AiClient, type ServerMsg } from "../ai/aiClient";
+import { type AiClient, type ServerMsg } from "../ai/aiClient";
 import { executeTool } from "../ai/toolExecutor";
 import { cannedReply } from "../ai/cannedFallback";
 import { useWorldEventStore } from "./worldEventStore";
@@ -21,7 +21,7 @@ interface DialogueStore {
   messages: ChatMessage[];
   streamingText: string;
   lastUsage: { tokensIn: number; tokensOut: number; costCny: number } | null;
-  offeredQuest: DynamicQuest | null; // P4：当前待确认的动态任务预览
+  offeredQuest: DynamicQuest | null; // P4：현재待确认的动态퀘스트预览
   client: AiClient | null;
 
   open: (npc: NpcId) => void;
@@ -55,13 +55,7 @@ export const useDialogueStore = create<DialogueStore>((set, get) => ({
       lastUsage: null,
       offeredQuest: null,
     });
-    const client = connect({
-      url: getAiServerUrl(),
-      onMessage: (msg) => get()._handle(msg),
-      onFallback: () => set({ status: "fallback" }),
-      onOpen: () => set({ status: "online" }),
-    });
-    set({ client });
+    set({ status: "fallback", client: null, sessionId: null });
   },
 
   close: () => {
@@ -98,14 +92,14 @@ export const useDialogueStore = create<DialogueStore>((set, get) => ({
     const { offeredQuest, client, sessionId, activeNpc } = get();
     if (!offeredQuest || !client || !sessionId || !activeNpc) return;
     const q = offeredQuest;
-    // 写入任务面板（复用 toolExecutor give_quest 逻辑）+ 发 intent 确认给后端
+    // 写入퀘스트面板（复用 toolExecutor give_quest 逻辑）+ 发 intent 确认给后端
     executeTool("give_quest", { quest: q }).then((res) => {
       client.send({ type: "intent", sessionId, npcId: activeNpc, intent: "quest" });
       set((s) => ({
         offeredQuest: null,
         messages: [
           ...s.messages,
-          { role: "system", text: `📋 接受委托「${q.title}」 — ${res.detail}`, ts: Date.now() },
+          { role: "system", text: `📋 의뢰 수락「${q.title}」 — ${res.detail}`, ts: Date.now() },
         ],
       }));
     });
@@ -118,7 +112,7 @@ export const useDialogueStore = create<DialogueStore>((set, get) => ({
     }
     set((s) => ({
       offeredQuest: null,
-      messages: [...s.messages, { role: "system", text: "委婉拒绝了委托。", ts: Date.now() }],
+      messages: [...s.messages, { role: "system", text: "의뢰를 거절했어요.", ts: Date.now() }],
     }));
   },
 
