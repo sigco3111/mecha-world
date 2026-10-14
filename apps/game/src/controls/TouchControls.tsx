@@ -197,18 +197,18 @@ export function TouchSkillButtons() {
     }}>
       {/* Top row: boost + ult */}
       <div style={{ display: 'flex', gap: 10 }}>
-        <SkillBtn icon="💨" label="冲刺" k="boost" color="#44aaff" />
-        <SkillBtn icon="🌟" label="大招" k="ult" color="#ff44ff" />
+        <SkillBtn icon="💨" label="돌진" k="boost" color="#44aaff" />
+        <SkillBtn icon="🌟" label="궁극기" k="ult" color="#ff44ff" />
       </div>
       {/* Bottom row: melee + ranged + view toggle */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
-        <SkillBtn icon="👊" label="近战" k="melee" color="#ff8800" />
-        <SkillBtn icon="🔫" label="射击" k="ranged" color="#00ffff" />
+        <SkillBtn icon="👊" label="근접" k="melee" color="#ff8800" />
+        <SkillBtn icon="🔫" label="사격" k="ranged" color="#00ffff" />
         <ViewToggleBtn />
       </div>
       {/* Jump button below */}
       <div style={{ position: 'absolute', bottom: 0, right: 74 }}>
-        <SkillBtn icon="🚀" label="喷气" k="jump" color="#ffdd00" />
+        <SkillBtn icon="🚀" label="제트 점프" k="jump" color="#ffdd00" />
       </div>
     </div>
   )
