@@ -1,4 +1,4 @@
-// GDD §32.9 worldEventStore —— AI 导演世界事件（toast + 历史）
+// GDD §32.9 worldEventStore —— AI 导演월드 이벤트（toast + 历史）
 import { create } from "zustand";
 import type { WorldEvent } from "@nexus/shared";
 
