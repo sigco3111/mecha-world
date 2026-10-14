@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useRPGStore } from '../rpg/rpgStore'
 
-export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: { onReward?: () => void; label?: string }) {
+export function RewardedAdTrigger({ onReward, label = '모의 광고 보상' }: { onReward?: () => void; label?: string }) {
   const [showAd, setShowAd] = useState(false)
   const [adProgress, setAdProgress] = useState(0)
   const [rewarded, setRewarded] = useState(false)
@@ -52,7 +52,7 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: { 
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
           <div style={{ color: '#44ff88', fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
-            获得 +10 💎
+            획득 +10 💎
           </div>
           <button
             onClick={() => setShowAd(false)}
@@ -63,7 +63,7 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: { 
               marginTop: 16,
             }}
           >
-            收下
+            받기
           </button>
         </div>
       </div>
@@ -86,8 +86,8 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: { 
         border: '2px solid rgba(255,255,255,0.1)',
       }}>
         <div style={{ fontSize: 40 }}>🎮</div>
-        <div style={{ color: '#88aaff', fontSize: 14, marginTop: 8 }}>下载更多好玩游戏</div>
-        <div style={{ color: '#556677', fontSize: 11, marginTop: 4 }}>— 模拟广告 —</div>
+        <div style={{ color: '#88aaff', fontSize: 14, marginTop: 8 }}>모의 광고 체험</div>
+        <div style={{ color: '#556677', fontSize: 11, marginTop: 4 }}>— 실제 광고 아님 —</div>
         {/* Ad progress bar */}
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, height: 4,
@@ -100,7 +100,7 @@ export function RewardedAdTrigger({ onReward, label = '看广告领奖励' }: { 
         </div>
       </div>
       <div style={{ color: '#8899aa', fontSize: 12, marginTop: 16 }}>
-        {Math.ceil((100 - adProgress) / 20)}秒后获得奖励...
+        {Math.ceil((100 - adProgress) / 20)}초 후 보상 지급...
       </div>
     </div>
   )
