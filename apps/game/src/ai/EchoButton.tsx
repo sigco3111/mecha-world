@@ -7,7 +7,7 @@ export function EchoButton() {
   return (
     <button
       onClick={() => open("echo")}
-      title="和 Echo 说话"
+      title="Echo와 대화"
       style={{
         position: "fixed", right: 18, bottom: 180, zIndex: 999,
         width: 52, height: 52, borderRadius: "50%",
