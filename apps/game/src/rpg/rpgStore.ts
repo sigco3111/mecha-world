@@ -77,41 +77,41 @@ interface RPGState {
 const expForLevel = (lv: number) => Math.floor(100 * Math.pow(1.15, lv - 1))
 
 const initialMechas: MechaConfig[] = [
-  { id: 'starter', name: '游骑兵 MK-I', rarity: 'common', baseHp: 1000, baseAttack: 50, baseDefense: 20, baseSpeed: 8, color: '#4488ff', accentColor: '#00ffff', skill: '冲锋斩', owned: true, equipped: true },
-  { id: 'crusher', name: '碎岩者', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '地裂冲击', owned: false, equipped: false },
-  { id: 'phantom', name: '幻影 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '分身突袭', owned: false, equipped: false },
-  { id: 'titan', name: '泰坦之神', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '天罚', owned: false, equipped: false },
+  { id: 'starter', name: '레인저 MK-I', rarity: 'common', baseHp: 1000, baseAttack: 50, baseDefense: 20, baseSpeed: 8, color: '#4488ff', accentColor: '#00ffff', skill: '돌진 베기', owned: true, equipped: true },
+  { id: 'crusher', name: '록 브레이커', rarity: 'rare', baseHp: 1500, baseAttack: 80, baseDefense: 40, baseSpeed: 6, color: '#ff8844', accentColor: '#ffaa00', skill: '지진 충격', owned: false, equipped: false },
+  { id: 'phantom', name: '팬텀 X-7', rarity: 'epic', baseHp: 1200, baseAttack: 100, baseDefense: 30, baseSpeed: 12, color: '#aa44ff', accentColor: '#ff44ff', skill: '분신 기습', owned: false, equipped: false },
+  { id: 'titan', name: '타이탄', rarity: 'legendary', baseHp: 2500, baseAttack: 150, baseDefense: 80, baseSpeed: 5, color: '#ffdd00', accentColor: '#ffffff', skill: '천벌', owned: false, equipped: false },
 ]
 
 const initialItems: ItemData[] = [
-  { id: 'w_sword1', name: '合金斩剑', type: 'weapon', rarity: 'common', icon: '⚔️', stats: { attack: 15 }, count: 1, equipped: true, description: '基础合金武器，坚固可靠。' },
-  { id: 'w_gun1', name: '光束步枪', type: 'weapon', rarity: 'common', icon: '🔫', stats: { attack: 12, critRate: 0.1 }, count: 1, equipped: false, description: '远程光束武器，射速快但伤害较低。' },
-  { id: 'w_blade2', name: '等离子巨刃', type: 'weapon', rarity: 'rare', icon: '🗡️', stats: { attack: 35, critDmg: 0.5 }, count: 1, equipped: false, description: '等离子切割刃，暴击伤害极高。' },
-  { id: 'a_plate1', name: '复合装甲', type: 'armor', rarity: 'common', icon: '🛡️', stats: { defense: 10, maxHp: 100 }, count: 1, equipped: true, description: '标准防御装甲。' },
-  { id: 'a_shield2', name: '力场护盾', type: 'armor', rarity: 'rare', icon: '🛡️', stats: { defense: 25, maxHp: 250 }, count: 1, equipped: false, description: '能量力场护盾，大幅提升生存能力。' },
-  { id: 'c_core1', name: '能量核心 I', type: 'core', rarity: 'common', icon: '🔋', stats: { maxEnergy: 50 }, count: 1, equipped: true, description: '基础能量核心。' },
-  { id: 'c_core2', name: '聚变核心 II', type: 'core', rarity: 'rare', icon: '🔋', stats: { maxEnergy: 100, attack: 10 }, count: 1, equipped: false, description: '高能聚变核心，提升能量和攻击。' },
+  { id: 'w_sword1', name: '합금 검', type: 'weapon', rarity: 'common', icon: '⚔️', stats: { attack: 15 }, count: 1, equipped: true, description: '튼튼하고 믿을 수 있는 기본 합금 무기.' },
+  { id: 'w_gun1', name: '빔 소총', type: 'weapon', rarity: 'common', icon: '🔫', stats: { attack: 12, critRate: 0.1 }, count: 1, equipped: false, description: '빠르게 발사하지만 피해가 낮은 원거리 빔 무기.' },
+  { id: 'w_blade2', name: '플라즈마 대검', type: 'weapon', rarity: 'rare', icon: '🗡️', stats: { attack: 35, critDmg: 0.5 }, count: 1, equipped: false, description: '치명타 피해가 큰 플라즈마 절단 칼날.' },
+  { id: 'a_plate1', name: '복합 장갑', type: 'armor', rarity: 'common', icon: '🛡️', stats: { defense: 10, maxHp: 100 }, count: 1, equipped: true, description: '기본 방어 장갑.' },
+  { id: 'a_shield2', name: '역장 방패', type: 'armor', rarity: 'rare', icon: '🛡️', stats: { defense: 25, maxHp: 250 }, count: 1, equipped: false, description: '생존력을 크게 높이는 에너지 역장 방패.' },
+  { id: 'c_core1', name: '에너지 코어 I', type: 'core', rarity: 'common', icon: '🔋', stats: { maxEnergy: 50 }, count: 1, equipped: true, description: '기본 에너지 코어.' },
+  { id: 'c_core2', name: '핵융합 코어 II', type: 'core', rarity: 'rare', icon: '🔋', stats: { maxEnergy: 100, attack: 10 }, count: 1, equipped: false, description: '에너지와 공격력을 높이는 핵융합 코어.' },
   // Consumables
-  { id: 'potion_hp', name: '生命药剂', type: 'consumable', rarity: 'common', icon: '🧪', stats: { maxHp: 0 }, count: 5, description: '恢复300点生命值。', effect: { type: 'heal', value: 300 } } as any,
-  { id: 'potion_energy', name: '能量药剂', type: 'consumable', rarity: 'common', icon: '⚡', stats: { maxHp: 0 }, count: 5, description: '恢复50点能量值。', effect: { type: 'energy', value: 50 } } as any,
-  { id: 'potion_shield', name: '护盾药剂', type: 'consumable', rarity: 'rare', icon: '💊', stats: { maxHp: 0 }, count: 3, description: '恢复全部护盾值。', effect: { type: 'shield', value: 999 } } as any,
+  { id: 'potion_hp', name: '체력 물약', type: 'consumable', rarity: 'common', icon: '🧪', stats: { maxHp: 0 }, count: 5, description: '체력 300 회복.', effect: { type: 'heal', value: 300 } } as any,
+  { id: 'potion_energy', name: '에너지 물약', type: 'consumable', rarity: 'common', icon: '⚡', stats: { maxHp: 0 }, count: 5, description: '에너지 50 회복.', effect: { type: 'energy', value: 50 } } as any,
+  { id: 'potion_shield', name: '방패 물약', type: 'consumable', rarity: 'rare', icon: '💊', stats: { maxHp: 0 }, count: 3, description: '방패 전체 회복.', effect: { type: 'shield', value: 999 } } as any,
 ]
 
 const initialQuests: QuestData[] = [
   {
-    id: 'q_kill5', title: '初次试炼', description: '击败5台敌机',
+    id: 'q_kill5', title: '첫 시련', description: '적 메카 5대 처치',
     type: 'kill', target: 'enemy', required: 5, current: 0,
     reward: { gold: 200, exp: 150 },
     status: 'active',
   },
   {
-    id: 'q_crystal', title: '水晶峡谷', description: '前往水晶峡谷收集3块能量水晶',
+    id: 'q_crystal', title: '수정 협곡', description: '수정 협곡에서 에너지 수정 3개 수집',
     type: 'collect', target: 'crystal', required: 3, current: 0,
     reward: { gold: 500, exp: 300, items: ['c_core2'] },
     status: 'available',
   },
   {
-    id: 'q_boss', title: '终焉之战', description: '击败Boss机甲',
+    id: 'q_boss', title: '최후의 전투', description: '보스 메카 처치',
     type: 'kill', target: 'boss', required: 1, current: 0,
     reward: { gold: 1000, exp: 500 },
     status: 'available',
@@ -278,21 +278,21 @@ export function rollLoot(enemyType: string): { gold: number; exp: number; item?:
   const baseExp = enemyType === 'boss' ? 300 : 20 + Math.floor(Math.random() * 15)
   const item = enemyType === 'boss' ? {
     id: 'legendary_core_' + Date.now(),
-    name: '传说核心碎片',
+    name: '전설 코어 조각',
     type: 'core' as const,
     rarity: 'legendary' as const,
     icon: '💎',
     stats: { attack: 30, defense: 20, maxHp: 300 },
     count: 1,
-    description: '蕴含巨大能量的传说级核心碎片。',
+    description: '거대한 에너지를 품은 전설 코어 조각.',
   } : Math.random() < 0.15 ? {
     id: 'mat_scrap_' + Date.now(),
-    name: '机甲碎片',
+    name: '메카 조각',
     type: 'material' as const,
     rarity: 'common' as const,
     icon: '🔩',
     count: 1,
-    description: '击毁敌机掉落的金属碎片，可用于升级。',
+    description: '적 메카가 떨어뜨린 업그레이드용 금속 조각.',
   } : undefined
   return { gold: baseGold, exp: baseExp, item }
 }
