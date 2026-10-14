@@ -17,7 +17,7 @@ export interface AiClient {
 }
 
 const RECONNECT_DELAYS = [500, 1000, 2000]; // §38.3 指数退避 ×3（约 3.5s 内判定降级）
-const CONNECT_TIMEOUT = 2000; // 单次握手超时，避免 refused 连接挂起拖慢降级判定
+const CONNECT_TIMEOUT = 2000; // 单회握手超时，避免 refused 连接挂起拖慢降级判定
 
 export function connect(opts: AiClientOptions): AiClient {
   let ws: WebSocket | null = null;
