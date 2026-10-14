@@ -70,7 +70,7 @@ export const TrainingDummy = ({ position: initialPos, color = '#ff4444', onRef }
       g.rotation.z = THREE.MathUtils.lerp(g.rotation.z, 0, 0.2)
     }
 
-    // 血量过低时机甲倾斜
+    // 血量过低时메카倾斜
     if (hpRef.current < maxHp * 0.3) {
       g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, -0.15, 0.05)
     } else {
