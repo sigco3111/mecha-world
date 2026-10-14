@@ -2,22 +2,22 @@ import { useState } from 'react'
 import { useRPGStore } from '../rpg/rpgStore'
 
 const dailyRewards = [
-  { day: 1, icon: '💰', name: '500金币', type: 'gold', amount: 500 },
-  { day: 2, icon: '💎', name: '20钻石', type: 'gems', amount: 20 },
-  { day: 3, icon: '🔩', name: '机甲碎片×5', type: 'item', amount: 5 },
-  { day: 4, icon: '💰', name: '1000金币', type: 'gold', amount: 1000 },
-  { day: 5, icon: '💎', name: '50钻石', type: 'gems', amount: 50 },
-  { day: 6, icon: '🔋', name: '稀有能量核心', type: 'item', amount: 1 },
-  { day: 7, icon: '🎁', name: '传说宝箱', type: 'gems', amount: 200 },
+  { day: 1, icon: '💰', name: '500골드', type: 'gold', amount: 500 },
+  { day: 2, icon: '💎', name: '20다이아', type: 'gems', amount: 20 },
+  { day: 3, icon: '🔩', name: '메카 조각×5', type: 'item', amount: 5 },
+  { day: 4, icon: '💰', name: '1000골드', type: 'gold', amount: 1000 },
+  { day: 5, icon: '💎', name: '50다이아', type: 'gems', amount: 50 },
+  { day: 6, icon: '🔋', name: '희귀에너지코어', type: 'item', amount: 1 },
+  { day: 7, icon: '🎁', name: '전설상자', type: 'gems', amount: 200 },
 ]
 
 export function DailyLogin({ onClose }: { onClose: () => void }) {
   const { addGold, addGems } = useRPGStore()
-  // 用本地日期字符串(YYYY-MM-DD)作为key（toISOString 是 UTC，东八区 0-8 点会错一天）
+  // 用本地日期字符串(YYYY-MM-DD)作为key（toISOString 是 UTC，东八区 0-8 点会错一일차）
   const localKey = (d: Date) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
   const todayKey = localKey(new Date())
-  // 连续签到天数：昨天领过则 +1，断签/完成7天周期则重置为 1 并清空已领记录，今天已领则保持
+  // 连续签到일차数：昨일차领过则 +1，断签/完成7일차周期则重置为 1 并清空已领记录，今일차已领则保持
   const [streak, _setStreak] = useState<number>(() => {
     const prev = parseInt(localStorage.getItem('loginStreak') || '0')
     const last = localStorage.getItem('lastClaimDate')
@@ -38,7 +38,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
     return saved ? JSON.parse(saved) : []
   })
   const today = streak
-  // 今天是否已领
+  // 今일차是否已领
   const claimedToday = localStorage.getItem(`claimed_${todayKey}`) === '1'
 
   const claim = (day: number) => {
@@ -73,7 +73,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
           borderBottom: '1px solid rgba(255,200,100,0.15)',
         }}>
           <span style={{ color: '#ffcc66', fontSize: 18, fontWeight: 'bold', fontFamily: 'monospace' }}>
-            📅 每日签到
+            📅 매일 출석
           </span>
           <span onClick={onClose} style={{ color: '#ff6666', cursor: 'pointer', fontSize: 20 }}>✕</span>
         </div>
@@ -107,7 +107,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
                     animation: 'pulse 1s infinite',
                   }}>!</div>
                 )}
-                <div style={{ fontSize: 10, color: '#8899aa', marginBottom: 4 }}>第{day}天</div>
+                <div style={{ fontSize: 10, color: '#8899aa', marginBottom: 4 }}> {day}일차</div>
                 <div style={{ fontSize: 24, marginBottom: 4, filter: isClaimed ? 'grayscale(1) opacity(0.5)' : 'none' }}>
                   {reward.icon}
                 </div>
@@ -123,7 +123,7 @@ export function DailyLogin({ onClose }: { onClose: () => void }) {
         </div>
 
         <div style={{ padding: '0 16px 16px', textAlign: 'center', color: '#667788', fontSize: 11 }}>
-          连续签到7天可获得传说宝箱！
+          7일 연속 출석하면 전설 상자를 받아요!
         </div>
         <style>{`@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }`}</style>
       </div>
