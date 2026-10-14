@@ -89,10 +89,10 @@ export default function Game() {
         textShadow: '0 0 10px rgba(0,255,255,0.5)', pointerEvents: 'none', lineHeight: 1.8,
       }}>
         <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 8 }}>MECHA WORLD</div>
-        <div style={{ color: '#88aaff' }}>WASD — 移动</div>
-        <div style={{ color: '#88aaff' }}>SHIFT — 冲刺 | SPACE — 喷气</div>
-        <div style={{ color: '#ff4444' }}>J / 左键 — 近战 | K / 右键 — 射击</div>
-        <div style={{ color: '#88aaff' }}>鼠标拖拽 — 视角 | V — 切换第一人称</div>
+        <div style={{ color: '#88aaff' }}>WASD — 이동</div>
+        <div style={{ color: '#88aaff' }}>SHIFT — 돌진 | SPACE — 제트 점프</div>
+        <div style={{ color: '#ff4444' }}>J / 왼쪽 버튼 — 근접 | K / 오른쪽 버튼 — 사격</div>
+        <div style={{ color: '#88aaff' }}>마우스 드래그 — 시점 | V — 1인칭 전환</div>
       </div>
 
       {/* Right HUD: stats */}
@@ -102,10 +102,10 @@ export default function Game() {
         textShadow: '0 0 10px rgba(0,255,255,0.5)', pointerEvents: 'none', textAlign: 'right',
       }}>
         <div style={{ marginBottom: 4, fontSize: 14 }}>RYZER-X</div>
-        <div style={{ color: '#ffaa00' }}>击杀: {killCount}</div>
+        <div style={{ color: '#ffaa00' }}>처치: {killCount}</div>
         <div style={{ color: '#88aaff' }}>Wave: {waveNumber}</div>
         <div style={{ marginTop: 8, fontSize: 10, color: '#446688' }}>
-          击杀10个敌人触发Boss
+          적 10대를 처치하면 보스 등장
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function Game() {
 
       {/* Rewarded ad — top right corner */}
       <div style={{ position: 'absolute', top: 70, right: 180, zIndex: 90 }}>
-        <RewardedAdTrigger label="📺 免费钻石" />
+        <RewardedAdTrigger label="📺 무료 다이아" />
       </div>
 
       {/* RPG Menu buttons — bottom center */}
@@ -124,11 +124,11 @@ export default function Game() {
         position: 'absolute', bottom: 25, left: '50%', transform: 'translateX(-50%)',
         zIndex: 95, display: 'flex', gap: 8,
       }}>
-        <MenuBtn icon="📦" label="背包" onClick={() => setShowInventory(true)} />
-        <MenuBtn icon="⚡" label="任务" onClick={() => setShowQuests(true)} />
-        <MenuBtn icon="🤖" label="机甲" onClick={() => setShowMechas(true)} />
-        <MenuBtn icon="🎰" label="祈愿" onClick={() => setShowGacha(true)} />
-        <MenuBtn icon="🛒" label="商店" onClick={() => setShowShop(true)} />
+        <MenuBtn icon="📦" label="가방" onClick={() => setShowInventory(true)} />
+        <MenuBtn icon="⚡" label="퀘스트" onClick={() => setShowQuests(true)} />
+        <MenuBtn icon="🤖" label="메카" onClick={() => setShowMechas(true)} />
+        <MenuBtn icon="🎰" label="뽑기" onClick={() => setShowGacha(true)} />
+        <MenuBtn icon="🛒" label="상점" onClick={() => setShowShop(true)} />
       </div>
 
       {/* RPG Panels */}
