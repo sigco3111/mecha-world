@@ -37,7 +37,7 @@
 
 중국어 HUD, 조작 안내, 퀘스트, 장비·메카 이름과 설명, 메뉴, 설정, 출석, 모의 광고, 뽑기, 상점과 NPC 대사를 한국어로 바꿨습니다. 내부 ID와 원작자 표시는 유지했습니다. 원본 README는 `README.en.md`, 변경 기록은 `korean-localization.patch`에 있습니다.
 
-GitHub Pages 루트는 사전 빌드된 `ko.html`을 iframe으로 열며 게임 번들은 HTML 안에 포함됩니다. 원작은 React 19, TypeScript, Vite 8, Three.js와 Zustand를 사용합니다. 서버 프로세스는 필요하지 않습니다.
+GitHub Pages 루트는 사전 빌드된 `7-ko.html`을 iframe으로 열며 게임 번들은 HTML 안에 포함됩니다. 원작은 React 19, TypeScript, Vite 8, Three.js와 Zustand를 사용합니다. 서버 프로세스는 필요하지 않습니다.
 
 ## 개발과 재빌드
 
@@ -47,7 +47,7 @@ VITE_BASE_PATH=/mecha-world/ npm run build
 npm run dev
 ```
 
-루트 빌드는 shared 패키지와 game 클라이언트를 빌드합니다. AI 서버를 빌드하거나 실행하지 않습니다. Vite의 `/mecha-world/` 기본 경로를 지정해 Pages 경로에서 자산이 맞게 로드되도록 합니다. 재배포 시 `apps/game/dist`의 파일을 Pages 정적 경로에 넣거나 포함된 단일 HTML 빌드 스크립트를 사용하세요.
+루트 빌드는 shared 패키지와 game 클라이언트를 빌드합니다. AI 서버를 빌드하거나 실행하지 않습니다. Vite의 `/mecha-world/` 기본 경로를 지정해 Pages 경로에서 자산이 맞게 로드되도록 합니다. 재배포 시 `apps/game/dist`의 파일을 Pages 정적 경로에 넣거나 `node build-pages.mjs`로 단일 HTML을 생성하세요. 생성된 `ko.html`을 배포한 뒤 루트 launcher의 파일명도 맞추세요.
 
 ## 원작과 라이선스
 
