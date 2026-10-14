@@ -94,7 +94,7 @@ export function ProjectileRenderer() {
   return <group ref={groupRef} />
 }
 
-// 冲击波特效
+// 冲击波효과
 export function ImpactRenderer() {
   const groupRef = useRef<THREE.Group>(null)
   const activeImpacts = useRef<Map<string, { mesh: THREE.Mesh; born: number; type: string }>>(new Map())
@@ -104,7 +104,7 @@ export function ImpactRenderer() {
     const now = Date.now()
     if (!groupRef.current) return
 
-    // 添加新特效
+    // 添加新효과
     for (const imp of impacts) {
       if (activeImpacts.current.has(imp.id)) continue
       const ring = new THREE.Mesh(
@@ -148,7 +148,7 @@ export function ImpactRenderer() {
       useGameStore.getState().clearImpact(imp.id)
     }
 
-    // 更新特效
+    // 更新효과
     const toDelete: string[] = []
     activeImpacts.current.forEach((data, id) => {
       const age = (now - data.born) / 1000
